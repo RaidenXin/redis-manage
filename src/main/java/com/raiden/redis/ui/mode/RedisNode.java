@@ -1,48 +1,16 @@
 package com.raiden.redis.ui.mode;
 
-import com.raiden.redis.model.RedisClusterNode;
+import com.raiden.redis.client.RedisClient;
 
 /**
  * @创建人:Raiden
  * @Descriotion:
- * @Date:Created in 20:57 2022/5/9
+ * @Date:Created in 22:10 2022/5/10
  * @Modified By:
  */
-public class RedisNode {
+public interface RedisNode {
 
-    private String hostAndPort;
-    private String host;
-    private int port;
+    String getHostAndPort();
 
-    public String getHostAndPort() {
-        return hostAndPort;
-    }
-
-    public void setHostAndPort(String hostAndPort) {
-        this.hostAndPort = hostAndPort;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public static RedisNode build(RedisClusterNode node){
-        RedisNode redisNode = new RedisNode();
-        redisNode.host = node.getHost();
-        redisNode.hostAndPort = node.getHostAndPort();
-        redisNode.port = node.getPort();
-        return redisNode;
-    }
+    RedisClient getRedisClient();
 }

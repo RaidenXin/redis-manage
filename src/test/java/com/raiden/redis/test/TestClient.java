@@ -1,9 +1,11 @@
 package com.raiden.redis.test;
 
 import com.raiden.redis.client.AbstractRedisClient;
+import com.raiden.redis.client.RedisClient;
 import com.raiden.redis.client.RedisClusterClient;
 import com.raiden.redis.pool.RedisSingleClientPool;
 import com.raiden.redis.pool.RedisClusterClientPool;
+import com.raiden.redis.utils.RedisClusterSlotUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -43,8 +45,26 @@ public class TestClient {
     @Test
     public void testClusterInfo(){
         RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8013, 5);
-        RedisClusterClient client = redisClientPool.getClient();
-        System.err.println(client.get("aaa"));
-        System.err.println(Arrays.toString(client.mGet("aaa", "aaa33", "aaa37")));
+        RedisClient client = redisClientPool.getClient();
+        String index = "0";
+        for (;;){
+            String[] scan = client.scan(index);
+            System.err.println(Arrays.toString(scan));
+            index = scan[0];
+            if ("0".equals(index)){
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void testSlotUtils(){
+        //8192 - 10922
+        for (int i = 1; i < 100; i++){
+            int slot = RedisClusterSlotUtil.getSlot("aaa" + i);
+            if (8191 < slot && slot < 10923){
+                System.err.println("aaa" + i);
+            }
+        }
     }
 }

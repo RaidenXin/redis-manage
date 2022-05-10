@@ -1,7 +1,6 @@
 package com.raiden.redis.pool;
 
-import com.raiden.redis.client.AbstractRedisClient;
-import com.raiden.redis.client.RedisSingleClient;
+import com.raiden.redis.client.RedisClient;
 import com.raiden.redis.exception.RedisClientConnectionException;
 import com.raiden.redis.exception.RedisClientException;
 import com.raiden.redis.exception.RedisClientExhaustedPoolException;
@@ -20,7 +19,7 @@ import java.util.NoSuchElementException;
  * @Date:Created in 20:38 2022/1/1
  * @Modified By:
  */
-public abstract class AbstractRedisClientPool<T extends AbstractRedisClient> implements RedisClientPool<T> {
+public abstract class AbstractRedisClientPool<T extends RedisClient> implements RedisClientPool<T> {
 
     private EventLoopGroup group;
 

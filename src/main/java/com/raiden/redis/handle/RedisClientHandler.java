@@ -112,13 +112,18 @@ public class RedisClientHandler extends ChannelDuplexHandler {
 
     private static String[] message2Arr(RedisMessage msg) {
         if (msg instanceof ArrayRedisMessage) {
-            List<RedisMessage> children = ((ArrayRedisMessage) msg).children();
-            String[] arr = new String[children.size()];
-            int index = 0;
+            List<String> result = new ArrayList<>();
             for (RedisMessage child : ((ArrayRedisMessage) msg).children()) {
-                arr[index++] = message2String(child);
+                if (child instanceof ArrayRedisMessage){
+                    String[] messages = message2Arr(child);
+                    for (String message : messages){
+                        result.add(message);
+                    }
+                }else {
+                    result.add(message2String(child));
+                }
             }
-            return arr;
+            return result.toArray(new String[]{});
         } else {
             throw new CodecException("unknown message type: " + msg);
         }

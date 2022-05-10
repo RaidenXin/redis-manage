@@ -1,10 +1,9 @@
 package com.raiden.redis.ui.tab;
 
-import com.raiden.redis.client.AbstractRedisClient;
-import com.raiden.redis.model.RedisClusterNode;
 import com.raiden.redis.ui.common.ProjectValues;
 import com.raiden.redis.ui.factory.PageFactory;
 import com.raiden.redis.ui.mode.RedisNode;
+import com.raiden.redis.ui.mode.RedisSingleNode;
 import com.raiden.redis.ui.util.DataUtil;
 import com.raiden.redis.ui.util.StyleUtil;
 import javafx.collections.ObservableList;

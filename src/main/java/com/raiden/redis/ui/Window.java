@@ -32,7 +32,12 @@ public class Window extends Application {
         stackPane.getChildren().add(root);
 
         Scene scene = new Scene(stackPane, 995, 480);
+        stage.setTitle("Redis");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void stop() throws Exception {
+        System.err.println("关闭了！！！！！！！！！！！！！！！！！！！！");
     }
 }

@@ -11,7 +11,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class AbstractRedisClient {
+public abstract class AbstractRedisClient implements RedisClient{
 
     private Channel channel;
     private RedisClientHandler handler;
@@ -58,8 +58,8 @@ public abstract class AbstractRedisClient {
         return sendCommands(RedisCommand.GET, key);
     }
 
-    public String scan(int startIndex){
-        return sendCommands(RedisCommand.SCAN, String.valueOf(startIndex));
+    public String[] scan(String startIndex){
+        return sendCommands(RedisCommand.SCAN, startIndex);
     }
 
     protected void setChannel(Channel channel){

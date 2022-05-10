@@ -2,7 +2,7 @@ package com.raiden.redis.client;
 
 import com.raiden.redis.cluster.RedisClusterDecoder;
 import com.raiden.redis.handle.RedisClientHandler;
-import com.raiden.redis.model.RedisClusterNode;
+import com.raiden.redis.model.RedisClusterNodeInfo;
 import com.raiden.redis.pool.RedisClientPool;
 import com.raiden.redis.utils.RedisClusterSlotUtil;
 import io.netty.channel.Channel;
@@ -62,7 +62,7 @@ public class RedisClusterClient extends AbstractRedisClient{
         return sendCommands(RedisCommand.CLUSTER, RedisClusterCommand.KEY_SLOT, key);
     }
 
-    public List<RedisClusterNode> clusterNodes(){
+    public List<RedisClusterNodeInfo> clusterNodes(){
         String response = sendCommands(RedisCommand.CLUSTER, RedisClusterCommand.CLUSTER_NODES);
         return RedisClusterDecoder.clusterNodesDecoder(response);
     }

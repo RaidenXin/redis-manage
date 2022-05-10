@@ -1,7 +1,7 @@
 package com.raiden.redis.cluster;
 
 import com.raiden.redis.common.Separator;
-import com.raiden.redis.model.RedisClusterNode;
+import com.raiden.redis.model.RedisClusterNodeInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  */
 public final class RedisClusterDecoder {
 
-    public static List<RedisClusterNode> clusterNodesDecoder(String response){
+    public static List<RedisClusterNodeInfo> clusterNodesDecoder(String response){
         if (StringUtils.isBlank(response)){
             return Collections.emptyList();
         }else {
@@ -29,7 +29,7 @@ public final class RedisClusterDecoder {
                         return null;
                     }
                     String[] data = StringUtils.split(line, Separator.BLANK);
-                    return RedisClusterNode.build(data);
+                    return RedisClusterNodeInfo.build(data);
                 }).filter(Objects::nonNull).collect(Collectors.toList());
             }else {
                 return Collections.emptyList();

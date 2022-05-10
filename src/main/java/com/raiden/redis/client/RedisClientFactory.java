@@ -19,7 +19,7 @@ public final class RedisClientFactory extends AbstractRedisClientFactory{
     }
 
     @Override
-    protected AbstractRedisClient getRedisClient(Channel channel, RedisClientPool pool, RedisClientHandler handler) {
+    protected RedisSingleClient getRedisClient(Channel channel, RedisClientPool pool, RedisClientHandler handler) {
         return new RedisSingleClient(channel, pool, handler);
     }
 

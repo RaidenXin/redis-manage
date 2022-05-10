@@ -12,14 +12,14 @@ import org.apache.commons.pool2.PooledObjectFactory;
  * @Date:Created in 20:21 2022/5/9
  * @Modified By:
  */
-public class RedisClusterClientFactory extends AbstractRedisClientFactory{
+public final class RedisClusterClientFactory extends AbstractRedisClientFactory{
 
     private RedisClusterClientFactory(EventLoopGroup group, RedisClientPool pool, String host, int port) {
         super(group, pool, host, port);
     }
 
     @Override
-    protected AbstractRedisClient getRedisClient(Channel channel, RedisClientPool pool, RedisClientHandler handler) {
+    protected RedisClusterClient getRedisClient(Channel channel, RedisClientPool pool, RedisClientHandler handler) {
         return new RedisClusterClient(channel, pool, handler);
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
  * @Date:Created in 9:24 2022/5/8
  * @Modified By:
  */
-public class RedisClusterNode implements Comparable<RedisClusterNode>{
+public class RedisClusterNodeInfo implements Comparable<RedisClusterNodeInfo>{
 
     private String id;
     private String hostAndPort;
@@ -26,6 +26,10 @@ public class RedisClusterNode implements Comparable<RedisClusterNode>{
      * 是否自己
      */
     private boolean myself;
+    /**
+     * 是否Master
+     */
+    private boolean master;
     /**
      * 逗号分割的标记位，可能的值有: myself, master, slave, fail?, fail, handshake, noaddr, noflags.
      */
@@ -96,6 +100,14 @@ public class RedisClusterNode implements Comparable<RedisClusterNode>{
         this.processCommunicationPort = processCommunicationPort;
     }
 
+    public boolean isMaster() {
+        return master;
+    }
+
+    public void setMaster(boolean master) {
+        this.master = master;
+    }
+
     public String[] getFlags() {
         return flags;
     }
@@ -152,11 +164,11 @@ public class RedisClusterNode implements Comparable<RedisClusterNode>{
         this.slots = slots;
     }
 
-    public static final RedisClusterNode build(String[] data){
+    public static final RedisClusterNodeInfo build(String[] data){
         if (data.length < 9){
             return null;
         }
-        RedisClusterNode node = new RedisClusterNode();
+        RedisClusterNodeInfo node = new RedisClusterNodeInfo();
         node.id = data[0];
         String hostAndPort = data[1];
         if (StringUtils.isNotBlank(hostAndPort)){
@@ -176,6 +188,7 @@ public class RedisClusterNode implements Comparable<RedisClusterNode>{
         String flags = data[2];
         if (StringUtils.isNotBlank(flags)){
             node.myself = flags.indexOf("myself") > -1;
+            node.master = flags.indexOf("master") > -1;
             node.flags = StringUtils.split(data[2], ",");
         }
         node.masterId = data[3];
@@ -213,7 +226,7 @@ public class RedisClusterNode implements Comparable<RedisClusterNode>{
     }
 
     @Override
-    public int compareTo(RedisClusterNode o) {
+    public int compareTo(RedisClusterNodeInfo o) {
         return myself ? -1 : this.hostAndPort.compareTo(o.hostAndPort);
     }
 }
