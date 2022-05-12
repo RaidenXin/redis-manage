@@ -1,8 +1,8 @@
 package com.raiden.redis.ui.mode;
 
 import com.raiden.redis.client.RedisClient;
-import com.raiden.redis.client.RedisSingleClient;
 import com.raiden.redis.model.RedisClusterNodeInfo;
+import com.raiden.redis.ui.util.RedisUtils;
 
 /**
  * @创建人:Raiden
@@ -15,9 +15,15 @@ public class RedisSingleNode implements RedisNode{
     private String hostAndPort;
     private String host;
     private int port;
+    private boolean myself;
 
     public String getHostAndPort() {
         return hostAndPort;
+    }
+
+    @Override
+    public boolean isMyself() {
+        return myself;
     }
 
     public static RedisSingleNode build(RedisClusterNodeInfo node){
@@ -33,11 +39,12 @@ public class RedisSingleNode implements RedisNode{
         hostAndPort.append(node.getHostAndPort());
         redisNode.hostAndPort = hostAndPort.toString();
         redisNode.port = node.getPort();
+        redisNode.myself = node.isMyself();
         return redisNode;
     }
 
     @Override
     public RedisClient getRedisClient() {
-        return new RedisSingleClient(host, port);
+        return RedisUtils.getRedisSingleClient(host, port);
     }
 }

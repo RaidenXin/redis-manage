@@ -5,10 +5,12 @@ package com.raiden.redis.ui;/**
  * @Modified By:
  */
 
+import com.raiden.redis.ui.util.RedisUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -33,11 +35,13 @@ public class Window extends Application {
 
         Scene scene = new Scene(stackPane, 995, 480);
         stage.setTitle("Redis");
+        stage.getIcons().add(new Image("/icon/redis.jpg"));
         stage.setScene(scene);
         stage.show();
     }
 
     public void stop() throws Exception {
+        RedisUtils.shutDown();
         System.err.println("关闭了！！！！！！！！！！！！！！！！！！！！");
     }
 }

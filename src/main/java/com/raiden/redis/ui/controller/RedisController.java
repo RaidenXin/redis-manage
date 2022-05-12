@@ -4,8 +4,7 @@ import com.raiden.redis.client.RedisClusterClient;
 import com.raiden.redis.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.mode.RedisClusterNode;
 import com.raiden.redis.ui.mode.RedisNode;
-import com.raiden.redis.ui.mode.RedisSingleNode;
-import com.raiden.redis.ui.tab.RedisInfoTabPane;
+import com.raiden.redis.ui.tab.ClusterRedisInfoTabPane;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -36,12 +35,12 @@ public class RedisController {
         if (StringUtils.isNoneBlank(host, port)){
             RedisClusterClient redisClient = new RedisClusterClient(host.trim(),Integer.parseInt(port.trim()));
             List<RedisClusterNodeInfo> redisClusterNodes = redisClient.clusterNodes();
-            RedisInfoTabPane redisInfoTabPane = new RedisInfoTabPane();
+            ClusterRedisInfoTabPane redisInfoTabPane = new ClusterRedisInfoTabPane();
             List<RedisNode> hosts = redisClusterNodes.stream()
                     .sorted()
                     .map(RedisClusterNode::build)
                     .collect(Collectors.toList());
-            redisInfoTabPane.setRedisInfoTabPane(redisInfo,  hosts);
+            redisInfoTabPane.setRedisInfoTabPane(redisInfo, hosts);
             redisClient.close();
         }
     }

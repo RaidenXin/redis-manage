@@ -16,6 +16,8 @@ public interface RedisClient {
 
     String[] mGet(String... keys);
 
+    String select(String index);
+
     String info();
 
     void close();

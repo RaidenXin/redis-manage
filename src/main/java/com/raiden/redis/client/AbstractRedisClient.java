@@ -31,6 +31,7 @@ public abstract class AbstractRedisClient implements RedisClient{
         try {
             this.channel = bootstrap.connect(host, port).sync().channel();
         } catch (InterruptedException e) {
+            group.shutdownGracefully();
         }
     }
 
@@ -62,6 +63,11 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.SCAN, startIndex);
     }
 
+    @Override
+    public String select(String index) {
+        return sendCommands(RedisCommand.SELECT, index);
+    }
+
     protected void setChannel(Channel channel){
         this.channel = channel;
     }
@@ -89,13 +95,16 @@ public abstract class AbstractRedisClient implements RedisClient{
 
     public void close(){
         //是否是池化对象
-        if (isObjectPooling){
-            //如果是池化对象 判断是否是活跃的
+        if (isObjectPooling && pool != null){
+            //如果是池化对象 用池化对象回收方式
             pool.recycleObject(this);
         }else {
             //如果不是池化对象 关闭时关闭连接
             if (channel != null && channel.isActive()){
-                channel.close();
+                try {
+                    channel.close();
+                }catch (Exception e){
+                }
             }
             //关闭 netty 客户端线程池
             if (group != null){
@@ -118,6 +127,7 @@ public abstract class AbstractRedisClient implements RedisClient{
         public static final String GET = "GET";
         public static final String INFO = "INFO";
         public static final String SCAN = "SCAN";
+        public static final String SELECT = "SELECT";
         public static final String MGET = "MGET";
         //集群
         public static final String CLUSTER  = "CLUSTER";

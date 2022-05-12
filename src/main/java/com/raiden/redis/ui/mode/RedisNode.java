@@ -13,4 +13,6 @@ public interface RedisNode {
     String getHostAndPort();
 
     RedisClient getRedisClient();
+
+    boolean isMyself();
 }

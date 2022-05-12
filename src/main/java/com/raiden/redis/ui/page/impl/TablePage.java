@@ -23,8 +23,7 @@ public class TablePage implements IPageService {
     private static final String START_INDEX = "0";
 
 	@Override
-	public Node generatePage(RedisNode redisNode, HBox root) {
-        double width = root.getPrefWidth() - ProjectValues.LEFT_MENU_WIDTH;
+	public Node generatePage(RedisNode redisNode, HBox root, String warehouseIndex, double width) {
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         TableView tableView = new TableView();
@@ -40,22 +39,17 @@ public class TablePage implements IPageService {
         tableView.getColumns().add(column1);
         tableView.getColumns().add(column2);
         RedisClient client = redisNode.getRedisClient();
-        try {
-            String[] scan = client.scan(START_INDEX);
-            String[] keys = new String[scan.length - 1];
-            System.arraycopy(scan, 1, keys, 0, keys.length);
-            String[] values = client.mGet(keys);
-            int index = 0;
-            for (String key : keys){
-                tableView.getItems().add(new Pair(key, values[index++]));
-            }
-            tableView.setPrefWidth(width);
-            vbox.getChildren().add(tableView);
-            return vbox;
-        }finally {
-            if (client != null){
-                client.close();
-            }
+        client.select(warehouseIndex);
+        String[] scan = client.scan(START_INDEX);
+        String[] keys = new String[scan.length - 1];
+        System.arraycopy(scan, 1, keys, 0, keys.length);
+        String[] values = client.mGet(keys);
+        int index = 0;
+        for (String key : keys){
+            tableView.getItems().add(new Pair(key, values[index++]));
         }
+        tableView.setPrefWidth(width);
+        vbox.getChildren().add(tableView);
+        return vbox;
 	}
 }

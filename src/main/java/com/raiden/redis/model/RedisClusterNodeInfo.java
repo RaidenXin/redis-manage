@@ -100,6 +100,14 @@ public class RedisClusterNodeInfo implements Comparable<RedisClusterNodeInfo>{
         this.processCommunicationPort = processCommunicationPort;
     }
 
+    public boolean isMyself() {
+        return myself;
+    }
+
+    public void setMyself(boolean myself) {
+        this.myself = myself;
+    }
+
     public boolean isMaster() {
         return master;
     }
@@ -227,6 +235,9 @@ public class RedisClusterNodeInfo implements Comparable<RedisClusterNodeInfo>{
 
     @Override
     public int compareTo(RedisClusterNodeInfo o) {
+        if (o.myself){
+            return 1;
+        }
         return myself ? -1 : this.hostAndPort.compareTo(o.hostAndPort);
     }
 }

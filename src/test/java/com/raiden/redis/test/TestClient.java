@@ -3,15 +3,23 @@ package com.raiden.redis.test;
 import com.raiden.redis.client.AbstractRedisClient;
 import com.raiden.redis.client.RedisClient;
 import com.raiden.redis.client.RedisClusterClient;
+import com.raiden.redis.model.RedisClusterNodeInfo;
 import com.raiden.redis.pool.RedisSingleClientPool;
 import com.raiden.redis.pool.RedisClusterClientPool;
+import com.raiden.redis.ui.Window;
 import com.raiden.redis.utils.RedisClusterSlotUtil;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 
 /**
@@ -66,5 +74,29 @@ public class TestClient {
                 System.err.println("aaa" + i);
             }
         }
+    }
+
+    @Test
+    public void testSelect(){
+        RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8013, 5);
+        RedisClient client = redisClientPool.getClient();
+        System.err.println(client.select("0"));
+    }
+
+
+    @Test
+    public void testRedisNodeSort(){
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        List<RedisClusterNodeInfo> redisClusterNodes = redisClient.clusterNodes();
+        System.err.println(redisClusterNodes.stream().sorted().map(RedisClusterNodeInfo::getHostAndPort).collect(Collectors.joining(" ")));
+    }
+
+    @Test
+    public void testLoadTab() throws IOException {
+        //初始化FXML布局文件内容
+        FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("window.fxml"));
+        //父级
+        Parent root = fxmlLoader.load();
+        System.err.println();
     }
 }
