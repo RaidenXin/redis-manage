@@ -146,7 +146,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
 
     private static String getString(FullBulkStringRedisMessage msg) {
         if (msg.isNull()) {
-            return "(null)";
+            return null;
         }
         return msg.content().toString(CharsetUtil.UTF_8);
     }

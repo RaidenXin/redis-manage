@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane animated="false" text="cluster" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.ReidsClusterController">
+    <content>
+        <AnchorPane fx:id="cluster" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <children>
+                <TextField fx:id="clusterHost" layoutX="61.0" layoutY="21.0" />
+                <TextField fx:id="clusterPort" layoutX="61.0" layoutY="61.0" />
+                <Label layoutX="12.0" layoutY="25.0" text="IP地址:" />
+                <Label layoutX="11.0" layoutY="65.0" text="端口号:" />
+                <Button layoutX="115.0" layoutY="110.0" mnemonicParsing="false" onAction="#connectionRedisCluster" text="连接" />
+            </children>
+        </AnchorPane>
+    </content>
+</TitledPane>

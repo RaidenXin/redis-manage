@@ -6,9 +6,8 @@ package com.raiden.redis.ui.service;
  * @Date:Created in 23:29 2022/5/9
  * @Modified By:
  */
-public interface Reids {
+public interface Redis {
 
     String getHostAndPort();
-
 
 }

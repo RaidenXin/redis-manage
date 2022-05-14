@@ -90,13 +90,4 @@ public class TestClient {
         List<RedisClusterNodeInfo> redisClusterNodes = redisClient.clusterNodes();
         System.err.println(redisClusterNodes.stream().sorted().map(RedisClusterNodeInfo::getHostAndPort).collect(Collectors.joining(" ")));
     }
-
-    @Test
-    public void testLoadTab() throws IOException {
-        //初始化FXML布局文件内容
-        FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("window.fxml"));
-        //父级
-        Parent root = fxmlLoader.load();
-        System.err.println();
-    }
 }
