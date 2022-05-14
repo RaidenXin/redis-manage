@@ -79,6 +79,10 @@ public class RedisSinglePointController implements Initializable {
         }
     }
 
+    public void addRecord(){
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         isVerification.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {

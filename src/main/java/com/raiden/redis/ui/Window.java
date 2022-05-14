@@ -33,7 +33,7 @@ public class Window extends Application {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(root);
 
-        Scene scene = new Scene(stackPane, 995, 480);
+        Scene scene = new Scene(stackPane, 1200, 600);
         stage.setTitle("Redis");
         stage.getIcons().add(new Image("/icon/redis.jpg"));
         stage.setScene(scene);

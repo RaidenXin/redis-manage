@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -49,10 +50,10 @@ public class RedisClusterTabController implements Initializable {
     private AtomicReference<String> currentIndex;
     private AtomicReference<String> nextIndex;
     private Stack<String> stack;
-    private AtomicReference<Boolean> isInitTab;
+    private AtomicBoolean isInitTab;
 
     public RedisClusterTabController(){
-        this.isInitTab = new AtomicReference<>(false);
+        this.isInitTab = new AtomicBoolean(false);
     }
 
 

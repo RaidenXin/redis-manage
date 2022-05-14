@@ -3,18 +3,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TitledPane animated="false" prefHeight="480.0" prefWidth="240.0" text="cluster" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.ReidsClusterController">
+<TitledPane animated="false" prefHeight="600.0" prefWidth="400.0" text="cluster" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.ReidsClusterController">
     <content>
-        <AnchorPane fx:id="cluster" minHeight="0.0" minWidth="0.0" prefHeight="480.0" prefWidth="200.0">
+        <AnchorPane fx:id="cluster" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="400.0">
             <children>
-                <Label layoutX="12.0" layoutY="25.0" text="IP地址:" />
-                <TextField fx:id="clusterHost" layoutX="61.0" layoutY="21.0" />
-                <Label layoutX="11.0" layoutY="65.0" text="端口号:" />
-                <TextField fx:id="clusterPort" layoutX="61.0" layoutY="61.0" />
-                <Button layoutX="154.0" layoutY="108.0" mnemonicParsing="false" onAction="#connectionRedisCluster" prefHeight="23.0" prefWidth="70.0" text="连接" />
-                <CheckBox fx:id="isVerification" layoutX="11.0" layoutY="111.0" mnemonicParsing="false" text="是否需要安全验证"/>
-                <Label fx:id="passwordText" layoutX="11.0" layoutY="155.0" text="密码:" visible="false"/>
-                <PasswordField fx:id="password" layoutX="61.0" layoutY="151.0" visible="false"/>
+                <Label layoutX="36.0" layoutY="22.0" text="名称:" />
+                <TextField fx:id="name" layoutX="97.0" layoutY="17.0" prefHeight="25.0" prefWidth="250.0" />
+                <Label layoutX="31.0" layoutY="62.0" text="IP地址:" />
+                <TextField fx:id="clusterHost" layoutX="97.0" layoutY="57.0" prefHeight="25.0" prefWidth="250.0" />
+                <Label layoutX="30.0" layoutY="102.0" text="端口号:" />
+                <TextField fx:id="clusterPort" layoutX="97.0" layoutY="97.0" prefHeight="25.0" prefWidth="250.0" />
+                <Button layoutX="140.0" layoutY="143.0" mnemonicParsing="false" onAction="#addRecord" prefHeight="25.0" prefWidth="70.0" text="添加" />
+                <Button layoutX="260.0" layoutY="143.0" mnemonicParsing="false" onAction="#connectionRedisCluster" prefHeight="25.0" prefWidth="70.0" text="添加" />
+                <CheckBox fx:id="isVerification" layoutX="34.0" layoutY="148.0" mnemonicParsing="false" text="安全验证" />
+                <Label fx:id="passwordText" layoutX="36.0" layoutY="189.0" text="密码:" visible="true" />
+                <PasswordField fx:id="password" layoutX="97.0" layoutY="184.0" prefHeight="25.0" prefWidth="250.0" visible="true" />
+            <TableView fx:id="record" layoutY="235.0" prefHeight="340.0" prefWidth="400.0">
+              <columns>
+                  <TableColumn fx:id="recordName" prefWidth="90.0" text="名称" />
+                  <TableColumn fx:id="recordHost" prefWidth="100.0" text="host" />
+                  <TableColumn fx:id="recordPort" prefWidth="50.0" text="port" />
+                  <TableColumn fx:id="recordPassword" prefWidth="100.0" text="密码" />
+                  <TableColumn fx:id="operation" prefWidth="56.0" text="操作" />
+              </columns>
+            </TableView>
             </children>
         </AnchorPane>
     </content>

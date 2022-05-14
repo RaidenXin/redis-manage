@@ -13,7 +13,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.net.URL;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -98,5 +107,16 @@ public class TestClient {
         RedisSingleClient redisClient = new RedisSingleClient("redis.test.yiyaowang.com",6379);
         System.err.println(redisClient.auth("foobared"));
         System.err.println(redisClient.info());
+    }
+
+
+    @Test
+    public void testHistoricalRecord() throws IOException {
+        URL resource = this.getClass().getResource("/data/redisClusterHistoricalRecord.data");
+        Path path = new File(resource.getFile()).toPath();
+        String data = "name:AAA|host:127.0.0.1|port:8013\n";
+        Files.write(path, data.getBytes("utf-8"), StandardOpenOption.APPEND);
+        data = "name:BBB|host:127.0.0.1|port:8010\n";
+        Files.write(path, data.getBytes("utf-8"), StandardOpenOption.APPEND);
     }
 }

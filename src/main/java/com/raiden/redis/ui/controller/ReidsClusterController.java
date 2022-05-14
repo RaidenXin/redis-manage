@@ -3,18 +3,29 @@ package com.raiden.redis.ui.controller;
 import com.raiden.redis.client.RedisClusterClient;
 import com.raiden.redis.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.common.AlertText;
+import com.raiden.redis.ui.mode.Record;
 import com.raiden.redis.ui.mode.RedisClusterNode;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.tab.ClusterRedisInfoTabPane;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +46,20 @@ public class ReidsClusterController implements Initializable {
     private Label passwordText;
     @FXML
     private PasswordField password;
+    @FXML
+    private TableView record;
+    @FXML
+    private TableColumn<Record, String> recordName;
+    @FXML
+    private TableColumn<Record, String> recordHost;
+    @FXML
+    private TableColumn<Record, Integer> recordPort;
+
+    private Charset utf_8;
+
+    public ReidsClusterController(){
+        this.utf_8 = Charset.forName("utf-8");
+    }
 
     public void connectionRedisCluster(){
         String host = clusterHost.getText();
@@ -80,12 +105,91 @@ public class ReidsClusterController implements Initializable {
         }
     }
 
+    public void addRecord(){
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         isVerification.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             passwordText.setVisible(newValue);
             password.setVisible(newValue);
         });
+        record.setEditable(true);
+        record.setRowFactory( tv -> {
+            TableRow<Record> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 1 && (!row.isEmpty()) ) {
+                    Record rowData = row.getItem();
+                    clusterHost.setText(rowData.getHost());
+                    clusterPort.setText(String.valueOf(rowData.getPort()));
+                }
+            });
+            return row ;
+        });
+        recordName.setCellFactory(TextFieldTableCell.forTableColumn());
+        recordHost.setCellFactory(TextFieldTableCell.forTableColumn());
+        recordPort.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        recordName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        recordHost.setCellValueFactory(new PropertyValueFactory<>("host"));
+        recordPort.setCellValueFactory(new PropertyValueFactory<>("port"));
+        recordName.setOnEditCommit(event -> {
+            TableView tempTable = event.getTableView();
+            Record item = (Record) tempTable.getItems().get(event.getTablePosition().getRow());
+            item.setName(event.getNewValue());//放置新值
+            saveRecord();
+        });
+        recordHost.setOnEditCommit(event -> {
+            TableView tempTable = event.getTableView();
+            Record item = (Record) tempTable.getItems().get(event.getTablePosition().getRow());
+            item.setHost(event.getNewValue());//放置新值
+            saveRecord();
+        });
+        recordPort.setOnEditCommit(event -> {
+            TableView tempTable = event.getTableView();
+            Record item = (Record) tempTable.getItems().get(event.getTablePosition().getRow());
+            item.setPort(event.getNewValue());//放置新值
+            saveRecord();
+        });
+        URL resource = this.getClass().getResource("/data/redisClusterHistoricalRecord.data");
+        Path path = new File(resource.getFile()).toPath();
+        try {
+            List<String> datas = Files.readAllLines(path, utf_8);
+            if (datas != null){
+                record.getItems().addAll(datas.stream().map(Record::build).sorted(Comparator.comparing(Record::getName)).collect(Collectors.toList()));
+            }
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+        }
         BeanContext.setBean(this.getClass().getName(), this);
+    }
+
+    protected void saveRecord(){
+        try {
+            ObservableList<Record> items = record.getItems();
+            List<Record> records = new ArrayList<>();
+            //复制一遍防止 遍历的时候有 人修改
+            synchronized (items){
+                records.addAll(items);
+            }
+            if (records != null){
+                StringBuilder data = new StringBuilder();
+                records.stream()
+                        .sorted(Comparator.comparing(Record::getName))
+                        .forEach(r -> data.append(r.toString()));
+                URL resource = this.getClass().getResource("/data/redisClusterHistoricalRecord.data");
+                Path path = new File(resource.getFile()).toPath();
+                try {
+                    //第一个是覆盖 其他的都是追加
+                    Files.write(path, data.toString().getBytes("utf-8"), StandardOpenOption.WRITE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch (Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

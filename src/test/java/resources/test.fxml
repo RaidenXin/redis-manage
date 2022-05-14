@@ -48,14 +48,6 @@
           </TitledPane>
         </panes>
       </Accordion>
-      <Pane fx:id="redisInfo" layoutX="238.0" prefHeight="480.0" prefWidth="755.0">
-         <children>
-            <TabPane prefHeight="480.0" prefWidth="755.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                  <fx:include source="com/raiden/redis/ui/redis_cluster_tab_veiw.fxml"/>
-              </tabs>
-            </TabPane>
-         </children>
-      </Pane>
+      <Pane fx:id="redisInfo" layoutX="238.0" prefHeight="480.0" prefWidth="755.0" />
    </children>
 </AnchorPane>
