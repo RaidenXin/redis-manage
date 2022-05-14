@@ -1,10 +1,8 @@
 package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.client.RedisClient;
-import com.raiden.redis.ui.cell.EditingCell;
 import com.raiden.redis.ui.mode.RedisDataItem;
 import com.raiden.redis.ui.mode.RedisNode;
-import com.sun.javafx.css.converters.StringConverter;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,8 +11,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.util.Callback;
-import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -72,8 +68,17 @@ public class RedisClusterTabController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         tab.setGraphic(new ImageView("/icon/redis2.jpg"));
         searchButton.setGraphic(new ImageView("/icon/search.jpg"));
-        Callback<TableColumn<RedisDataItem, String>, TableCell<RedisDataItem, String>> cellFactory = (TableColumn<RedisDataItem, String> p) -> new TextFieldTableCell<>();
-        value.setCellFactory(cellFactory);
+        table.setEditable(true);
+        key.setCellFactory(TextFieldTableCell.forTableColumn());
+        value.setCellFactory(TextFieldTableCell.forTableColumn());
+        value.setOnEditCommit(event -> {
+            TableView tempTable = event.getTableView();
+            RedisDataItem item = (RedisDataItem) tempTable.getItems().get(event.getTablePosition().getRow());
+            RedisClient redisClient = redisNode.getRedisClient();
+            String newValue = event.getNewValue();
+            redisClient.set(item.getKey(), newValue);
+            item.setValue(newValue);//放置新值
+        });
     }
 
     public void search(){

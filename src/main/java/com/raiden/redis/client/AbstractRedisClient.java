@@ -76,6 +76,10 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.INFO);
     }
 
+    public String auth(String password){
+        return sendCommands(RedisCommand.AUTH, password);
+    }
+
 
     protected <T> T sendCommands(String... commands){
         if (channel != null){
@@ -129,6 +133,7 @@ public abstract class AbstractRedisClient implements RedisClient{
         public static final String SCAN = "SCAN";
         public static final String SELECT = "SELECT";
         public static final String MGET = "MGET";
+        public static final String AUTH = "AUTH";
         //集群
         public static final String CLUSTER  = "CLUSTER";
     }

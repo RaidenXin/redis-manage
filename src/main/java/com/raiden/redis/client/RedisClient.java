@@ -18,6 +18,8 @@ public interface RedisClient {
 
     String select(String index);
 
+    String auth(String password);
+
     String info();
 
     void close();

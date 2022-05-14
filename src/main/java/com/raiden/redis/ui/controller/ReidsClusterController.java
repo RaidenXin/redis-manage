@@ -5,10 +5,10 @@ import com.raiden.redis.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.mode.RedisClusterNode;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.tab.ClusterRedisInfoTabPane;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -28,6 +28,12 @@ public class ReidsClusterController implements Initializable {
     private TextField clusterHost;
     @FXML
     private TextField clusterPort;
+    @FXML
+    private CheckBox isVerification;
+    @FXML
+    private Label passwordText;
+    @FXML
+    private PasswordField password;
 
     public void connectionRedisCluster(){
         String host = clusterHost.getText();
@@ -51,16 +57,12 @@ public class ReidsClusterController implements Initializable {
         }
     }
 
-    public String getHost(){
-        return clusterHost.getText();
-    }
-
-    public String getPort(){
-        return clusterPort.getText();
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        isVerification.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            passwordText.setVisible(newValue);
+            password.setVisible(newValue);
+        });
         BeanContext.setBean(this.getClass().getName(), this);
     }
 }

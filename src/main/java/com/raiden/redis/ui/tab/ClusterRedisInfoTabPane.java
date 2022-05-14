@@ -42,18 +42,16 @@ public class ClusterRedisInfoTabPane {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         //初始化FXML布局文件内容
         if (hosts != null) {
-            Map<String, RedisNode> hostCache = new HashMap<>(hosts.size() << 1);
             List<Tab> tabs = hosts.stream().map(host -> {
                 String hostAndPort = host.getHostAndPort();
-                hostCache.put(hostAndPort, host);
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("redis_cluster_tab_veiw.fxml"));
                     Tab tab = fxmlLoader.load();
                     RedisClusterTabController controller = fxmlLoader.getController();
                     controller.setRedisNode(host);
                     tab.setText(host.getHostAndPort());
+                    initCache.put(hostAndPort, controller);
                     if (host.isMyself()){
-                        initCache.put(hostAndPort, controller);
                         controller.initTable();
                     }
                     return tab;
@@ -66,7 +64,7 @@ public class ClusterRedisInfoTabPane {
             tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
                 String hostAndPort = newValue.getText();
                 RedisClusterTabController controller = initCache.get(hostAndPort);
-                if (controller == null && !controller.isInitTab()){
+                if (controller != null && !controller.isInitTab()){
                     controller.initTable();
                 }
             });

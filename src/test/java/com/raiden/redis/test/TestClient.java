@@ -80,7 +80,7 @@ public class TestClient {
     public void testSelect(){
         RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8013, 5);
         RedisClient client = redisClientPool.getClient();
-        System.err.println(client.select("0"));
+        System.err.println(client.get("aaa33"));
     }
 
 
