@@ -1,5 +1,7 @@
 package com.raiden.redis.client;
 
+import com.raiden.redis.model.RedisNodeInfo;
+
 /**
  * @创建人:Raiden
  * @Descriotion:
@@ -20,7 +22,7 @@ public interface RedisClient {
 
     boolean auth(String password);
 
-    String info();
+    RedisNodeInfo info();
 
     void close();
 

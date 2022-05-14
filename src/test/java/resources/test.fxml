@@ -41,7 +41,7 @@
                         <TextField fx:id="clusterPort" layoutX="61.0" layoutY="61.0" />
                         <Label layoutX="12.0" layoutY="25.0" text="IP地址:" />
                         <Label layoutX="11.0" layoutY="65.0" text="端口号:" />
-                        <Button layoutX="115.0" layoutY="110.0" mnemonicParsing="false" onAction="#connectionRedisCluster" text="连接" />
+                        <Button layoutX="115.0" layoutY="110.0" mnemonicParsing="false" text="连接" />
                     </children>
                 </AnchorPane>
             </content>

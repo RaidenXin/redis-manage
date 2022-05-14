@@ -1,7 +1,9 @@
 package com.raiden.redis.client;
 
+import com.raiden.redis.cluster.RedisDecoder;
 import com.raiden.redis.core.RedisClientInitializer;
 import com.raiden.redis.handle.RedisClientHandler;
+import com.raiden.redis.model.RedisNodeInfo;
 import com.raiden.redis.pool.RedisClientPool;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -75,8 +77,9 @@ public abstract class AbstractRedisClient implements RedisClient{
         this.channel = channel;
     }
 
-    public String info(){
-        return sendCommands(RedisCommand.INFO);
+    public RedisNodeInfo info(){
+        String response = sendCommands(RedisCommand.INFO);
+        return RedisDecoder.redisNodesDecoder(response);
     }
 
     public boolean auth(String password){
