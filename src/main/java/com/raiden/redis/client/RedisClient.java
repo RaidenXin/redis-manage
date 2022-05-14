@@ -18,7 +18,7 @@ public interface RedisClient {
 
     String select(String index);
 
-    String auth(String password);
+    boolean auth(String password);
 
     String info();
 

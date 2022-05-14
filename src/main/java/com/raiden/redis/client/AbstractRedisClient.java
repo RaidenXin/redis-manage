@@ -13,6 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public abstract class AbstractRedisClient implements RedisClient{
 
+    private static final String SUCCESS = "OK";
+
+
     private Channel channel;
     private RedisClientHandler handler;
     private EventLoopGroup group;
@@ -76,8 +79,9 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.INFO);
     }
 
-    public String auth(String password){
-        return sendCommands(RedisCommand.AUTH, password);
+    public boolean auth(String password){
+        String response = sendCommands(RedisCommand.AUTH, password);
+        return SUCCESS.equalsIgnoreCase(response);
     }
 
 

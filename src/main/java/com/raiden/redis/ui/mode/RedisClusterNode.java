@@ -28,16 +28,6 @@ public class RedisClusterNode implements RedisNode{
         return hostAndPort;
     }
 
-    @Override
-    public String getHost() {
-        return host;
-    }
-
-    @Override
-    public int getPort() {
-        return port;
-    }
-
     public static RedisClusterNode build(RedisClusterNodeInfo node){
         RedisClusterNode redisNode = new RedisClusterNode();
         redisNode.host = node.getHost();

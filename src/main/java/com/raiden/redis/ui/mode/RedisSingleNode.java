@@ -22,16 +22,6 @@ public class RedisSingleNode implements RedisNode{
     }
 
     @Override
-    public String getHost() {
-        return host;
-    }
-
-    @Override
-    public int getPort() {
-        return port;
-    }
-
-    @Override
     public boolean isMyself() {
         return myself;
     }

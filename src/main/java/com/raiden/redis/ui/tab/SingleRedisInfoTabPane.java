@@ -42,27 +42,24 @@ public class SingleRedisInfoTabPane {
             new Pair<>("12号库", "12")
     };
 
-    public void setRedisInfoTabPane(Pane root, List<RedisNode> hosts) {
+    public void setRedisInfoTabPane(Pane root, RedisNode redisNode) {
         double prefHeight = root.getPrefHeight();
         double prefWidth = root.getPrefWidth();
         TabPane tabPane = new TabPane();
         tabPane.setPrefHeight(prefHeight);
         tabPane.setPrefWidth(prefWidth);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        if (hosts != null) {
-            List<Tab> tabs = hosts.stream().map(host -> {
-                Tab tab = new Tab();
-                tab.setText(host.getHostAndPort());
-                AnchorPane anchorPane = new AnchorPane();
-                HBox hBox = new HBox();
-                hBox.setPrefHeight(prefHeight);
-                hBox.setPrefWidth(prefWidth);
-                setLeftMenu(host, hBox);
-                anchorPane.getChildren().add(hBox);
-                tab.setContent(anchorPane);
-                return tab;
-            }).collect(Collectors.toList());
-            tabPane.getTabs().addAll(tabs);
+        if (redisNode != null) {
+            Tab tab = new Tab();
+            tab.setText(redisNode.getHostAndPort());
+            AnchorPane anchorPane = new AnchorPane();
+            HBox hBox = new HBox();
+            hBox.setPrefHeight(prefHeight);
+            hBox.setPrefWidth(prefWidth);
+            setLeftMenu(redisNode, hBox);
+            anchorPane.getChildren().add(hBox);
+            tab.setContent(anchorPane);
+            tabPane.getTabs().add(tab);
         }
         root.getChildren().add(tabPane);
     }
