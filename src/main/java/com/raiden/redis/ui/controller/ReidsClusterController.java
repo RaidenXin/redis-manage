@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +35,8 @@ import java.util.stream.Collectors;
  */
 public class ReidsClusterController implements Initializable {
 
+    @FXML
+    private TextField name;
     @FXML
     private TextField clusterHost;
     @FXML
@@ -54,6 +55,8 @@ public class ReidsClusterController implements Initializable {
     private TableColumn<Record, String> recordHost;
     @FXML
     private TableColumn<Record, Integer> recordPort;
+    @FXML
+    private TableColumn<Record, String> recordPassword;
 
     private Charset utf_8;
 
@@ -106,7 +109,24 @@ public class ReidsClusterController implements Initializable {
     }
 
     public void addRecord(){
-
+        String nameText = name.getText();
+        String host = clusterHost.getText();
+        String port = clusterPort.getText();
+        if (StringUtils.isAnyBlank(host, port)){
+            return;
+        }
+        if (StringUtils.isBlank(nameText)){
+            nameText = host;
+        }
+        Record recordItem = new Record();
+        recordItem.setName(nameText);
+        recordItem.setHost(host);
+        recordItem.setPort(Integer.parseInt(port));
+        recordItem.setPassword(password.getText());
+        ObservableList items = record.getItems();
+        items.add(recordItem);
+        items.stream().sorted(Comparator.comparing(Record::getName));
+        saveRecord();
     }
 
     @Override
@@ -121,8 +141,17 @@ public class ReidsClusterController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!row.isEmpty()) ) {
                     Record rowData = row.getItem();
+                    name.setText(rowData.getName());
                     clusterHost.setText(rowData.getHost());
                     clusterPort.setText(String.valueOf(rowData.getPort()));
+                    String password = rowData.getPassword();
+                    if (StringUtils.isNotBlank(password)){
+                        isVerification.setSelected(true);
+                        this.password.setText(password);
+                    }else {
+                        isVerification.setSelected(false);
+                        this.password.setText(StringUtils.EMPTY);
+                    }
                 }
             });
             return row ;
@@ -130,9 +159,11 @@ public class ReidsClusterController implements Initializable {
         recordName.setCellFactory(TextFieldTableCell.forTableColumn());
         recordHost.setCellFactory(TextFieldTableCell.forTableColumn());
         recordPort.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        recordPassword.setCellFactory(TextFieldTableCell.forTableColumn());
         recordName.setCellValueFactory(new PropertyValueFactory<>("name"));
         recordHost.setCellValueFactory(new PropertyValueFactory<>("host"));
         recordPort.setCellValueFactory(new PropertyValueFactory<>("port"));
+        recordPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
         recordName.setOnEditCommit(event -> {
             TableView tempTable = event.getTableView();
             Record item = (Record) tempTable.getItems().get(event.getTablePosition().getRow());
@@ -151,12 +182,18 @@ public class ReidsClusterController implements Initializable {
             item.setPort(event.getNewValue());//放置新值
             saveRecord();
         });
+        recordPassword.setOnEditCommit(event -> {
+            TableView tempTable = event.getTableView();
+            Record item = (Record) tempTable.getItems().get(event.getTablePosition().getRow());
+            item.setPassword(event.getNewValue());//放置新值
+            saveRecord();
+        });
         URL resource = this.getClass().getResource("/data/redisClusterHistoricalRecord.data");
         Path path = new File(resource.getFile()).toPath();
         try {
             List<String> datas = Files.readAllLines(path, utf_8);
             if (datas != null){
-                record.getItems().addAll(datas.stream().map(Record::build).sorted(Comparator.comparing(Record::getName)).collect(Collectors.toList()));
+                record.getItems().addAll(datas.stream().filter(data -> data.startsWith("name:")).map(Record::build).sorted(Comparator.comparing(Record::getName)).collect(Collectors.toList()));
             }
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
