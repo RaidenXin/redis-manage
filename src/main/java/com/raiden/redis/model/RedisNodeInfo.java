@@ -11,6 +11,7 @@ public class RedisNodeInfo {
     private RedisServerInfo server;
     private RedisClientInfo clients;
     private RedisMemoryInfo memory;
+    private RedisPersistence persistence;
 
     public static RedisNodeInfo build(String[] data) {
         return null;

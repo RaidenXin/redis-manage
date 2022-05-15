@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
@@ -45,11 +46,14 @@ public class ClusterRedisInfoTabPane {
             List<Tab> tabs = hosts.stream().map(host -> {
                 String hostAndPort = host.getHostAndPort();
                 try {
+                    Tab tab = new Tab();
+                    tab.setText(host.getHostAndPort());
+                    tab.setGraphic(new ImageView("/icon/redis2.jpg"));
                     FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("redis_cluster_tab_veiw.fxml"));
-                    Tab tab = fxmlLoader.load();
+                    AnchorPane anchorPane = fxmlLoader.load();
+                    tab.setContent(anchorPane);
                     RedisClusterTabController controller = fxmlLoader.getController();
                     controller.setRedisNode(host);
-                    tab.setText(host.getHostAndPort());
                     initCache.put(hostAndPort, controller);
                     if (host.isMyself()){
                         controller.initTable();

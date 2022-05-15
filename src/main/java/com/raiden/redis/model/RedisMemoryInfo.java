@@ -25,31 +25,47 @@ public class RedisMemoryInfo {
     /**
      * 由 Redis 分配器分配的内存总量，以字节（byte）为单位
      */
-    private String usedMemory;
+    private long usedMemory;
     /**
      * 以人类可读的格式返回 Redis 分配的内存总量
      */
     private String usedMemoryHuman;
     /**
+     * 从操作系统的角度，返回 Redis 已分配的内存总量（俗称常驻集大小）。
+     */
+    private long usedMemoryRss;
+    /**
+     * Redis 的内存消耗峰值
+     */
+    private long usedMemoryPeak;
+    /**
      * 以人类可读的格式返回 Redis 的内存消耗峰值
      */
     private String usedMemoryPeakHuman;
     /**
+     * Lua 引擎所使用的内存大小（以字节为单位）
+     */
+    private long usedMemoryLua;
+    /**
+     * 以人类可读的格式返回 Lua 引擎所使用的内存大小
+     */
+    private String usedMemoryLuaHuman;
+    /**
      * 由 Redis 分配器分配的内存总量，以字节（byte）为单位
      */
-    private String usedMemoryPeakPerc;
+    private long usedMemoryPeakPerc;
     /**
      * 服务器为管理其内部数据结构而分配的所有开销的总和（以字节为单位）
      */
-    private String usedMemoryOverhead;
+    private long usedMemoryOverhead;
     /**
      * 由 Redis 分配器分配的内存总量，以字节（byte）为单位
      */
-    private String usedMemoryStartup;
+    private long usedMemoryStartup;
     /**
      * 以字节为单位的数据集大小（used_memory减去used_memory_overhead）
      */
-    private String usedMemoryDataset;
+    private long usedMemoryDataset;
     /**
      * used_memory_dataset占净内存使用量的百分比（used_memory减去used_memory_startup）
      */
@@ -61,7 +77,7 @@ public class RedisMemoryInfo {
     /**
      * maxmemory配置指令的值
      */
-    private String maxmemory;
+    private long maxmemory;
     /**
      * 以人类可读的格式返回 maxmemory配置指令的值
      */
@@ -69,21 +85,21 @@ public class RedisMemoryInfo {
     /**
      * used_memory_rss 和 used_memory 之间的比率
      */
-    private String memFragmentationRatio;
+    private double memFragmentationRatio;
     /**
      * 指示活动碎片整理是否处于活动状态的标志
      */
-    private String activeDefragRunning;
+    private int activeDefragRunning;
     /**
      * 等待释放的对象数（由于使用ASYNC选项调用UNLINK或FLUSHDB和FLUSHALL）
      */
-    private String lazyfreePendingObjects;
+    private int lazyfreePendingObjects;
 
-    public String getUsedMemory() {
+    public long getUsedMemory() {
         return usedMemory;
     }
 
-    public void setUsedMemory(String usedMemory) {
+    public void setUsedMemory(long usedMemory) {
         this.usedMemory = usedMemory;
     }
 
@@ -95,6 +111,22 @@ public class RedisMemoryInfo {
         this.usedMemoryHuman = usedMemoryHuman;
     }
 
+    public long getUsedMemoryRss() {
+        return usedMemoryRss;
+    }
+
+    public void setUsedMemoryRss(long usedMemoryRss) {
+        this.usedMemoryRss = usedMemoryRss;
+    }
+
+    public long getUsedMemoryPeak() {
+        return usedMemoryPeak;
+    }
+
+    public void setUsedMemoryPeak(long usedMemoryPeak) {
+        this.usedMemoryPeak = usedMemoryPeak;
+    }
+
     public String getUsedMemoryPeakHuman() {
         return usedMemoryPeakHuman;
     }
@@ -103,35 +135,51 @@ public class RedisMemoryInfo {
         this.usedMemoryPeakHuman = usedMemoryPeakHuman;
     }
 
-    public String getUsedMemoryPeakPerc() {
+    public long getUsedMemoryLua() {
+        return usedMemoryLua;
+    }
+
+    public void setUsedMemoryLua(long usedMemoryLua) {
+        this.usedMemoryLua = usedMemoryLua;
+    }
+
+    public String getUsedMemoryLuaHuman() {
+        return usedMemoryLuaHuman;
+    }
+
+    public void setUsedMemoryLuaHuman(String usedMemoryLuaHuman) {
+        this.usedMemoryLuaHuman = usedMemoryLuaHuman;
+    }
+
+    public long getUsedMemoryPeakPerc() {
         return usedMemoryPeakPerc;
     }
 
-    public void setUsedMemoryPeakPerc(String usedMemoryPeakPerc) {
+    public void setUsedMemoryPeakPerc(long usedMemoryPeakPerc) {
         this.usedMemoryPeakPerc = usedMemoryPeakPerc;
     }
 
-    public String getUsedMemoryOverhead() {
+    public long getUsedMemoryOverhead() {
         return usedMemoryOverhead;
     }
 
-    public void setUsedMemoryOverhead(String usedMemoryOverhead) {
+    public void setUsedMemoryOverhead(long usedMemoryOverhead) {
         this.usedMemoryOverhead = usedMemoryOverhead;
     }
 
-    public String getUsedMemoryStartup() {
+    public long getUsedMemoryStartup() {
         return usedMemoryStartup;
     }
 
-    public void setUsedMemoryStartup(String usedMemoryStartup) {
+    public void setUsedMemoryStartup(long usedMemoryStartup) {
         this.usedMemoryStartup = usedMemoryStartup;
     }
 
-    public String getUsedMemoryDataset() {
+    public long getUsedMemoryDataset() {
         return usedMemoryDataset;
     }
 
-    public void setUsedMemoryDataset(String usedMemoryDataset) {
+    public void setUsedMemoryDataset(long usedMemoryDataset) {
         this.usedMemoryDataset = usedMemoryDataset;
     }
 
@@ -151,11 +199,11 @@ public class RedisMemoryInfo {
         this.totalSystemMemoryHuman = totalSystemMemoryHuman;
     }
 
-    public String getMaxmemory() {
+    public long getMaxmemory() {
         return maxmemory;
     }
 
-    public void setMaxmemory(String maxmemory) {
+    public void setMaxmemory(long maxmemory) {
         this.maxmemory = maxmemory;
     }
 
@@ -167,27 +215,27 @@ public class RedisMemoryInfo {
         this.maxmemoryHuman = maxmemoryHuman;
     }
 
-    public String getMemFragmentationRatio() {
+    public double getMemFragmentationRatio() {
         return memFragmentationRatio;
     }
 
-    public void setMemFragmentationRatio(String memFragmentationRatio) {
+    public void setMemFragmentationRatio(double memFragmentationRatio) {
         this.memFragmentationRatio = memFragmentationRatio;
     }
 
-    public String getActiveDefragRunning() {
+    public int getActiveDefragRunning() {
         return activeDefragRunning;
     }
 
-    public void setActiveDefragRunning(String activeDefragRunning) {
+    public void setActiveDefragRunning(int activeDefragRunning) {
         this.activeDefragRunning = activeDefragRunning;
     }
 
-    public String getLazyfreePendingObjects() {
+    public int getLazyfreePendingObjects() {
         return lazyfreePendingObjects;
     }
 
-    public void setLazyfreePendingObjects(String lazyfreePendingObjects) {
+    public void setLazyfreePendingObjects(int lazyfreePendingObjects) {
         this.lazyfreePendingObjects = lazyfreePendingObjects;
     }
 }

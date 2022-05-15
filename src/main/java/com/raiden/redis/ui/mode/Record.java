@@ -65,6 +65,6 @@ public class Record {
 
     @Override
     public String toString() {
-        return "name:" + name + Separator.VERTICAL_BAR + "host:" + host + Separator.VERTICAL_BAR + "port:" + port + Separator.VERTICAL_BAR + "password:" + password + "\n";
+        return "name:" + name + Separator.VERTICAL_BAR + "host:" + host + Separator.VERTICAL_BAR + "port:" + port + Separator.VERTICAL_BAR + "password:" + password;
     }
 }

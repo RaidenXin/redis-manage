@@ -1,6 +1,7 @@
 package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.client.RedisClient;
+import com.raiden.redis.client.RedisClusterClient;
 import com.raiden.redis.ui.mode.RedisDataItem;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.collections.ObservableList;
@@ -14,6 +15,7 @@ import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,8 +33,6 @@ public class RedisClusterTabController implements Initializable {
     private static final String START_INDEX = "0";
 
     @FXML
-    private Tab tab;
-    @FXML
     private Button searchButton;
     @FXML
     private TextField searchKey;
@@ -44,6 +44,8 @@ public class RedisClusterTabController implements Initializable {
     private TableColumn<RedisDataItem, String> key;
     @FXML
     private TableColumn<RedisDataItem, String> value;
+    @FXML
+    private Label slotView;
 
     private RedisNode redisNode;
 
@@ -67,7 +69,6 @@ public class RedisClusterTabController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tab.setGraphic(new ImageView("/icon/redis2.jpg"));
         searchButton.setGraphic(new ImageView("/icon/search.jpg"));
         table.setEditable(true);
         key.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -126,7 +127,9 @@ public class RedisClusterTabController implements Initializable {
     }
 
     private void initTableData(){
-        RedisClient client = redisNode.getRedisClient();
+        RedisClusterClient client = (RedisClusterClient) redisNode.getRedisClient();
+        String[] slots = client.clusterSlots();
+        slotView.setText("Slot:" + Arrays.toString(slots));
         String[] scan = client.scan(START_INDEX);
         key.setCellValueFactory(new PropertyValueFactory<>("key"));
         value.setCellValueFactory(new PropertyValueFactory<>("value"));

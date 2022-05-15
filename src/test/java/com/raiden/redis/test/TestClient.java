@@ -109,6 +109,20 @@ public class TestClient {
         System.err.println(redisClient.info());
     }
 
+    @Test
+    public void testRedisSlot(){
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        System.err.println(redisClient.auth("foobared"));
+        System.err.println(Arrays.toString(redisClient.clusterSlots()));
+    }
+
+    @Test
+    public void testRedisBigKeys(){
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        System.err.println(redisClient.bigKeys());
+    }
+
+
 
     @Test
     public void testHistoricalRecord() throws IOException {

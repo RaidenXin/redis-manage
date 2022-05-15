@@ -3,34 +3,31 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Tab fx:id="tab" text="Untitled Tab" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisClusterTabController">
-    <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisClusterTabController">
+    <children>
+        <VBox prefHeight="570.0" prefWidth="800.0">
             <children>
-                <VBox prefHeight="570.0" prefWidth="800.0">
+                <Pane fx:id="searchPane" prefHeight="60.0" prefWidth="800.0">
                     <children>
-                        <Pane fx:id="searchPane" prefHeight="60.0" prefWidth="800.0">
-                            <children>
-                                <Label layoutX="33.0" layoutY="23.0" text="Key:" />
-                                <TextField fx:id="searchKey" accessibleRole="TEXT_FIELD" layoutX="78.0" layoutY="18.0" prefHeight="25.0" prefWidth="322.0" />
-                                <Button fx:id="searchButton" layoutX="437.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="搜索" onAction="#search"/>
-                            </children>
-                        </Pane>
-                        <TableView fx:id="table" prefHeight="456.0" prefWidth="800.0">
-                            <columns>
-                                <TableColumn fx:id="key" prefWidth="250.0" text="Key" />
-                                <TableColumn fx:id="value" prefWidth="500.0" text="Value" />
-                            </columns>
-                        </TableView>
-                        <Pane fx:id="bottomBar" prefHeight="60.0" prefWidth="800.0">
-                            <children>
-                                <Button layoutX="304.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
-                                <Button layoutX="414.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
-                            </children>
-                        </Pane>
+                        <Label layoutX="33.0" layoutY="23.0" text="Key:" />
+                        <TextField fx:id="searchKey" accessibleRole="TEXT_FIELD" layoutX="78.0" layoutY="18.0" prefHeight="25.0" prefWidth="322.0" />
+                        <Button fx:id="searchButton" layoutX="437.0" layoutY="18.0" mnemonicParsing="false" onAction="#search" prefHeight="25.0" prefWidth="70.0" text="搜索" />
+                        <Label fx:id="slotView" layoutX="527.0" layoutY="18.0" prefHeight="25.0" prefWidth="250.0" />
                     </children>
-                </VBox>
+                </Pane>
+                <TableView fx:id="table" prefHeight="456.0" prefWidth="800.0">
+                    <columns>
+                        <TableColumn fx:id="key" prefWidth="250.0" text="Key" />
+                        <TableColumn fx:id="value" prefWidth="500.0" text="Value" />
+                    </columns>
+                </TableView>
+                <Pane fx:id="bottomBar" prefHeight="60.0" prefWidth="800.0">
+                    <children>
+                        <Button layoutX="304.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
+                        <Button layoutX="414.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
+                    </children>
+                </Pane>
             </children>
-        </AnchorPane>
-    </content>
-</Tab>
+        </VBox>
+    </children>
+</AnchorPane>

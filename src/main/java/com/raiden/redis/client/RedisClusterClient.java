@@ -67,7 +67,7 @@ public class RedisClusterClient extends AbstractRedisClient{
         return RedisClusterDecoder.clusterNodesDecoder(response);
     }
 
-    public String clusterSlots(){
+    public String[] clusterSlots(){
         return sendCommands(RedisCommand.CLUSTER, RedisClusterCommand.CLUSTER_SLOTS);
     }
 

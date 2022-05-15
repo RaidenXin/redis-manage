@@ -15,6 +15,7 @@ public final class RedisDecoder {
     public static final String LINE_BREAK = "\r\n";
 
     public static RedisNodeInfo redisNodesDecoder(String response){
+        System.err.println(response);
         if (StringUtils.isBlank(response)){
             return null;
         }else {
