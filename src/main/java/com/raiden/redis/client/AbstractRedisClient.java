@@ -87,6 +87,11 @@ public abstract class AbstractRedisClient implements RedisClient{
         return SUCCESS.equalsIgnoreCase(response);
     }
 
+    public String memoryUsage(String key){
+        String response = sendCommands(RedisCommand.MEMORY, RedisCommand.Memory.USAGE, key);
+        return response;
+    }
+
 
     protected <T> T sendCommands(String... commands){
         if (channel != null){
@@ -141,7 +146,12 @@ public abstract class AbstractRedisClient implements RedisClient{
         public static final String SELECT = "SELECT";
         public static final String MGET = "MGET";
         public static final String AUTH = "AUTH";
+        public static final String MEMORY = "MEMORY";
         //集群
         public static final String CLUSTER  = "CLUSTER";
+
+        protected static class Memory{
+            public static final String USAGE = "USAGE";
+        }
     }
 }

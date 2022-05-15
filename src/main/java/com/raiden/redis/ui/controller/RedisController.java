@@ -2,6 +2,7 @@ package com.raiden.redis.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;

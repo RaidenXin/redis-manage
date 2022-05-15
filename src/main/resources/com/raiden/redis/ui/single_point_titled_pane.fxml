@@ -16,8 +16,8 @@
                 <Button layoutX="140.0" layoutY="143.0" mnemonicParsing="false" onAction="#addRecord" prefHeight="25.0" prefWidth="70.0" text="添加" />
                 <Button layoutX="260.0" layoutY="143.0" mnemonicParsing="false" onAction="#connectionRedis" prefHeight="25.0" prefWidth="70.0" text="连接" />
                 <CheckBox fx:id="isVerification" layoutX="34.0" layoutY="148.0" mnemonicParsing="false" text="安全验证" />
-                <Label fx:id="passwordText" layoutX="36.0" layoutY="189.0" text="密码:" visible="true" />
-                <PasswordField fx:id="password" layoutX="97.0" layoutY="184.0" prefHeight="25.0" prefWidth="250.0" visible="true" />
+                <Label fx:id="passwordText" layoutX="36.0" layoutY="189.0" text="密码:" visible="false" />
+                <PasswordField fx:id="password" layoutX="97.0" layoutY="184.0" prefHeight="25.0" prefWidth="250.0" visible="false" />
                 <TableView fx:id="record" layoutY="235.0" prefHeight="342.0" prefWidth="400.0">
                     <columns>
                         <TableColumn fx:id="recordName" prefWidth="90.0" text="名称" />

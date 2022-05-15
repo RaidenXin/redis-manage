@@ -1,6 +1,7 @@
 package com.raiden.redis.ui.tab;
 
 import com.raiden.redis.ui.Window;
+import com.raiden.redis.ui.controller.RedisClusterDataTableController;
 import com.raiden.redis.ui.controller.RedisClusterTabController;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.beans.value.ObservableValue;
@@ -49,7 +50,7 @@ public class ClusterRedisInfoTabPane {
                     Tab tab = new Tab();
                     tab.setText(host.getHostAndPort());
                     tab.setGraphic(new ImageView("/icon/redis2.jpg"));
-                    FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("redis_cluster_tab_veiw.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("redis_cluster_tab_view.fxml"));
                     AnchorPane anchorPane = fxmlLoader.load();
                     tab.setContent(anchorPane);
                     RedisClusterTabController controller = fxmlLoader.getController();

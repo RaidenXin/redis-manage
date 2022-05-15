@@ -11,6 +11,7 @@ import com.raiden.redis.ui.Window;
 import com.raiden.redis.utils.RedisClusterSlotUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.ListView;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -119,7 +120,7 @@ public class TestClient {
     @Test
     public void testRedisBigKeys(){
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-        System.err.println(redisClient.bigKeys());
+        System.err.println(redisClient.memoryUsage("aaa33"));
     }
 
 
@@ -132,5 +133,6 @@ public class TestClient {
         Files.write(path, data.getBytes("utf-8"), StandardOpenOption.APPEND);
         data = "name:BBB|host:127.0.0.1|port:8010\n";
         Files.write(path, data.getBytes("utf-8"), StandardOpenOption.APPEND);
+        ListView listView = new ListView();
     }
 }
