@@ -32,12 +32,6 @@ public class RedisClusterNode implements RedisNode{
         RedisClusterNode redisNode = new RedisClusterNode();
         redisNode.host = node.getHost();
         StringBuilder hostAndPort = new StringBuilder();
-        if (node.isMaster()){
-            hostAndPort.append(RedisNodeType.MASTER);
-        }else {
-            hostAndPort.append(RedisNodeType.SLAVE);
-        }
-        hostAndPort.append(":");
         hostAndPort.append(node.getHostAndPort());
         redisNode.hostAndPort = hostAndPort.toString();
         redisNode.port = node.getPort();

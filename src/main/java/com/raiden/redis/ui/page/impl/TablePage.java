@@ -40,7 +40,7 @@ public class TablePage implements IPageService {
         tableView.getColumns().add(column2);
         RedisClient client = redisNode.getRedisClient();
         client.select(warehouseIndex);
-        String[] scan = client.scan(START_INDEX);
+        String[] scan = client.scan(START_INDEX, "10");
         String[] keys = new String[scan.length - 1];
         System.arraycopy(scan, 1, keys, 0, keys.length);
         String[] values = client.mGet(keys);

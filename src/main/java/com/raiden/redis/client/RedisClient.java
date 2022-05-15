@@ -14,7 +14,9 @@ public interface RedisClient {
 
     String get(String key);
 
-    String[] scan(String startIndex);
+    String[] scan(String startIndex,String limit);
+
+    String[] scanMatch(String startIndex,String pattern,String limit);
 
     String[] mGet(String... keys);
 

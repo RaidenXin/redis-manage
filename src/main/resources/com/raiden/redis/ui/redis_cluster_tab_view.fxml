@@ -11,8 +11,8 @@
                <children>
                    <Pane prefHeight="62.0" prefWidth="150.0" />
                    <ListView fx:id="sidebar" prefHeight="550.0" prefWidth="150.0">
-                       <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" text="数据" onAction="#switchingDataViews"/>
-                       <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" text="监控信息" onAction="#switchingMonitoringViews" />
+                       <Button mnemonicParsing="false" onAction="#switchingDataViews" prefHeight="25.0" prefWidth="133.0" text="数据" />
+                       <Button mnemonicParsing="false" onAction="#switchingMonitoringViews" prefHeight="25.0" prefWidth="133.0" text="监控信息" />
                    </ListView>
                </children>
                </VBox>

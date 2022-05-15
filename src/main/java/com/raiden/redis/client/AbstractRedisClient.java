@@ -64,8 +64,12 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.GET, key);
     }
 
-    public String[] scan(String startIndex){
-        return sendCommands(RedisCommand.SCAN, startIndex);
+    public String[] scan(String startIndex,String limit){
+        return sendCommands(RedisCommand.SCAN, startIndex,RedisCommand.Scan.COUNT, limit);
+    }
+
+    public String[] scanMatch(String startIndex,String pattern,String limit){
+        return sendCommands(RedisCommand.SCAN, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
     }
 
     @Override
@@ -152,6 +156,11 @@ public abstract class AbstractRedisClient implements RedisClient{
 
         protected static class Memory{
             public static final String USAGE = "USAGE";
+        }
+
+        protected static class Scan{
+            public static final String COUNT = "COUNT";
+            public static final String MATCH = "MATCH";
         }
     }
 }

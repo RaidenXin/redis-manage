@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
 import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -54,7 +55,7 @@ public class ReidsClusterController implements Initializable {
     @FXML
     private TableColumn<Record, String> recordPassword;
     @FXML
-    private TableColumn<Record, Button> operation;
+    private TableColumn<Record, HBox> operation;
 
     private RecordDao recordDao;
 
@@ -122,9 +123,41 @@ public class ReidsClusterController implements Initializable {
         recordItem.setPort(Integer.parseInt(port));
         recordItem.setPassword(password.getText());
         ObservableList items = record.getItems();
+        Button delete = new Button("删除");
+        // 对data操作即对表格操作，会同步更新的
+        delete.setOnAction((event) ->{
+            // 删除元素
+            items.remove(recordItem);
+            //再触发刷新并保存机制
+            refreshAndSaveRecords();
+        });
+        Button use = new Button("使用");
+        // 对data操作即对表格操作，会同步更新的
+        use.setOnAction((event) ->{
+            name.setText(recordItem.getName());
+            clusterHost.setText(recordItem.getHost());
+            clusterPort.setText(String.valueOf(recordItem.getPort()));
+            String password = recordItem.getPassword();
+            if (StringUtils.isNotBlank(password)){
+                isVerification.setSelected(true);
+                this.password.setText(password);
+            }else {
+                isVerification.setSelected(false);
+                this.password.setText(StringUtils.EMPTY);
+            }
+        });
+        recordItem.setOperation(delete, use);
         items.add(recordItem);
         items.stream().sorted(Comparator.comparing(Record::getName));
         saveRecord();
+    }
+
+    public void clearInputField(){
+        name.setText(StringUtils.EMPTY);
+        clusterHost.setText(StringUtils.EMPTY);
+        clusterPort.setText(StringUtils.EMPTY);
+        isVerification.setSelected(false);
+        password.setText(StringUtils.EMPTY);
     }
 
     @Override
@@ -134,26 +167,6 @@ public class ReidsClusterController implements Initializable {
             password.setVisible(newValue);
         });
         record.setEditable(true);
-        record.setRowFactory( tv -> {
-            TableRow<Record> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 1 && (!row.isEmpty()) ) {
-                    Record rowData = row.getItem();
-                    name.setText(rowData.getName());
-                    clusterHost.setText(rowData.getHost());
-                    clusterPort.setText(String.valueOf(rowData.getPort()));
-                    String password = rowData.getPassword();
-                    if (StringUtils.isNotBlank(password)){
-                        isVerification.setSelected(true);
-                        this.password.setText(password);
-                    }else {
-                        isVerification.setSelected(false);
-                        this.password.setText(StringUtils.EMPTY);
-                    }
-                }
-            });
-            return row ;
-        });
         recordName.setCellFactory(TextFieldTableCell.forTableColumn());
         recordHost.setCellFactory(TextFieldTableCell.forTableColumn());
         recordPort.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
@@ -162,6 +175,7 @@ public class ReidsClusterController implements Initializable {
         recordHost.setCellValueFactory(new PropertyValueFactory<>("host"));
         recordPort.setCellValueFactory(new PropertyValueFactory<>("port"));
         recordPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
+        operation.setCellValueFactory(new PropertyValueFactory<>("operation"));
         recordName.setOnEditCommit(event -> {
             TableView tempTable = event.getTableView();
             Record item = (Record) tempTable.getItems().get(event.getTablePosition().getRow());
@@ -186,8 +200,46 @@ public class ReidsClusterController implements Initializable {
             item.setPassword(event.getNewValue());//放置新值
             saveRecord();
         });
-        record.getItems().addAll(recordDao.getRecords());
+        ObservableList items = record.getItems();
+        List<Record> records = recordDao.getRecords();
+        records.forEach(r -> {
+            Button use = new Button("使用");
+            // 对data操作即对表格操作，会同步更新的
+            use.setOnAction((event) ->{
+                name.setText(r.getName());
+                clusterHost.setText(r.getHost());
+                clusterPort.setText(String.valueOf(r.getPort()));
+                String password = r.getPassword();
+                if (StringUtils.isNotBlank(password)){
+                    isVerification.setSelected(true);
+                    this.password.setText(password);
+                }else {
+                    isVerification.setSelected(false);
+                    this.password.setText(StringUtils.EMPTY);
+                }
+            });
+            Button delete = new Button("删除");
+            // 对data操作即对表格操作，会同步更新的
+            delete.setOnAction((event) ->{
+                // 删除元素
+                items.remove(r);
+                //再触发刷新并保存机制
+                refreshAndSaveRecords();
+            });
+            r.setOperation(delete, use);
+            items.add(r);
+        });
         BeanContext.setBean(this.getClass().getName(), this);
+    }
+
+    protected void refreshAndSaveRecords(){
+        ObservableList<Record> items = record.getItems();
+        List<Record> records = new ArrayList<>();
+        //复制一遍防止 遍历的时候有 人修改
+        synchronized (items){
+            records.addAll(items);
+        }
+        recordDao.refreshAndSaveRecords(records);
     }
 
     protected void saveRecord(){

@@ -1,6 +1,8 @@
 package com.raiden.redis.ui.mode;
 
 import com.raiden.redis.common.Separator;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -14,6 +16,7 @@ public class Record {
     private String host;
     private int port;
     private String password;
+    private HBox operation;
 
     public String getName() {
         return name;
@@ -45,6 +48,14 @@ public class Record {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public HBox getOperation() {
+        return operation;
+    }
+
+    public void setOperation(Button... operation) {
+        this.operation = new HBox(operation);
     }
 
     public static final Record build(String data){

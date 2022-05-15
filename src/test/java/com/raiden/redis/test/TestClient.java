@@ -8,6 +8,9 @@ import com.raiden.redis.model.RedisClusterNodeInfo;
 import com.raiden.redis.pool.RedisSingleClientPool;
 import com.raiden.redis.pool.RedisClusterClientPool;
 import com.raiden.redis.ui.Window;
+import com.raiden.redis.ui.common.PathData;
+import com.raiden.redis.ui.mode.Record;
+import com.raiden.redis.ui.util.RecordStorageUtils;
 import com.raiden.redis.utils.RedisClusterSlotUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -61,13 +65,16 @@ public class TestClient {
         }
     }
 
+    /**
+     * 测试获取信息的方法
+     */
     @Test
     public void testClusterInfo(){
         RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8013, 5);
         RedisClient client = redisClientPool.getClient();
         String index = "0";
         for (;;){
-            String[] scan = client.scan(index);
+            String[] scan = client.scan(index, "20");
             System.err.println(Arrays.toString(scan));
             index = scan[0];
             if ("0".equals(index)){
@@ -76,6 +83,9 @@ public class TestClient {
         }
     }
 
+    /**
+     * 测试获取槽位的方法
+     */
     @Test
     public void testSlotUtils(){
         //8192 - 10922
@@ -87,6 +97,9 @@ public class TestClient {
         }
     }
 
+    /**
+     * 测试切换仓库
+     */
     @Test
     public void testSelect(){
         RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8013, 5);
@@ -103,13 +116,19 @@ public class TestClient {
     }
 
 
+    /**
+     * 测试验证
+     */
     @Test
     public void testRedisAuth(){
-        RedisSingleClient redisClient = new RedisSingleClient("redis.test.yiyaowang.com",6379);
+        RedisSingleClient redisClient = new RedisSingleClient("10.6.168.210",6379);
         System.err.println(redisClient.auth("foobared"));
         System.err.println(redisClient.info());
     }
 
+    /**
+     * 测试槽位
+     */
     @Test
     public void testRedisSlot(){
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
@@ -117,22 +136,46 @@ public class TestClient {
         System.err.println(Arrays.toString(redisClient.clusterSlots()));
     }
 
+    /**
+     * 测试获取内存
+     */
     @Test
-    public void testRedisBigKeys(){
+    public void testRedisMemoryUsage(){
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
         System.err.println(redisClient.memoryUsage("aaa33"));
     }
 
 
+    /**
+     * 测试 Scan命令
+     */
+    @Test
+    public void testRedisScanCommand(){
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        System.err.println(Arrays.toString(redisClient.scan("0", "20")));
+    }
 
+    /**
+     * 测试 Scan模糊匹配命令
+     */
+    @Test
+    public void testRedisScanMatchCommand(){
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        System.err.println(Arrays.toString(redisClient.scanMatch("0", "aaa*","20")));
+    }
+
+    /**
+     * 测试存储记录的方法
+     * @throws IOException
+     */
     @Test
     public void testHistoricalRecord() throws IOException {
-        URL resource = this.getClass().getResource("/data/redisClusterHistoricalRecord.data");
-        Path path = new File(resource.getFile()).toPath();
-        String data = "name:AAA|host:127.0.0.1|port:8013\n";
-        Files.write(path, data.getBytes("utf-8"), StandardOpenOption.APPEND);
-        data = "name:BBB|host:127.0.0.1|port:8010\n";
-        Files.write(path, data.getBytes("utf-8"), StandardOpenOption.APPEND);
-        ListView listView = new ListView();
+        String data = "048name:一号啊啊啊|host:127.0.0.1|port:8013|password:************************************************************************************************************************************************************************************************************************************************************";
+        Record record = Record.build(data);
+        List<Record> records = new ArrayList<>(1);
+        records.add(record);
+        RecordStorageUtils.refreshAndSaveRecords(records, PathData.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
+        records = RecordStorageUtils.getRecords(PathData.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
+        System.err.println(record);
     }
 }

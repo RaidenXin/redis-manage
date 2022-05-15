@@ -2,7 +2,9 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
 
+<?import java.lang.String?>
 <AnchorPane prefHeight="570.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisClusterDataTableController">
     <VBox prefHeight="570.0" prefWidth="800.0">
         <children>
@@ -10,19 +12,29 @@
                 <children>
                     <Label layoutX="33.0" layoutY="23.0" text="Key:" />
                     <TextField fx:id="searchKey" accessibleRole="TEXT_FIELD" layoutX="78.0" layoutY="18.0" prefHeight="25.0" prefWidth="322.0" />
-                    <Button fx:id="searchButton" layoutX="437.0" layoutY="18.0" mnemonicParsing="false" onAction="#search" prefHeight="25.0" prefWidth="70.0" text="搜索" />
+                    <Button fx:id="searchButton" layoutX="420.0" layoutY="18.0" mnemonicParsing="false" onAction="#search" prefHeight="25.0" prefWidth="70.0" text="搜索" />
+                    <CheckBox fx:id="isFuzzySearch" layoutX="513.0" layoutY="15.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" text="模糊查找" />
                 </children>
             </Pane>
             <TableView fx:id="table" prefHeight="460.0" prefWidth="800.0">
                 <columns>
                     <TableColumn fx:id="key" prefWidth="240.0" text="Key" />
-                    <TableColumn fx:id="value" prefWidth="565.0" text="Value" />
+                    <TableColumn fx:id="value" prefWidth="557.5" text="Value" />
                 </columns>
             </TableView>
             <Pane fx:id="bottomBar" prefHeight="60.0" prefWidth="800.0">
                 <children>
-                    <Button layoutX="304.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
-                    <Button layoutX="414.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
+                    <Button layoutX="240.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
+                    <Button layoutX="480.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
+                    <ComboBox fx:id="pageSize" layoutX="360.0" layoutY="17.0" prefHeight="25.0" prefWidth="80.0" value="20">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="20" />
+                                <String fx:value="50" />
+                                <String fx:value="100" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
                 </children>
             </Pane>
         </children>
