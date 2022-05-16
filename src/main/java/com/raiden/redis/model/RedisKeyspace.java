@@ -55,4 +55,14 @@ public class RedisKeyspace {
     public void setAvgTtl(int avgTtl) {
         this.avgTtl = avgTtl;
     }
+
+    @Override
+    public String toString() {
+        return "RedisKeyspace{" +
+                "keyspaceName='" + keyspaceName + '\'' +
+                ", keys=" + keys +
+                ", expires=" + expires +
+                ", avgTtl=" + avgTtl +
+                '}';
+    }
 }

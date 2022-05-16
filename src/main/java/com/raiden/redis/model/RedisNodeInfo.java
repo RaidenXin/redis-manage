@@ -14,7 +14,8 @@ public class RedisNodeInfo {
     private RedisPersistence persistence;
     private RedisStats stats;
     private ReidsReplication replication;
-    private int clusterEnabled;
+    private RedisCpuInfo cpu;
+    private RedisCluster cluster;
     private RedisKeyspace keyspace;
 
     public RedisServerInfo getServer() {
@@ -65,12 +66,20 @@ public class RedisNodeInfo {
         this.replication = replication;
     }
 
-    public int getClusterEnabled() {
-        return clusterEnabled;
+    public RedisCpuInfo getCpu() {
+        return cpu;
     }
 
-    public void setClusterEnabled(int clusterEnabled) {
-        this.clusterEnabled = clusterEnabled;
+    public void setCpu(RedisCpuInfo cpu) {
+        this.cpu = cpu;
+    }
+
+    public RedisCluster getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(RedisCluster cluster) {
+        this.cluster = cluster;
     }
 
     public RedisKeyspace getKeyspace() {
@@ -81,7 +90,18 @@ public class RedisNodeInfo {
         this.keyspace = keyspace;
     }
 
-    public static RedisNodeInfo build(String[] data) {
-        return null;
+    @Override
+    public String toString() {
+        return "RedisNodeInfo{" +
+                "server=" + server +
+                ", clients=" + clients +
+                ", memory=" + memory +
+                ", persistence=" + persistence +
+                ", stats=" + stats +
+                ", replication=" + replication +
+                ", cpu=" + cpu +
+                ", cluster=" + cluster +
+                ", keyspace=" + keyspace +
+                '}';
     }
 }

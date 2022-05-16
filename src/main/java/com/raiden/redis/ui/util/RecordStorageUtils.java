@@ -2,10 +2,11 @@ package com.raiden.redis.ui.util;
 
 import com.raiden.redis.ui.mode.Record;
 import javafx.scene.control.Alert;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public final class RecordStorageUtils {
 
     private static final Charset UTF_8 = Charset.forName("utf-8");
+    public static final Logger LOGGER = LogManager.getLogger(RecordStorageUtils.class);
 
     /**
      * 刷新并保存历史记录
@@ -36,22 +38,27 @@ public final class RecordStorageUtils {
                 records.stream()
                         .sorted(Comparator.comparing(Record::getName))
                         .forEach(r -> data.append(RecordSerializationUtils.encode(r)));
-                URL resource = RecordStorageUtils.class.getResource(path);
-                File file = new File(resource.getFile());
+                File file = new File(PathUtils.getRootPath() + path);
                 boolean exists = file.exists();
                 //如果存在就删除
                 if (exists){
                     file.delete();
+                }
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
                 }
                 //在创建一个就可以清空文件内容了
                 file.createNewFile();
                 try {
                     Files.write(file.toPath(), data.toString().getBytes(UTF_8), StandardOpenOption.WRITE);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.error("URL:{}", PathUtils.getRootPath() + path);
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         }catch (Exception e){
+            LOGGER.error("URL:{}", PathUtils.getRootPath() + path);
+            LOGGER.error(e.getMessage(), e);
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.showAndWait();
         }
@@ -69,11 +76,13 @@ public final class RecordStorageUtils {
                 records.stream()
                         .sorted(Comparator.comparing(Record::getName))
                         .forEach(r -> data.append(RecordSerializationUtils.encode(r)));
-                URL resource = RecordStorageUtils.class.getResource(path);
-                File file = new File(resource.getFile());
+                File file = new File(PathUtils.getRootPath() + path);
                 boolean exists = file.exists();
                 //如果不存在就创建一个
                 if (!exists){
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
+                    }
                     file.createNewFile();
                 }
                 try {
@@ -83,22 +92,30 @@ public final class RecordStorageUtils {
                 }
             }
         }catch (Exception e){
+            LOGGER.error("URL:{}", PathUtils.getRootPath() + path);
+            LOGGER.error(e.getMessage(), e);
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.showAndWait();
         }
     }
 
     public static final List<Record> getRecords(String path){
-        URL resource = RecordStorageUtils.class.getResource(path);
         try {
-            File file = new File(resource.getFile());
+            File file = new File(PathUtils.getRootPath() + path);
             if (file.exists()){
                 List<String> datas = Files.readAllLines(file.toPath(), UTF_8);
                 if (datas != null){
                     return datas.stream().map(RecordSerializationUtils::decoder).sorted(Comparator.comparing(Record::getName)).collect(Collectors.toList());
                 }
+            }else {
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                file.createNewFile();
             }
         } catch (IOException e) {
+            LOGGER.error("URL:{}", PathUtils.getRootPath() + path);
+            LOGGER.error(e.getMessage(), e);
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.showAndWait();
         }

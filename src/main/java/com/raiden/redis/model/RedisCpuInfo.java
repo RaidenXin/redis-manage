@@ -55,4 +55,14 @@ public class RedisCpuInfo {
     public void setUsedCpuUserChildren(double usedCpuUserChildren) {
         this.usedCpuUserChildren = usedCpuUserChildren;
     }
+
+    @Override
+    public String toString() {
+        return "RedisCpuInfo{" +
+                "usedCpuSys=" + usedCpuSys +
+                ", usedCpuUser=" + usedCpuUser +
+                ", usedCpuSysChildren=" + usedCpuSysChildren +
+                ", usedCpuUserChildren=" + usedCpuUserChildren +
+                '}';
+    }
 }

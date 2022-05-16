@@ -3,7 +3,7 @@ package com.raiden.redis.ui.controller;
 import com.raiden.redis.client.RedisClusterClient;
 import com.raiden.redis.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.common.AlertText;
-import com.raiden.redis.ui.common.PathData;
+import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.dao.RecordDao;
 import com.raiden.redis.ui.mode.Record;
 import com.raiden.redis.ui.mode.RedisClusterNode;
@@ -60,7 +60,7 @@ public class ReidsClusterController implements Initializable {
     private RecordDao recordDao;
 
     public ReidsClusterController(){
-        this.recordDao = new RecordDao(PathData.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
+        this.recordDao = new RecordDao(Path.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
     }
 
     public void connectionRedisCluster(){

@@ -76,4 +76,16 @@ public class RedisServerInfo {
     public void setUptimeInDays(String uptimeInDays) {
         this.uptimeInDays = uptimeInDays;
     }
+
+    @Override
+    public String toString() {
+        return "RedisServerInfo{" +
+                "redisVersion='" + redisVersion + '\'' +
+                ", redisMode='" + redisMode + '\'' +
+                ", runId='" + runId + '\'' +
+                ", tcpPort='" + tcpPort + '\'' +
+                ", uptimeInSeconds='" + uptimeInSeconds + '\'' +
+                ", uptimeInDays='" + uptimeInDays + '\'' +
+                '}';
+    }
 }

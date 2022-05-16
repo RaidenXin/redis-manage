@@ -167,5 +167,31 @@ public class ReidsReplication {
         public void setLag(int lag) {
             this.lag = lag;
         }
+
+        @Override
+        public String toString() {
+            return "RedisSlave{" +
+                    "ip='" + ip + '\'' +
+                    ", port=" + port +
+                    ", state='" + state + '\'' +
+                    ", offset='" + offset + '\'' +
+                    ", lag=" + lag +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "ReidsReplication{" +
+                "role='" + role + '\'' +
+                ", masterHost='" + masterHost + '\'' +
+                ", masterPort=" + masterPort +
+                ", connectedSlaves=" + connectedSlaves +
+                ", masterLinkStatus='" + masterLinkStatus + '\'' +
+                ", masterLastIoSecondsAgo=" + masterLastIoSecondsAgo +
+                ", masterSyncInProgress=" + masterSyncInProgress +
+                ", masterLinkDownSinceSeconds=" + masterLinkDownSinceSeconds +
+                ", slave=" + slave +
+                '}';
     }
 }

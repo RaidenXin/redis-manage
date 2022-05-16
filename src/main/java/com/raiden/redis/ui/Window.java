@@ -13,11 +13,13 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
 public class Window extends Application {
 
+    public static final Logger LOGGER = LogManager.getLogger(Window.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -25,6 +27,7 @@ public class Window extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        LOGGER.info("启动窗口！");
         //初始化FXML布局文件内容
         FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("window.fxml"));
         //父级

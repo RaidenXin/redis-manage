@@ -357,4 +357,39 @@ public class RedisPersistence {
     public void setLoadingEtaSeconds(int loadingEtaSeconds) {
         this.loadingEtaSeconds = loadingEtaSeconds;
     }
+
+    @Override
+    public String toString() {
+        return "RedisPersistence{" +
+                "loading=" + loading +
+                ", rdbChangesSinceLastSave=" + rdbChangesSinceLastSave +
+                ", rdb_bgsave_in_progress=" + rdb_bgsave_in_progress +
+                ", rdbLastSaveTime=" + rdbLastSaveTime +
+                ", rdbLastBgsaveStatus='" + rdbLastBgsaveStatus + '\'' +
+                ", rdbLastBgsaveTimeSec=" + rdbLastBgsaveTimeSec +
+                ", rdbCurrentBgsaveTimeSec=" + rdbCurrentBgsaveTimeSec +
+                ", aofEnabled=" + aofEnabled +
+                ", aofRewriteInProgress=" + aofRewriteInProgress +
+                ", aofRewriteScheduled=" + aofRewriteScheduled +
+                ", aofLastRewriteTimeSec=" + aofLastRewriteTimeSec +
+                ", aofCurrentRewriteTimeSec=" + aofCurrentRewriteTimeSec +
+                ", aofLastBgrewriteStatus='" + aofLastBgrewriteStatus + '\'' +
+                ", aofLastWriteStatus='" + aofLastWriteStatus + '\'' +
+                ", aofLastCowSize=" + aofLastCowSize +
+                ", moduleForkInProgress=" + moduleForkInProgress +
+                ", moduleForkLastCowSize=" + moduleForkLastCowSize +
+                ", aofCurrentSize=" + aofCurrentSize +
+                ", aofBaseSize=" + aofBaseSize +
+                ", aofPendingRewrite=" + aofPendingRewrite +
+                ", aofBufferLength=" + aofBufferLength +
+                ", aofRewriteBufferLength=" + aofRewriteBufferLength +
+                ", aofPendingBioFsync=" + aofPendingBioFsync +
+                ", aofDelayedFsync=" + aofDelayedFsync +
+                ", loadingStartTime=" + loadingStartTime +
+                ", loadingTotalBytes=" + loadingTotalBytes +
+                ", loadingstarttime=" + loadingstarttime +
+                ", loadingLoadedPerc='" + loadingLoadedPerc + '\'' +
+                ", loadingEtaSeconds=" + loadingEtaSeconds +
+                '}';
+    }
 }

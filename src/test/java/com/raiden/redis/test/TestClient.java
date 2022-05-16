@@ -1,41 +1,31 @@
 package com.raiden.redis.test;
 
+
 import com.raiden.redis.client.AbstractRedisClient;
 import com.raiden.redis.client.RedisClient;
 import com.raiden.redis.client.RedisClusterClient;
 import com.raiden.redis.client.RedisSingleClient;
+import com.raiden.redis.decoder.RedisNodeInfoDecoder;
 import com.raiden.redis.model.RedisClusterNodeInfo;
-import com.raiden.redis.pool.RedisSingleClientPool;
 import com.raiden.redis.pool.RedisClusterClientPool;
-import com.raiden.redis.ui.Window;
-import com.raiden.redis.ui.common.PathData;
+import com.raiden.redis.pool.RedisSingleClientPool;
+import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.mode.Record;
+import com.raiden.redis.ui.util.PathUtils;
 import com.raiden.redis.ui.util.RecordStorageUtils;
 import com.raiden.redis.utils.RedisClusterSlotUtil;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.ListView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.net.URL;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
-
 
 /**
  * @创建人:Raiden
@@ -44,6 +34,8 @@ import java.util.stream.Collectors;
  * @Modified By:
  */
 public class TestClient {
+
+    public static final Logger LOGGER = LogManager.getLogger(TestClient.class);
 
     @Test
     public void testRedisClient(){
@@ -104,7 +96,7 @@ public class TestClient {
     public void testSelect(){
         RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8013, 5);
         RedisClient client = redisClientPool.getClient();
-        System.err.println(client.info());
+        LOGGER.info(client.info());
     }
 
 
@@ -174,8 +166,30 @@ public class TestClient {
         Record record = Record.build(data);
         List<Record> records = new ArrayList<>(1);
         records.add(record);
-        RecordStorageUtils.refreshAndSaveRecords(records, PathData.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
-        records = RecordStorageUtils.getRecords(PathData.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
+        RecordStorageUtils.refreshAndSaveRecords(records, Path.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
+        records = RecordStorageUtils.getRecords(Path.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
         System.err.println(record);
+    }
+
+    /**
+     * 测试获取根目录
+     * @throws IOException
+     */
+    @Test
+    public void testPath() throws IOException {
+        String path = PathUtils.getRootPath();
+        LOGGER.error(path);
+    }
+
+
+    /**
+     * 测试下划线转驼峰
+     * @throws IOException
+     */
+    @Test
+    public void testLineToHump() {
+        String str = "used_cpu_user_main_thread";
+        String path = RedisNodeInfoDecoder.lineToHump(str);
+        LOGGER.error(path);
     }
 }

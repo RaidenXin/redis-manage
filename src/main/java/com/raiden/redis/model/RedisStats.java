@@ -235,4 +235,29 @@ public class RedisStats {
     public void setIoThreadedWritesProcessed(long ioThreadedWritesProcessed) {
         this.ioThreadedWritesProcessed = ioThreadedWritesProcessed;
     }
+
+    @Override
+    public String toString() {
+        return "RedisStats{" +
+                "totalConnectionsReceived=" + totalConnectionsReceived +
+                ", totalCommandsProcessed=" + totalCommandsProcessed +
+                ", instantaneousOpsPerSec=" + instantaneousOpsPerSec +
+                ", totalNetInputBytes=" + totalNetInputBytes +
+                ", totalNetOutputBytes=" + totalNetOutputBytes +
+                ", instantaneousInputKbps=" + instantaneousInputKbps +
+                ", instantaneousOutputKbps=" + instantaneousOutputKbps +
+                ", rejectedConnections=" + rejectedConnections +
+                ", expiredKeys=" + expiredKeys +
+                ", evictedKeys=" + evictedKeys +
+                ", keyspaceHits=" + keyspaceHits +
+                ", keyspaceMisses=" + keyspaceMisses +
+                ", pubsubChannels=" + pubsubChannels +
+                ", pubsubPatterns=" + pubsubPatterns +
+                ", latestForkUsec=" + latestForkUsec +
+                ", totalReadsProcessed=" + totalReadsProcessed +
+                ", totalWritesProcessed=" + totalWritesProcessed +
+                ", ioThreadedReadsProcessed=" + ioThreadedReadsProcessed +
+                ", ioThreadedWritesProcessed=" + ioThreadedWritesProcessed +
+                '}';
+    }
 }

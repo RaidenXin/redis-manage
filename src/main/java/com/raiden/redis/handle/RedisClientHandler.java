@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @ChannelHandler.Sharable
 public class RedisClientHandler extends ChannelDuplexHandler {
 
+
     private Lock lock;
     private Map<Channel, RedisResponse> response;
     private Map<Channel, Condition> conditions;

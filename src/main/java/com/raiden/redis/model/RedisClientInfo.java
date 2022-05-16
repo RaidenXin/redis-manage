@@ -55,4 +55,14 @@ public class RedisClientInfo {
     public void setBlockedClients(String blockedClients) {
         this.blockedClients = blockedClients;
     }
+
+    @Override
+    public String toString() {
+        return "RedisClientInfo{" +
+                "connectedClients='" + connectedClients + '\'' +
+                ", clientLongestOutputList='" + clientLongestOutputList + '\'' +
+                ", clientBiggestInputBuf='" + clientBiggestInputBuf + '\'' +
+                ", blockedClients='" + blockedClients + '\'' +
+                '}';
+    }
 }

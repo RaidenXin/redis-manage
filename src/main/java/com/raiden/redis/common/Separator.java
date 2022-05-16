@@ -13,4 +13,6 @@ public final class Separator {
     public static final String VERTICAL_BAR = "|";
 
     public static final String BLANK = " ";
+
+    public static final String COLON = ":";
 }

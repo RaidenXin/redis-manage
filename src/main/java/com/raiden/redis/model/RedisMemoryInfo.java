@@ -238,4 +238,28 @@ public class RedisMemoryInfo {
     public void setLazyfreePendingObjects(int lazyfreePendingObjects) {
         this.lazyfreePendingObjects = lazyfreePendingObjects;
     }
+
+    @Override
+    public String toString() {
+        return "RedisMemoryInfo{" +
+                "usedMemory=" + usedMemory +
+                ", usedMemoryHuman='" + usedMemoryHuman + '\'' +
+                ", usedMemoryRss=" + usedMemoryRss +
+                ", usedMemoryPeak=" + usedMemoryPeak +
+                ", usedMemoryPeakHuman='" + usedMemoryPeakHuman + '\'' +
+                ", usedMemoryLua=" + usedMemoryLua +
+                ", usedMemoryLuaHuman='" + usedMemoryLuaHuman + '\'' +
+                ", usedMemoryPeakPerc=" + usedMemoryPeakPerc +
+                ", usedMemoryOverhead=" + usedMemoryOverhead +
+                ", usedMemoryStartup=" + usedMemoryStartup +
+                ", usedMemoryDataset=" + usedMemoryDataset +
+                ", usedMemoryDatasetPerc='" + usedMemoryDatasetPerc + '\'' +
+                ", totalSystemMemoryHuman='" + totalSystemMemoryHuman + '\'' +
+                ", maxmemory=" + maxmemory +
+                ", maxmemoryHuman='" + maxmemoryHuman + '\'' +
+                ", memFragmentationRatio=" + memFragmentationRatio +
+                ", activeDefragRunning=" + activeDefragRunning +
+                ", lazyfreePendingObjects=" + lazyfreePendingObjects +
+                '}';
+    }
 }
