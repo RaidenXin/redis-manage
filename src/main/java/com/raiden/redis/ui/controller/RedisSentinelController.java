@@ -21,4 +21,12 @@ public class RedisSentinelController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         BeanContext.setBean(this.getClass().getName(), this);
     }
+
+    public void addRecord(){
+
+    }
+
+    public void clearInputField(){
+
+    }
 }

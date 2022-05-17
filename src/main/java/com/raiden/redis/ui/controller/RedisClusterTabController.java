@@ -77,7 +77,7 @@ public class RedisClusterTabController implements Initializable {
     }
 
     /**
-     * 切换成数据视图
+     * 切换成监控视图
      */
     public void switchingMonitoringViews(){
         if (monitoringView == null){
