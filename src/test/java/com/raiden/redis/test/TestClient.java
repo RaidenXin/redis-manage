@@ -7,6 +7,7 @@ import com.raiden.redis.client.RedisClusterClient;
 import com.raiden.redis.client.RedisSingleClient;
 import com.raiden.redis.decoder.RedisNodeInfoDecoder;
 import com.raiden.redis.model.RedisClusterNodeInfo;
+import com.raiden.redis.model.RedisNodeInfo;
 import com.raiden.redis.pool.RedisClusterClientPool;
 import com.raiden.redis.pool.RedisSingleClientPool;
 import com.raiden.redis.ui.common.Path;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -113,9 +115,10 @@ public class TestClient {
      */
     @Test
     public void testRedisAuth(){
-        RedisSingleClient redisClient = new RedisSingleClient("10.6.168.210",6379);
+        RedisSingleClient redisClient = new RedisSingleClient("redis.test.yiyaowang.com",6379);
         System.err.println(redisClient.auth("foobared"));
-        System.err.println(redisClient.info());
+        RedisNodeInfo info = redisClient.info();
+        System.err.println(info);
     }
 
     /**
@@ -191,5 +194,30 @@ public class TestClient {
         String str = "used_cpu_user_main_thread";
         String path = RedisNodeInfoDecoder.lineToHump(str);
         LOGGER.error(path);
+    }
+
+
+    /**
+     * 测试清除尾部字符串
+     * @throws IOException
+     */
+    @Test
+    public void testClearTheTrailingNumber() {
+        String str = "used_cpu_user_main_thread0000";
+        int count = RedisNodeInfoDecoder.countTheNumberOfTrailingDigits(str);
+        str = str.substring(0, str.length() - count);
+        LOGGER.error(count);
+        LOGGER.error(str);
+    }
+
+    /**
+     * 测试 String 转 Map
+     * @throws IOException
+     */
+    @Test
+    public void testString2Map() {
+        String value = "keys=19,expires=0,avg_ttl=0";
+        Map<String, Object> stringObjectMap = RedisNodeInfoDecoder.string2Map(value);
+        LOGGER.error(stringObjectMap);
     }
 }

@@ -121,12 +121,21 @@ public class ReidsReplication {
         this.slave = slave;
     }
 
-    protected static class RedisSlave{
+    public static class RedisSlave{
+        private String name;
         private String ip;
         private int port;
         private String state;
         private String offset;
         private int lag;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public String getIp() {
             return ip;

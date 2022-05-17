@@ -6,7 +6,7 @@ import java.io.File;
  * @创建人:Raiden
  * @Descriotion:
  * @Date:Created in 10:55 2022/5/15
- * @Modified By:
+ * @Modified By: 记录路径资源
  */
 public final class Path {
     private static final String ROOT_PATH = File.separator + "data" + File.separator;

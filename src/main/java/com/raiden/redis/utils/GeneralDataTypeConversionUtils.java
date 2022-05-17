@@ -30,7 +30,7 @@ public final class GeneralDataTypeConversionUtils {
         FUNCTION_MAP.put(Double.class, dubboValueOf);
     }
 
-    public static <T> T conversion(Class<T> clazz,String value){
+    public static <T> T conversion(Class<T> clazz,Object value){
         Function function = FUNCTION_MAP.get(clazz);
         if (function != null){
             return (T) function.apply(value);

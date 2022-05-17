@@ -1,5 +1,7 @@
 package com.raiden.redis.model;
 
+import java.util.List;
+
 /**
  * @创建人:Raiden
  * @Descriotion:
@@ -7,62 +9,82 @@ package com.raiden.redis.model;
  * @Modified By:
  */
 public class RedisKeyspace {
-    /**
-     * 仓库名称
-     */
-    private String keyspaceName;
-    /**
-     *  Key数量
-     */
-    private int keys;
-    /**
-     * 过期时间个数
-     */
-    private int expires;
-    /**
-     * 设置生存时间键的平均寿命
-     */
-    private int avgTtl;
+    private List<RedisDB> db;
 
-    public String getKeyspaceName() {
-        return keyspaceName;
+    public List<RedisDB> getDb() {
+        return db;
     }
 
-    public void setKeyspaceName(String keyspaceName) {
-        this.keyspaceName = keyspaceName;
-    }
-
-    public int getKeys() {
-        return keys;
-    }
-
-    public void setKeys(int keys) {
-        this.keys = keys;
-    }
-
-    public int getExpires() {
-        return expires;
-    }
-
-    public void setExpires(int expires) {
-        this.expires = expires;
-    }
-
-    public int getAvgTtl() {
-        return avgTtl;
-    }
-
-    public void setAvgTtl(int avgTtl) {
-        this.avgTtl = avgTtl;
+    public void setDb(List<RedisDB> db) {
+        this.db = db;
     }
 
     @Override
     public String toString() {
         return "RedisKeyspace{" +
-                "keyspaceName='" + keyspaceName + '\'' +
-                ", keys=" + keys +
-                ", expires=" + expires +
-                ", avgTtl=" + avgTtl +
+                "db=" + db +
                 '}';
     }
+
+    public static class RedisDB {
+        /**
+         * 仓库名称
+         */
+        private String name;
+        /**
+         *  Key数量
+         */
+        private int keys;
+        /**
+         * 过期时间个数
+         */
+        private int expires;
+        /**
+         * 设置生存时间键的平均寿命
+         */
+        private int avgTtl;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getKeys() {
+            return keys;
+        }
+
+        public void setKeys(int keys) {
+            this.keys = keys;
+        }
+
+        public int getExpires() {
+            return expires;
+        }
+
+        public void setExpires(int expires) {
+            this.expires = expires;
+        }
+
+        public int getAvgTtl() {
+            return avgTtl;
+        }
+
+        public void setAvgTtl(int avgTtl) {
+            this.avgTtl = avgTtl;
+        }
+
+        @Override
+        public String toString() {
+            return "RedisDB{" +
+                    "name='" + name + '\'' +
+                    ", keys=" + keys +
+                    ", expires=" + expires +
+                    ", avgTtl=" + avgTtl +
+                    '}';
+        }
+    }
+
 }

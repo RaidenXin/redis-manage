@@ -5,6 +5,7 @@ import com.raiden.redis.core.RedisClientInitializer;
 import com.raiden.redis.handle.RedisClientHandler;
 import com.raiden.redis.model.RedisNodeInfo;
 import com.raiden.redis.pool.RedisClientPool;
+import com.raiden.redis.ui.Window;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -12,8 +13,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class AbstractRedisClient implements RedisClient{
+
+    public static final Logger LOGGER = LogManager.getLogger(AbstractRedisClient.class);
 
     private static final String SUCCESS = "OK";
 
@@ -83,6 +88,7 @@ public abstract class AbstractRedisClient implements RedisClient{
 
     public RedisNodeInfo info(){
         String response = sendCommands(RedisCommand.INFO);
+        LOGGER.error(response);
         return RedisDecoder.redisNodesDecoder(response);
     }
 

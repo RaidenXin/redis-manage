@@ -15,4 +15,8 @@ public final class Separator {
     public static final String BLANK = " ";
 
     public static final String COLON = ":";
+
+    public static final String COMMA = ",";
+
+    public static final String EQUALS_SIGN = "=";
 }
