@@ -123,6 +123,14 @@ public class ReidsClusterController implements Initializable {
         recordItem.setPort(Integer.parseInt(port));
         recordItem.setPassword(password.getText());
         ObservableList items = record.getItems();
+        recordItem.setOperation(getRecordActionButton(items, recordItem));
+        items.add(recordItem);
+        items.stream().sorted(Comparator.comparing(Record::getName));
+        saveRecord();
+    }
+
+    private Button[] getRecordActionButton(ObservableList items ,Record recordItem){
+        Button[] result = new Button[2];
         Button delete = new Button("删除");
         // 对data操作即对表格操作，会同步更新的
         delete.setOnAction((event) ->{
@@ -131,6 +139,8 @@ public class ReidsClusterController implements Initializable {
             //再触发刷新并保存机制
             refreshAndSaveRecords();
         });
+        result[0] = delete;
+        delete.setPrefWidth(40.0D);
         Button use = new Button("使用");
         // 对data操作即对表格操作，会同步更新的
         use.setOnAction((event) ->{
@@ -146,10 +156,10 @@ public class ReidsClusterController implements Initializable {
                 this.password.setText(StringUtils.EMPTY);
             }
         });
-        recordItem.setOperation(delete, use);
-        items.add(recordItem);
-        items.stream().sorted(Comparator.comparing(Record::getName));
-        saveRecord();
+        use.setLayoutX(44.0D);
+        use.setPrefWidth(40.0D);
+        result[1] = use;
+        return result;
     }
 
     public void clearInputField(){
@@ -203,30 +213,7 @@ public class ReidsClusterController implements Initializable {
         ObservableList items = record.getItems();
         List<Record> records = recordDao.getRecords();
         records.forEach(r -> {
-            Button use = new Button("使用");
-            // 对data操作即对表格操作，会同步更新的
-            use.setOnAction((event) ->{
-                name.setText(r.getName());
-                clusterHost.setText(r.getHost());
-                clusterPort.setText(String.valueOf(r.getPort()));
-                String password = r.getPassword();
-                if (StringUtils.isNotBlank(password)){
-                    isVerification.setSelected(true);
-                    this.password.setText(password);
-                }else {
-                    isVerification.setSelected(false);
-                    this.password.setText(StringUtils.EMPTY);
-                }
-            });
-            Button delete = new Button("删除");
-            // 对data操作即对表格操作，会同步更新的
-            delete.setOnAction((event) ->{
-                // 删除元素
-                items.remove(r);
-                //再触发刷新并保存机制
-                refreshAndSaveRecords();
-            });
-            r.setOperation(delete, use);
+            r.setOperation(getRecordActionButton(items, r));
             items.add(r);
         });
         BeanContext.setBean(this.getClass().getName(), this);

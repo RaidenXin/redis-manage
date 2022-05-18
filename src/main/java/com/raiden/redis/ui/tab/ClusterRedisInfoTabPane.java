@@ -11,6 +11,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.*;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
  * @Modified By:
  */
 public class ClusterRedisInfoTabPane {
+
+    private static final Logger LOGGER = LogManager.getLogger(ClusterRedisInfoTabPane.class);
 
     //初始化缓存 用来记录 已经初始化的 Tab
     private volatile Map<String, RedisClusterTabController> initCache;
@@ -61,6 +65,7 @@ public class ClusterRedisInfoTabPane {
                     }
                     return tab;
                 } catch (IOException e) {
+                    LOGGER.error(e.getMessage(), e);
                     return null;
                 }
             }).filter(Objects::nonNull).collect(Collectors.toList());

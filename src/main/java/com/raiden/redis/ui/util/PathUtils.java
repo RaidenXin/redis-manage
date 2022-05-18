@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public final class PathUtils {
 
-    public static final Logger LOGGER = LogManager.getLogger(PathUtils.class);
+    private static final Logger LOGGER = LogManager.getLogger(PathUtils.class);
 
     private static final String UTF_8 = "UTF-8";
 

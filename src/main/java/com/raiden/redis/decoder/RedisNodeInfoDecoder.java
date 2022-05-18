@@ -24,7 +24,7 @@ public final class RedisNodeInfoDecoder {
 
     private static final String NAME = "name";
 
-    public static final Logger LOGGER = LogManager.getLogger(Window.class);
+    private static final Logger LOGGER = LogManager.getLogger(Window.class);
 
     public static final RedisNodeInfo decoder(String[] datum){
         RedisNodeInfo redisNodeInfo = new RedisNodeInfo();

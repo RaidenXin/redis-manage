@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.collections.FXCollections?>
 
-<?import java.lang.String?>
-<AnchorPane prefHeight="570.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisClusterDataTableController">
-    <VBox prefHeight="570.0" prefWidth="800.0">
+<AnchorPane prefHeight="970.0" prefWidth="931.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisClusterDataTableController">
+    <VBox prefHeight="970.0" prefWidth="931.0">
         <children>
             <Pane fx:id="searchPane" prefHeight="60.0" prefWidth="800.0">
                 <children>
@@ -16,17 +16,17 @@
                     <CheckBox fx:id="isFuzzySearch" layoutX="513.0" layoutY="15.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" text="模糊查找" />
                 </children>
             </Pane>
-            <TableView fx:id="table" prefHeight="460.0" prefWidth="800.0">
+            <TableView fx:id="table" prefHeight="851.0" prefWidth="1083.0">
                 <columns>
-                    <TableColumn fx:id="key" prefWidth="240.0" text="Key" />
-                    <TableColumn fx:id="value" prefWidth="557.5" text="Value" />
+                    <TableColumn fx:id="key" prefWidth="260.0" text="Key" />
+                    <TableColumn fx:id="value" prefWidth="670.0" text="Value" />
                 </columns>
             </TableView>
             <Pane fx:id="bottomBar" prefHeight="60.0" prefWidth="800.0">
                 <children>
-                    <Button layoutX="240.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
-                    <Button layoutX="480.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
-                    <ComboBox fx:id="pageSize" layoutX="360.0" layoutY="17.0" prefHeight="25.0" prefWidth="80.0" value="20">
+                    <Button layoutX="156.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
+                    <Button layoutX="556.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
+                    <ComboBox fx:id="pageSize" layoutX="356.0" layoutY="18.0" prefHeight="25.0" prefWidth="80.0" value="20">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="20" />

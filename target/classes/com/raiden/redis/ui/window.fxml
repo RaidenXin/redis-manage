@@ -3,16 +3,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1350.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisController">
+<AnchorPane prefHeight="1000.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisController">
    <children>
-      <Accordion prefHeight="600.0" prefWidth="400.0">
+      <Accordion prefHeight="1000.0" prefWidth="415.0">
         <panes>
             <fx:include source="single_point_titled_pane.fxml" />
             <fx:include source="sentinel_titled_pane.fxml" />
             <fx:include source="cluster_titled_pane.fxml" />
         </panes>
       </Accordion>
-      <Pane fx:id="redisDataPage" layoutX="400.0" prefHeight="600.0" prefWidth="950.0">
+      <Pane fx:id="redisDataPage" layoutX="417.0" prefHeight="1000.0" prefWidth="1083.0">
          <children>
          </children>
       </Pane>

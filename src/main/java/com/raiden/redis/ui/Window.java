@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class Window extends Application {
 
-    public static final Logger LOGGER = LogManager.getLogger(Window.class);
+    private static final Logger LOGGER = LogManager.getLogger(Window.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -36,7 +36,7 @@ public class Window extends Application {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(root);
 
-        Scene scene = new Scene(stackPane, 1350, 600);
+        Scene scene = new Scene(stackPane, 1500, 1000);
         stage.setTitle("Redis");
         stage.getIcons().add(new Image("/icon/redis.jpg"));
         stage.setScene(scene);

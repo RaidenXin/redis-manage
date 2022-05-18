@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class AbstractRedisClient implements RedisClient{
 
-    public static final Logger LOGGER = LogManager.getLogger(AbstractRedisClient.class);
+    private static final Logger LOGGER = LogManager.getLogger(AbstractRedisClient.class);
 
     private static final String SUCCESS = "OK";
 

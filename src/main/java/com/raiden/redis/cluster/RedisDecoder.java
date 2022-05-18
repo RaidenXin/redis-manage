@@ -16,14 +16,15 @@ public final class RedisDecoder {
     public static final String LINE_BREAK = "\r\n";
 
     public static RedisNodeInfo redisNodesDecoder(String response){
+        RedisNodeInfo info = new RedisNodeInfo();
         if (StringUtils.isBlank(response)){
-            return null;
+            return info;
         }else {
             String[] lines = StringUtils.split(response, LINE_BREAK);
             if (lines.length > 0){
                 return RedisNodeInfoDecoder.decoder(lines);
             }else {
-                return null;
+                return info;
             }
         }
     }

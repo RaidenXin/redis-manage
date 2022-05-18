@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public final class RecordStorageUtils {
 
     private static final Charset UTF_8 = Charset.forName("utf-8");
-    public static final Logger LOGGER = LogManager.getLogger(RecordStorageUtils.class);
+    private static final Logger LOGGER = LogManager.getLogger(RecordStorageUtils.class);
 
     /**
      * 刷新并保存历史记录

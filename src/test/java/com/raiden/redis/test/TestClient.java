@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 public class TestClient {
 
-    public static final Logger LOGGER = LogManager.getLogger(TestClient.class);
+    private static final Logger LOGGER = LogManager.getLogger(TestClient.class);
 
     @Test
     public void testRedisClient(){
