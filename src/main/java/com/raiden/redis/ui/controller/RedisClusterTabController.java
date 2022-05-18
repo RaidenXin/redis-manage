@@ -86,9 +86,12 @@ public class RedisClusterTabController{
         if (monitoringView == null){
             try {
                 //初始化监控视图
-                FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_server_info_view.fxml"));
+                FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_monitoring_info_view.fxml"));
                 monitoringView = loader.load();
+                RedisMonitoringInfoController controller = loader.getController();
+                controller.init(redisNode);
             }catch (Exception e){
+                LOGGER.error(e.getMessage(), e);
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
             }

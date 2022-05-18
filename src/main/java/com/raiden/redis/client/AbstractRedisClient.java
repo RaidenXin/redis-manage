@@ -88,7 +88,6 @@ public abstract class AbstractRedisClient implements RedisClient{
 
     public RedisNodeInfo info(){
         String response = sendCommands(RedisCommand.INFO);
-        LOGGER.error(response);
         return RedisDecoder.redisNodesDecoder(response);
     }
 

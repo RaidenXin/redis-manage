@@ -19,6 +19,9 @@ public class RedisServerInfo {
      *  Redis 服务器的随机标识符（用于 Sentinel 和集群）
      */
     private String runId;
+    /**
+     * TCP/IP 监听端口
+     */
     private String tcpPort;
     /**
      * 自 Redis 服务器启动以来，经过的秒数

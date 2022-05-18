@@ -12,6 +12,14 @@ public class RedisClientInfo {
      */
     private String connectedClients;
     /**
+     * 集群之间通讯使用的连接数
+     */
+    private String clusterConnections;
+    /**
+     * 最大客户端连接数
+     */
+    private String maxclients;
+    /**
      * 当前连接的客户端当中，最长的输出列表
      */
     private String clientLongestOutputList;
@@ -23,6 +31,14 @@ public class RedisClientInfo {
      * 正在等待阻塞命令（BLPOP、BRPOP、BRPOPLPUSH）的客户端的数量
      */
     private String blockedClients;
+    /**
+     * 被跟踪的客户数量
+     */
+    private String trackingClients;
+    /**
+     * 客户端超时表中的客户端数量
+     */
+    private String clientsInTimeoutTable;
 
     public String getConnectedClients() {
         return connectedClients;
@@ -30,6 +46,14 @@ public class RedisClientInfo {
 
     public void setConnectedClients(String connectedClients) {
         this.connectedClients = connectedClients;
+    }
+
+    public String getClusterConnections() {
+        return clusterConnections;
+    }
+
+    public void setClusterConnections(String clusterConnections) {
+        this.clusterConnections = clusterConnections;
     }
 
     public String getClientLongestOutputList() {
@@ -56,13 +80,41 @@ public class RedisClientInfo {
         this.blockedClients = blockedClients;
     }
 
+    public String getMaxclients() {
+        return maxclients;
+    }
+
+    public void setMaxclients(String maxclients) {
+        this.maxclients = maxclients;
+    }
+
+    public String getTrackingClients() {
+        return trackingClients;
+    }
+
+    public void setTrackingClients(String trackingClients) {
+        this.trackingClients = trackingClients;
+    }
+
+    public String getClientsInTimeoutTable() {
+        return clientsInTimeoutTable;
+    }
+
+    public void setClientsInTimeoutTable(String clientsInTimeoutTable) {
+        this.clientsInTimeoutTable = clientsInTimeoutTable;
+    }
+
     @Override
     public String toString() {
         return "RedisClientInfo{" +
                 "connectedClients='" + connectedClients + '\'' +
+                ", clusterConnections='" + clusterConnections + '\'' +
+                ", maxclients='" + maxclients + '\'' +
                 ", clientLongestOutputList='" + clientLongestOutputList + '\'' +
                 ", clientBiggestInputBuf='" + clientBiggestInputBuf + '\'' +
                 ", blockedClients='" + blockedClients + '\'' +
+                ", trackingClients='" + trackingClients + '\'' +
+                ", clientsInTimeoutTable='" + clientsInTimeoutTable + '\'' +
                 '}';
     }
 }
