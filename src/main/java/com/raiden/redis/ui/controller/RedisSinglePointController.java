@@ -1,13 +1,8 @@
 package com.raiden.redis.ui.controller;
 
-import com.raiden.redis.client.RedisClient;
-import com.raiden.redis.client.RedisClusterClient;
-import com.raiden.redis.client.RedisSingleClient;
-import com.raiden.redis.model.RedisClusterNodeInfo;
+import com.raiden.redis.net.client.RedisClient;
+import com.raiden.redis.net.client.RedisSingleClient;
 import com.raiden.redis.ui.common.AlertText;
-import com.raiden.redis.ui.mode.RedisClusterNode;
-import com.raiden.redis.ui.mode.RedisNode;
-import com.raiden.redis.ui.tab.ClusterRedisInfoTabPane;
 import com.raiden.redis.ui.tab.SingleRedisInfoTabPane;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -16,9 +11,7 @@ import javafx.scene.control.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 /**
  * @创建人:Raiden

@@ -1,7 +1,7 @@
 package com.raiden.redis.ui.controller;
 
-import com.raiden.redis.client.RedisClient;
-import com.raiden.redis.client.RedisClusterClient;
+import com.raiden.redis.net.client.RedisClient;
+import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.ui.mode.RedisDataItem;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;

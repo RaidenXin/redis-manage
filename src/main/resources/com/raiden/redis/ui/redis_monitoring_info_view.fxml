@@ -12,7 +12,7 @@
                 <content>
                 </content>
             </Tab>
-            <Tab fx:id="client" text="Redis数据仓库信息">
+            <Tab fx:id="client" text="Redis统计信息">
                 <content>
                 </content>
             </Tab>

@@ -1,6 +1,6 @@
 package com.raiden.redis.ui.util;
 
-import com.raiden.redis.common.Separator;
+import com.raiden.redis.net.common.Separator;
 import com.raiden.redis.ui.mode.Record;
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,7 +1,6 @@
 package com.raiden.redis.ui.page.impl;
 
-import com.raiden.redis.client.RedisClient;
-import com.raiden.redis.ui.common.ProjectValues;
+import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.page.IPageService;
 import javafx.geometry.Pos;

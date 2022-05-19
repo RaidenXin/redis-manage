@@ -1,8 +1,8 @@
 package com.raiden.redis.ui.controller;
 
-import com.raiden.redis.client.RedisClient;
-import com.raiden.redis.model.RedisKeyspace;
-import com.raiden.redis.model.RedisNodeInfo;
+import com.raiden.redis.net.client.RedisClient;
+import com.raiden.redis.net.model.RedisKeyspace;
+import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.ui.Window;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.collections.ObservableList;

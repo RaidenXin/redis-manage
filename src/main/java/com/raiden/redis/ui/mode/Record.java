@@ -1,9 +1,8 @@
 package com.raiden.redis.ui.mode;
 
-import com.raiden.redis.common.Separator;
+import com.raiden.redis.net.common.Separator;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import org.apache.commons.lang3.StringUtils;
 
 /**

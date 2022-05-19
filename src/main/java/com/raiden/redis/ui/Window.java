@@ -5,8 +5,10 @@ package com.raiden.redis.ui;/**
  * @Modified By:
  */
 
+import com.raiden.redis.core.common.TaskProcessingCenter;
 import com.raiden.redis.ui.util.RedisUtils;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -35,7 +37,6 @@ public class Window extends Application {
 
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(root);
-
         Scene scene = new Scene(stackPane, 1500, 1000);
         stage.setTitle("Redis");
         stage.getIcons().add(new Image("/icon/redis.jpg"));
@@ -47,6 +48,7 @@ public class Window extends Application {
 
     public void stop() throws Exception {
         RedisUtils.shutDown();
+        TaskProcessingCenter.shutDown();
         System.err.println("关闭了！！！！！！！！！！！！！！！！！！！！");
     }
 }

@@ -1,6 +1,6 @@
 package com.raiden.redis.ui.mode;
 
-import com.raiden.redis.client.RedisClient;
+import com.raiden.redis.net.client.RedisClient;
 
 /**
  * @创建人:Raiden

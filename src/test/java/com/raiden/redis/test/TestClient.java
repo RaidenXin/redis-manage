@@ -1,20 +1,20 @@
 package com.raiden.redis.test;
 
 
-import com.raiden.redis.client.AbstractRedisClient;
-import com.raiden.redis.client.RedisClient;
-import com.raiden.redis.client.RedisClusterClient;
-import com.raiden.redis.client.RedisSingleClient;
-import com.raiden.redis.decoder.RedisNodeInfoDecoder;
-import com.raiden.redis.model.RedisClusterNodeInfo;
-import com.raiden.redis.model.RedisNodeInfo;
-import com.raiden.redis.pool.RedisClusterClientPool;
-import com.raiden.redis.pool.RedisSingleClientPool;
+import com.raiden.redis.net.client.AbstractRedisClient;
+import com.raiden.redis.net.client.RedisClient;
+import com.raiden.redis.net.client.RedisClusterClient;
+import com.raiden.redis.net.client.RedisSingleClient;
+import com.raiden.redis.net.decoder.RedisNodeInfoDecoder;
+import com.raiden.redis.net.model.RedisClusterNodeInfo;
+import com.raiden.redis.net.model.RedisNodeInfo;
+import com.raiden.redis.net.pool.RedisClusterClientPool;
+import com.raiden.redis.net.pool.RedisSingleClientPool;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.mode.Record;
 import com.raiden.redis.ui.util.PathUtils;
 import com.raiden.redis.ui.util.RecordStorageUtils;
-import com.raiden.redis.utils.RedisClusterSlotUtil;
+import com.raiden.redis.net.utils.RedisClusterSlotUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -96,7 +96,7 @@ public class TestClient {
      */
     @Test
     public void testSelect(){
-        RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8013, 5);
+        RedisClusterClientPool redisClientPool = new RedisClusterClientPool("127.0.0.1",8011, 5);
         RedisClient client = redisClientPool.getClient();
         LOGGER.info(client.info());
     }
