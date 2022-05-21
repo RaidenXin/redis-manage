@@ -1,5 +1,7 @@
 package com.raiden.redis.net.model;
 
+import java.time.LocalDateTime;
+
 /**
  * @创建人:Raiden
  * @Descriotion:
@@ -17,6 +19,11 @@ public class RedisNodeInfo {
     private RedisCpuInfo cpu;
     private RedisCluster cluster;
     private RedisKeyspace keyspace;
+    private long timeStamp;
+
+    public RedisNodeInfo(){
+        this.timeStamp = System.currentTimeMillis() / 1000;
+    }
 
     public RedisServerInfo getServer() {
         return server;
@@ -88,6 +95,14 @@ public class RedisNodeInfo {
 
     public void setKeyspace(RedisKeyspace keyspace) {
         this.keyspace = keyspace;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long now) {
+        this.timeStamp = now;
     }
 
     @Override

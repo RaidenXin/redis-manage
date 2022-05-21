@@ -7,14 +7,18 @@ import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.client.RedisSingleClient;
 import com.raiden.redis.net.decoder.RedisNodeInfoDecoder;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
+import com.raiden.redis.net.model.RedisCpuInfo;
 import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.net.pool.RedisClusterClientPool;
 import com.raiden.redis.net.pool.RedisSingleClientPool;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.mode.Record;
+import com.raiden.redis.ui.queue.CircularFifoQueue;
 import com.raiden.redis.ui.util.PathUtils;
 import com.raiden.redis.ui.util.RecordStorageUtils;
 import com.raiden.redis.net.utils.RedisClusterSlotUtil;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.CategoryAxis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -27,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -118,7 +123,6 @@ public class TestClient {
         RedisSingleClient redisClient = new RedisSingleClient("redis.test.yiyaowang.com",6379);
         System.err.println(redisClient.auth("foobared"));
         RedisNodeInfo info = redisClient.info();
-        System.err.println(info);
     }
 
     /**
@@ -155,8 +159,10 @@ public class TestClient {
      */
     @Test
     public void testRedisScanMatchCommand(){
-        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-        System.err.println(Arrays.toString(redisClient.scanMatch("0", "aaa*","20")));
+        for (int i = 0; i < 20; i++) {
+            RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+            System.err.println(Arrays.toString(redisClient.scanMatch("0", "aaa*","20")));
+        }
     }
 
     /**
@@ -219,5 +225,42 @@ public class TestClient {
         String value = "keys=19,expires=0,avg_ttl=0";
         Map<String, Object> stringObjectMap = RedisNodeInfoDecoder.string2Map(value);
         LOGGER.error(stringObjectMap);
+    }
+
+    @Test
+    public void testCircularFifoQueue(){
+        CircularFifoQueue<Integer> queue = new CircularFifoQueue<>(10);
+        for (int i = 0; i < 100; i++) {
+            queue.add(i);
+            if (i % 5 == 0){
+                System.err.println(queue.getAll());
+            }
+        }
+    }
+
+    @Test
+    public void testUsageRate() throws InterruptedException {
+        RedisSingleClient redisClient = new RedisSingleClient("redis.test.yiyaowang.com",6379);
+        System.err.println(redisClient.auth("foobared"));
+        RedisNodeInfo beforeInfo = redisClient.info();
+        RedisCpuInfo beforeCpu = beforeInfo.getCpu();
+        TimeUnit.SECONDS.sleep(5);
+        System.err.println(redisClient.auth("foobared"));
+        RedisNodeInfo nowInfo = redisClient.info();
+        RedisCpuInfo cpu = nowInfo.getCpu();
+        LOGGER.info(usageRate(cpu.getUsedCpuSys(), beforeCpu.getUsedCpuSys(), nowInfo.getTimeStamp(), beforeInfo.getTimeStamp()));
+    }
+
+
+    private double usageRate(double now,double before,long nowTimeStamp,long beforeTimeStamp){
+        return (now - before) / (nowTimeStamp - beforeTimeStamp) * 100D;
+    }
+
+    @Test
+    public void testSet() throws InterruptedException {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        for (int i = 0; i < 1000; i++) {
+            redisClient.set("aaa", String.valueOf(i));
+        }
     }
 }
