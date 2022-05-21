@@ -44,6 +44,10 @@ public class RedisStats {
      */
     private long expiredKeys;
     /**
+     * key过期的比率
+     */
+    private double expiredStalePerc;
+    /**
      *  由于maxmemory限制而导致被驱逐的key的数量
      */
     private long evictedKeys;
@@ -83,6 +87,20 @@ public class RedisStats {
      * 主线程和I / O线程处理的写事件数
      */
     private long ioThreadedWritesProcessed;
+    /**
+     * 主从完全同步成功次数
+     */
+    private long syncFull;
+    /**
+     * 从部分同步成功次数
+     */
+    private long syncPartialOk;
+    /**
+     * 主从部分同步失败次数
+     */
+    private long syncPartialErr;
+
+
 
     public long getTotalConnectionsReceived() {
         return totalConnectionsReceived;
@@ -154,6 +172,14 @@ public class RedisStats {
 
     public void setExpiredKeys(long expiredKeys) {
         this.expiredKeys = expiredKeys;
+    }
+
+    public double getExpiredStalePerc() {
+        return expiredStalePerc;
+    }
+
+    public void setExpiredStalePerc(double expiredStalePerc) {
+        this.expiredStalePerc = expiredStalePerc;
     }
 
     public long getEvictedKeys() {
@@ -236,6 +262,30 @@ public class RedisStats {
         this.ioThreadedWritesProcessed = ioThreadedWritesProcessed;
     }
 
+    public long getSyncFull() {
+        return syncFull;
+    }
+
+    public void setSyncFull(long syncFull) {
+        this.syncFull = syncFull;
+    }
+
+    public long getSyncPartialOk() {
+        return syncPartialOk;
+    }
+
+    public void setSyncPartialOk(long syncPartialOk) {
+        this.syncPartialOk = syncPartialOk;
+    }
+
+    public long getSyncPartialErr() {
+        return syncPartialErr;
+    }
+
+    public void setSyncPartialErr(long syncPartialErr) {
+        this.syncPartialErr = syncPartialErr;
+    }
+
     @Override
     public String toString() {
         return "RedisStats{" +
@@ -248,6 +298,7 @@ public class RedisStats {
                 ", instantaneousOutputKbps=" + instantaneousOutputKbps +
                 ", rejectedConnections=" + rejectedConnections +
                 ", expiredKeys=" + expiredKeys +
+                ", expiredStalePerc=" + expiredStalePerc +
                 ", evictedKeys=" + evictedKeys +
                 ", keyspaceHits=" + keyspaceHits +
                 ", keyspaceMisses=" + keyspaceMisses +
@@ -258,6 +309,9 @@ public class RedisStats {
                 ", totalWritesProcessed=" + totalWritesProcessed +
                 ", ioThreadedReadsProcessed=" + ioThreadedReadsProcessed +
                 ", ioThreadedWritesProcessed=" + ioThreadedWritesProcessed +
+                ", sync_full=" + syncFull +
+                ", sync_partial_ok=" + syncPartialOk +
+                ", sync_partial_err=" + syncPartialErr +
                 '}';
     }
 }

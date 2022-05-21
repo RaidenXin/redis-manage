@@ -68,7 +68,15 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.GET, key);
     }
 
-    public String[] scan(String startIndex,String limit){
+    @Override
+    public String debugObject(String key) {
+        if (StringUtils.isBlank(key)){
+            throw new NullPointerException("key is null");
+        }
+        return sendCommands(RedisCommand.DEBUG, RedisCommand.Debug.OBJECT, key);
+    }
+
+    public String[] scan(String startIndex, String limit){
         return sendCommands(RedisCommand.SCAN, startIndex,RedisCommand.Scan.COUNT, limit);
     }
 
@@ -126,6 +134,7 @@ public abstract class AbstractRedisClient implements RedisClient{
             //如果不是池化对象 关闭时关闭连接
             if (channel != null && channel.isActive()){
                 try {
+                    sendCommands(RedisCommand.QUIT);
                     channel.close();
                 }catch (Exception e){
                 }
@@ -155,8 +164,13 @@ public abstract class AbstractRedisClient implements RedisClient{
         public static final String MGET = "MGET";
         public static final String AUTH = "AUTH";
         public static final String MEMORY = "MEMORY";
+        //关闭连接退出
+        public static final String QUIT = "QUIT";
         //集群
         public static final String CLUSTER  = "CLUSTER";
+
+        //Debug
+        public static final String DEBUG  = "DEBUG";
 
         protected static class Memory{
             public static final String USAGE = "USAGE";
@@ -165,6 +179,10 @@ public abstract class AbstractRedisClient implements RedisClient{
         protected static class Scan{
             public static final String COUNT = "COUNT";
             public static final String MATCH = "MATCH";
+        }
+
+        protected static class Debug {
+            public static final String OBJECT = "OBJECT";
         }
     }
 }

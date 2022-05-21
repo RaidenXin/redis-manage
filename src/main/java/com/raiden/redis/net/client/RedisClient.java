@@ -22,6 +22,8 @@ public interface RedisClient {
 
     String select(String index);
 
+    String debugObject(String key);
+
     boolean auth(String password);
 
     RedisNodeInfo info();

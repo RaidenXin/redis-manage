@@ -22,7 +22,7 @@
             <AnchorPane fx:id="totalNumberProcessedEvents" prefHeight="462.0" prefWidth="467.0" GridPane.columnIndex="2" />
             <AnchorPane fx:id="keyspace" prefHeight="462.0" prefWidth="467.0" GridPane.rowIndex="1" />
             <AnchorPane fx:id="totalNetworkTrafficViews" prefHeight="462.0" prefWidth="467.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <AnchorPane fx:id="timeSharingTrafficView" prefHeight="462.0" prefWidth="467.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <AnchorPane fx:id="expiredStalePercView" prefHeight="462.0" prefWidth="467.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <AnchorPane prefHeight="462.0" prefWidth="467.0" GridPane.columnIndex="3" />
             <AnchorPane prefHeight="462.0" prefWidth="467.0" GridPane.columnIndex="4" />
             <AnchorPane prefHeight="462.0" prefWidth="467.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />

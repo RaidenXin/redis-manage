@@ -16,4 +16,5 @@ public class ReidsServerInfoController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
+
 }

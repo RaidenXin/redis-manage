@@ -8,6 +8,14 @@
    <children>
       <TabPane fx:id="tabPane" prefHeight="967.0" prefWidth="936.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
+            <Tab fx:id="qps" text="QPS">
+                <content>
+                </content>
+            </Tab>
+            <Tab fx:id="timeSharingTraffic" text="Redis瞬时网络流量">
+                <content>
+                </content>
+            </Tab>
             <Tab fx:id="server" text="Redis服务信息">
                 <content>
                 </content>

@@ -44,7 +44,7 @@ public class RedisStatsInfoController implements Initializable {
     @FXML
     private AnchorPane totalNetworkTrafficViews;
     @FXML
-    private AnchorPane timeSharingTrafficView;
+    private AnchorPane expiredStalePercView;
 
     private CircularFifoQueue<Pair<String, RedisStats>> queue;
     private double prefHeight;
@@ -76,7 +76,7 @@ public class RedisStatsInfoController implements Initializable {
         totalNumberProcessedEventsRefresh(all);
         keyspaceRefresh(all);
         totalNetworkTrafficViewsRefresh(all);
-        timeSharingTrafficView(all);
+        expiredStalePercView(all);
     }
 
     /**
@@ -118,7 +118,7 @@ public class RedisStatsInfoController implements Initializable {
      */
     private void totalCommandsProcessedRefresh(List<Pair<String, RedisStats>> all) {
         NumberAxis numberAxis = new NumberAxis();
-        numberAxis.setLabel("处理命令数/个");
+        numberAxis.setLabel("命令数/个");
         //服务器处理的命令总数
         LineChart lineChart = new LineChart(new CategoryAxis(), numberAxis);
         lineChart.setPrefHeight(prefHeight);
@@ -244,34 +244,29 @@ public class RedisStatsInfoController implements Initializable {
     }
 
     /**
-     * 分时网络流量视图
+     * Key过期的比例
      * @param all
      */
-    private void timeSharingTrafficView(List<Pair<String, RedisStats>> all){
+    private void expiredStalePercView(List<Pair<String, RedisStats>> all){
         NumberAxis numberAxis = new NumberAxis();
-        numberAxis.setLabel("分时网络流量(kb/s)");
+        numberAxis.setLabel("百分比");
         //服务器查找Key 相关
         LineChart lineChart = new LineChart(new CategoryAxis(), numberAxis);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         //在主字典中成功查找到key的次数
-        final XYChart.Series<String, Double> instantaneousInputKbpsSeries = new XYChart.Series<>();
-        instantaneousInputKbpsSeries.setName("每秒输入量");
-        //在主字典中查找key失败的次数
-        final XYChart.Series<String, Double> instantaneousOutputKbpsSeries = new XYChart.Series<>();
-        instantaneousOutputKbpsSeries.setName("每秒输出量");
-        ObservableList<XYChart.Data<String, Double>> instantaneousInputKbpsSeriesData = instantaneousInputKbpsSeries.getData();
-        ObservableList<XYChart.Data<String, Double>> instantaneousOutputKbpsSeriesData = instantaneousOutputKbpsSeries.getData();
+        final XYChart.Series<String, Double> expiredStalePercSeries = new XYChart.Series<>();
+        expiredStalePercSeries.setName("Key过期比例");
+        ObservableList<XYChart.Data<String, Double>> instantaneousInputKbpsSeriesData = expiredStalePercSeries.getData();
         for (int i = 0, size = all.size(); i < size; i += STEP_LENGTH) {
             Pair<String, RedisStats> p = all.get(i);
             String key = p.getKey();
             RedisStats redisStats = p.getValue();
-            instantaneousInputKbpsSeriesData.add(new XYChart.Data<>(key, redisStats.getInstantaneousInputKbps() ));
-            instantaneousOutputKbpsSeriesData.add(new XYChart.Data<>(key, redisStats.getInstantaneousOutputKbps()));
+            instantaneousInputKbpsSeriesData.add(new XYChart.Data<>(key, redisStats.getExpiredStalePerc() ));
         }
         ObservableList<XYChart.Series<String, Double>> data = lineChart.getData();
-        data.addAll(instantaneousInputKbpsSeries, instantaneousOutputKbpsSeries);
-        ObservableList<Node> children = this.timeSharingTrafficView.getChildren();
+        data.addAll(expiredStalePercSeries);
+        ObservableList<Node> children = this.expiredStalePercView.getChildren();
         children.clear();
         children.add(lineChart);
     }
