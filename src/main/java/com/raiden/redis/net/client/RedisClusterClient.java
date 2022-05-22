@@ -41,7 +41,7 @@ public class RedisClusterClient extends AbstractRedisClient{
             List<String> keyList = entry.getValue();
             int size = keyList.size();
             String[] commands = new String[size + 1];
-            commands[0] = RedisCommand.MGET;
+            commands[0] = RedisCommand.M_GET;
             System.arraycopy(keyList.toArray(new String[0]), 0, commands, 1, size);
             String[] values = sendCommands(commands);
             int index = 0;

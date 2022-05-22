@@ -22,7 +22,7 @@ public class RedisSingleClient extends AbstractRedisClient{
 
     public String[] mGet(String... keys){
         String[] commands = new String[keys.length + 1];
-        commands[0] = RedisCommand.MGET;
+        commands[0] = RedisCommand.M_GET;
         System.arraycopy(keys, 0, commands, 0, keys.length);
         return sendCommands(commands);
     }

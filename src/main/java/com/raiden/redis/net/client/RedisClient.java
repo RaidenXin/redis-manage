@@ -12,6 +12,8 @@ public interface RedisClient {
 
     String set(String key,String value);
 
+    String hSet(String key,String field,String value);
+
     String get(String key);
 
     String[] scan(String startIndex,String limit);

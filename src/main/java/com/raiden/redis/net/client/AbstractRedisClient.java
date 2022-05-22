@@ -61,6 +61,11 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.SET, key, value);
     }
 
+    @Override
+    public String hSet(String key, String field, String value) {
+        return sendCommands(RedisCommand.H_SET, key, field, value);
+    }
+
     public String get(String key){
         if (StringUtils.isBlank(key)){
             throw new NullPointerException("key is null");
@@ -157,11 +162,12 @@ public abstract class AbstractRedisClient implements RedisClient{
 
     protected static class RedisCommand {
         public static final String SET = "SET";
+        public static final String H_SET = "HSET";
         public static final String GET = "GET";
         public static final String INFO = "INFO";
         public static final String SCAN = "SCAN";
         public static final String SELECT = "SELECT";
-        public static final String MGET = "MGET";
+        public static final String M_GET = "MGET";
         public static final String AUTH = "AUTH";
         public static final String MEMORY = "MEMORY";
         //关闭连接退出

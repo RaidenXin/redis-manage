@@ -268,10 +268,18 @@ public class TestClient {
     }
 
     @Test
-    public void testSet() throws InterruptedException {
+    public void testHSet() throws InterruptedException {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-        for (int i = 0; i < 1000; i++) {
-            redisClient.set("aaa", String.valueOf(i));
-        }
+        String s = redisClient.hSet("1", "1", "李大嘴");
+        String s1 = redisClient.hSet("1", "2", "王小马");
+        String s2 = redisClient.hSet("1", "3", "二哥");
+        String s3 = redisClient.hSet("1", "4", "大师兄");
+        LOGGER.info("s:{},s1:{},s2:{},s3:{}", s, s1, s2, s3);
+    }
+
+    @Test
+    public void testDebugObject()  {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        LOGGER.info(redisClient.debugObject("1"));
     }
 }
