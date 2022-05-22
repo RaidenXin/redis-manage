@@ -6,7 +6,6 @@ import com.raiden.redis.net.exception.MovedException;
 import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.model.ScanResult;
 import com.raiden.redis.ui.mode.RedisDataItem;
-import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,16 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.raiden.redis.net.common.ScanCommonParams.*;
@@ -37,7 +32,7 @@ import static com.raiden.redis.net.common.ScanCommonParams.*;
 public class RedisHSetDataViewController implements Controller, Initializable {
 
     @FXML
-    private TableView tableView;
+    private TableView<Pair<String, String>> tableView;
     @FXML
     private TableColumn<Pair<String,String>, String> field;
     @FXML
@@ -64,18 +59,12 @@ public class RedisHSetDataViewController implements Controller, Initializable {
     private String key;
 
     @Override
-    public void setRedisNode(RedisNode redisNode) {
-        this.redisNode = redisNode;
-    }
-
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
-        searchButton.setGraphic(new ImageView("/icon/search.jpg"));
         tableView.setRowFactory( tv -> {
-                    TableRow<RedisDataItem> row = new TableRow<>();
+                    TableRow<Pair<String, String>> row = new TableRow<>();
                     row.setOnMouseClicked(event -> {
                         if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                            RedisDataItem rowData = row.getItem();
+                            Pair<String, String> rowData = row.getItem();
                             keyTextArea.setText(rowData.getKey());
                             valueTextArea.setText(rowData.getValue());
                         }
@@ -88,11 +77,11 @@ public class RedisHSetDataViewController implements Controller, Initializable {
     }
 
     @Override
-    public void init(String key) {
+    public void init(RedisNode redisNode,String key) {
         this.key = key;
+        this.redisNode = redisNode;
         if (redisNode != null){
-            RedisClient redisClient = redisNode.getRedisClient();
-            ScanResult<Pair<String, String>> scanResult = redisClient.hScan(key, START_INDEX, STEP_LENGTH);
+            initTableData();
         }
     }
 
@@ -102,11 +91,11 @@ public class RedisHSetDataViewController implements Controller, Initializable {
             tableView.getItems().clear();
             initTableData();
         } else {
-            String key = text.trim();
+            String field = text.trim();
             RedisClient client = redisNode.getRedisClient();
             //是否模糊查找
             if (isFuzzySearch.isSelected()) {
-                ScanResult<Pair<String, String>> datas = hscan(client, START_INDEX, key);
+                ScanResult<Pair<String, String>> datas = hscan(client, START_INDEX, field);
                 stack.clear();
                 currentIndex.set(START_INDEX);
                 nextIndex.set(START_INDEX);
@@ -117,14 +106,14 @@ public class RedisHSetDataViewController implements Controller, Initializable {
             } else {
                 try {
                     //精确查找
-                    String value = client.get(key);
+                    String value = client.hGet(this.key, field);
                     ObservableList items = tableView.getItems();
                     if (StringUtils.isNotBlank(value)) {
                         stack.clear();
                         currentIndex.set(START_INDEX);
                         nextIndex.set(START_INDEX);
                         items.clear();
-                        tableView.getItems().add(new RedisDataItem(key, value));
+                        tableView.getItems().add(new Pair<>(field, value));
                     } else {
                         stack.clear();
                         currentIndex.set(START_INDEX);
@@ -160,18 +149,12 @@ public class RedisHSetDataViewController implements Controller, Initializable {
 
     private void initTableData(){
         RedisClusterClient client = (RedisClusterClient) redisNode.getRedisClient();
-        String[] scan = client.scan(START_INDEX, STEP_LENGTH);
+        ScanResult<Pair<String, String>> scan = client.hScan(this.key, START_INDEX, STEP_LENGTH);
         field.setCellValueFactory(new PropertyValueFactory<>("key"));
         value.setCellValueFactory(new PropertyValueFactory<>("value"));
-        String[] keys = new String[scan.length - 1];
-        System.arraycopy(scan, 1, keys, 0, keys.length);
-        String[] values = client.mGet(keys);
-        ObservableList items = tableView.getItems();
-        int index = 0;
-        for (String key : keys){
-            items.add(new RedisDataItem(key, values[index++]));
-        }
-        setButtonEvent(client, START_INDEX, scan[0]);
+        ObservableList<Pair<String, String>> items = tableView.getItems();
+        items.addAll(scan.getResult());
+        setButtonEvent(client, START_INDEX, scan.getCursor());
     }
 
 

@@ -70,6 +70,17 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     @Override
+    public String hGet(String key, String field) {
+        if (StringUtils.isBlank(key)){
+            throw new NullPointerException("key is null");
+        }
+        if (StringUtils.isBlank(field)){
+            throw new NullPointerException("field is null");
+        }
+        return sendCommands(RedisCommand.HSet.H_GET, key, field);
+    }
+
+    @Override
     public String hSet(String key, String field, String value) {
         return sendCommands(RedisCommand.HSet.H_SET, key, field, value);
     }

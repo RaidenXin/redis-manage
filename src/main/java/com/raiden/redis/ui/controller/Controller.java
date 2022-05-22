@@ -10,7 +10,5 @@ import com.raiden.redis.ui.mode.RedisNode;
  */
 public interface Controller {
 
-    void setRedisNode(RedisNode redisNode);
-
-    void init(String key);
+    void init(RedisNode redisNode, String key);
 }

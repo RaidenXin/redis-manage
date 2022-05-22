@@ -32,6 +32,7 @@ public enum  DataType {
 
      DataType(String type,String path){
         this.type = type;
+        this.path = path;
     }
 
     public String getType() {

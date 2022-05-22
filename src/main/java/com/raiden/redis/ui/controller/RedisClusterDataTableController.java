@@ -92,7 +92,7 @@ public class RedisClusterDataTableController implements Initializable {
                     try {
                         Node load = fxmlLoader.load();
                         Controller controller = fxmlLoader.getController();
-                        controller.init(newValue);
+                        controller.init(redisNode, newValue);
                         dataView.getChildren().add(load);
                     } catch (IOException e) {
                     }
