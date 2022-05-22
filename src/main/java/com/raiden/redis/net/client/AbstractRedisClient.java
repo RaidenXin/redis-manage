@@ -6,6 +6,7 @@ import com.raiden.redis.net.common.RedisCommand;
 import com.raiden.redis.net.core.RedisClientInitializer;
 import com.raiden.redis.net.handle.RedisClientHandler;
 import com.raiden.redis.net.model.RedisNodeInfo;
+import com.raiden.redis.net.model.ScanResult;
 import com.raiden.redis.net.pool.RedisClientPool;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -13,9 +14,14 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractRedisClient implements RedisClient{
 
@@ -97,6 +103,26 @@ public abstract class AbstractRedisClient implements RedisClient{
 
     public String[] scanMatch(String startIndex,String pattern,String limit){
         return sendCommands(RedisCommand.SCAN, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
+    }
+
+    public ScanResult<Pair<String, String>> hScan(String key, String startIndex, String limit){
+        String[] result = sendCommands(RedisCommand.HSet.H_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
+        String cursor = result[0];
+        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        for (int i = 1;i < result.length;i+=2){
+            pairs.add(new Pair<>(result[i], result[i + 1]));
+        }
+        return ScanResult.build(cursor, pairs);
+    }
+
+    public ScanResult<Pair<String, String>> hScanMatch(String key, String startIndex, String pattern, String limit){
+        String[] result = sendCommands(RedisCommand.HSet.H_SCAN, key, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
+        String cursor = result[0];
+        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        for (int i = 1;i < result.length;i+=2){
+            pairs.add(new Pair<>(result[i], result[i + 1]));
+        }
+        return ScanResult.build(cursor, pairs);
     }
 
     @Override

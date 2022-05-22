@@ -13,7 +13,7 @@ import java.util.List;
 public class RedisDatas {
 
     private List<String> items;
-    private String nextIndex;
+    private String nextCursor;
 
     public List<String> getItems() {
         return items;
@@ -23,12 +23,12 @@ public class RedisDatas {
         this.items = items;
     }
 
-    public String getNextIndex() {
-        return nextIndex;
+    public String getNextCursor() {
+        return nextCursor;
     }
 
-    public void setNextIndex(String nextIndex) {
-        this.nextIndex = nextIndex;
+    public void setNextCursor(String nextCursor) {
+        this.nextCursor = nextCursor;
     }
 
     public static final RedisDatas build(List<String> items,String nextIndex){
@@ -37,7 +37,7 @@ public class RedisDatas {
         }
         RedisDatas datas = new RedisDatas();
         datas.items = items;
-        datas.nextIndex = nextIndex;
+        datas.nextCursor = nextIndex;
         return datas;
     }
 }

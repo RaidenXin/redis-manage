@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
  */
 public enum  DataType {
 
-    NONE("none"),
-    STRING("string"),
-    LIST("list"),
-    SET("set"),
-    ZSET("zset"),
-    HASH("hash");
+    NONE("none", null),
+    STRING("string", ""),
+    LIST("list", ""),
+    SET("set", ""),
+    ZSET("zset", ""),
+    HASH("hash", "redis_h_set_data_table_view.fxml");
 
     private static final Map<String,DataType> CODE_LOOKUP;
 
@@ -28,13 +28,18 @@ public enum  DataType {
     }
 
     private String type;
+    private String path;
 
-     DataType(String type){
+     DataType(String type,String path){
         this.type = type;
     }
 
     public String getType() {
         return type;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public static DataType of(String type){

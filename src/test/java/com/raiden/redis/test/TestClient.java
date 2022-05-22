@@ -151,7 +151,7 @@ public class TestClient {
     @Test
     public void testRedisScanCommand(){
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-        System.err.println(Arrays.toString(redisClient.scan("0", "20")));
+        System.err.println(Arrays.toString(redisClient.scan("0", "2")));
     }
 
     /**
@@ -270,11 +270,9 @@ public class TestClient {
     @Test
     public void testHSet() throws InterruptedException {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-        String s = redisClient.hSet("1", "1", "李大嘴");
-        String s1 = redisClient.hSet("1", "2", "王小马");
-        String s2 = redisClient.hSet("1", "3", "二哥");
-        String s3 = redisClient.hSet("1", "4", "大师兄");
-        LOGGER.info("s:{},s1:{},s2:{},s3:{}", s, s1, s2, s3);
+        for (int i = 0; i < 20; i++) {
+            redisClient.hSet("1", String.valueOf(i), "大师兄" + i);
+        }
     }
 
     @Test
@@ -287,5 +285,11 @@ public class TestClient {
     public void testType()  {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
         LOGGER.info(Arrays.toString(redisClient.mGet("1")));
+    }
+
+    @Test
+    public void testHScan()  {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        LOGGER.info(redisClient.hScan("1", "0", "10"));
     }
 }

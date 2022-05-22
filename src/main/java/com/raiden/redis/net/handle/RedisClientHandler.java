@@ -1,5 +1,7 @@
 package com.raiden.redis.net.handle;
 
+import com.raiden.redis.net.exception.MovedException;
+import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.model.RedisArrResponse;
 import com.raiden.redis.net.model.RedisResponse;
 import com.raiden.redis.net.model.RedisSingleResponse;
@@ -9,6 +11,7 @@ import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.redis.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @ChannelHandler.Sharable
 public class RedisClientHandler extends ChannelDuplexHandler {
 
+    private static final String MOVED = "MOVED";
 
     private Lock lock;
     private Map<Channel, RedisResponse> response;
@@ -135,7 +139,11 @@ public class RedisClientHandler extends ChannelDuplexHandler {
         if (msg instanceof SimpleStringRedisMessage) {
             return ((SimpleStringRedisMessage) msg).content();
         } else if (msg instanceof ErrorRedisMessage) {
-            return ((ErrorRedisMessage) msg).content();
+            String errorMsg = ((ErrorRedisMessage) msg).content();
+            if (StringUtils.isNotBlank(errorMsg) && errorMsg.startsWith(MOVED)){
+                throw new MovedException(errorMsg);
+            }
+            throw new RedisException(errorMsg);
         } else if (msg instanceof IntegerRedisMessage) {
             return String.valueOf(((IntegerRedisMessage) msg).value());
         } else if (msg instanceof FullBulkStringRedisMessage) {

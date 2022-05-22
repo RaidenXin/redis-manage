@@ -3,18 +3,23 @@ package com.raiden.redis.ui.controller;
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.common.DataType;
+import com.raiden.redis.net.common.Separator;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
+import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,8 @@ import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import static com.raiden.redis.net.common.ScanCommonParams.*;
+
 
 /**
  * @创建人:Raiden
@@ -32,8 +39,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class RedisClusterDataTableController implements Initializable {
 
     private static final String MOVED = "MOVED";
-    private static final String START_INDEX = "0";
-    private static final String FUZZY_SEARCH_SUFFIX = "*";
 
     @FXML
     private Button searchButton;
@@ -83,6 +88,14 @@ public class RedisClusterDataTableController implements Initializable {
                     RedisClient redisClient = redisNode.getRedisClient();
                     DataType type = redisClient.type(newValue);
                     dataType.getSelectionModel().select(type.getType());
+                    FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(type.getPath());
+                    try {
+                        Node load = fxmlLoader.load();
+                        Controller controller = fxmlLoader.getController();
+                        controller.init(newValue);
+                        dataView.getChildren().add(load);
+                    } catch (IOException e) {
+                    }
                 }else {
                     dataType.getSelectionModel().select(null);
                 }
@@ -102,20 +115,23 @@ public class RedisClusterDataTableController implements Initializable {
             //是否模糊查找
             if (isFuzzySearch.isSelected()) {
                 RedisDatas datas = scanRedisDatas(client, START_INDEX, key);
+                if (datas == null){
+                    return;
+                }
                 stack.clear();
                 currentIndex.set(START_INDEX);
                 nextIndex.set(START_INDEX);
                 ObservableList items = keyList.getItems();
                 items.clear();
                 items.addAll(datas.getItems());
-                setButtonEvent(client, START_INDEX, datas.getNextIndex());
+                setButtonEvent(client, START_INDEX, datas.getNextCursor());
             } else {
                 //精确查找
                 String value = client.get(key);
                 ObservableList items = keyList.getItems();
                 if (StringUtils.isNotBlank(value)) {
                     if (value.startsWith(MOVED)) {
-                        String[] values = StringUtils.split(value, " ");
+                        String[] values = StringUtils.split(value, Separator.BLANK);
                         if (values.length != 3) {
                             Alert alert = new Alert(Alert.AlertType.ERROR, "系统异常！");
                             alert.showAndWait();
@@ -158,6 +174,10 @@ public class RedisClusterDataTableController implements Initializable {
         for (int i = 1; i < keys.length; i++){
             items.add(keys[i]);
         }
+        //如果没有返回任何数据 或者 只返回了下一次的下标 的认为没有数据了
+        if (keys.length < 2){
+            return null;
+        }
         return RedisDatas.build(items, keys[0]);
     }
 
@@ -197,6 +217,9 @@ public class RedisClusterDataTableController implements Initializable {
             if (index != null){
                 //刷新数据
                 RedisDatas datas = scanRedisDatas(client, index, searchKey.getText());
+                if (datas == null){
+                    return;
+                }
                 //清理掉之前的数据
                 ObservableList items = keyList.getItems();
                 items.clear();
@@ -206,7 +229,7 @@ public class RedisClusterDataTableController implements Initializable {
                 currentIndex.compareAndSet(currentPageIndex, index);
                 //给下一页赋值
                 String nextPageIndex = nextIndex.get();
-                nextIndex.compareAndSet(nextPageIndex, datas.getNextIndex());
+                nextIndex.compareAndSet(nextPageIndex, datas.getNextCursor());
             }
         });
         Button nextPage = (Button) bottomBar.getChildren().get(1);
@@ -215,20 +238,23 @@ public class RedisClusterDataTableController implements Initializable {
             String index = nextIndex.get();
             //如果为空或者 为 0 证明没有下一页
             if (index != null && !START_INDEX.equals(index)){
-                //清理掉之前的数据
-                ObservableList items = keyList.getItems();
-                items.clear();
+                //获取下一页key
+                RedisDatas datas = scanRedisDatas(client, index, searchKey.getText());
+                if (datas == null){
+                    return;
+                }
                 //获取当前 的下标
                 String currentValue = currentIndex.get();
                 //将当前的下标 放入栈中存储 供上一页按钮使用
                 stack.add(currentValue);
-                //获取下一页key
-                RedisDatas datas = scanRedisDatas(client, index, searchKey.getText());
+                //清理掉之前的数据
+                ObservableList items = keyList.getItems();
+                items.clear();
                 items.addAll(datas.getItems());
                 //完成翻页后 将下一个设置为当前页
                 currentIndex.compareAndSet(currentValue, index);
                 //如果下一页 index 赋值
-                nextIndex.compareAndSet(index, datas.getNextIndex());
+                nextIndex.compareAndSet(index, datas.getNextCursor());
             }
         });
     }

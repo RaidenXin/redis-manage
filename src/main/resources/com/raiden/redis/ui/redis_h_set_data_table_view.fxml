@@ -12,11 +12,24 @@
                <children>
                   <TableView fx:id="tableView" prefHeight="417.0" prefWidth="630.0">
                     <columns>
-                      <TableColumn prefWidth="247.0" text="field" />
-                      <TableColumn prefWidth="383.0" text="value" />
+                      <TableColumn fx:id="field" prefWidth="247.0" text="field" />
+                      <TableColumn fx:id="value" prefWidth="383.0" text="value" />
                     </columns>
                   </TableView>
-                  <Pane prefHeight="140.0" prefWidth="630.0" />
+                  <Pane prefHeight="140.0" prefWidth="630.0">
+                     <children>
+                        <TextField fx:id="searchKey" layoutX="49.0" layoutY="24.0" prefHeight="23.0" prefWidth="250.0" />
+                        <Label layoutX="14.0" layoutY="28.0" text="Key:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="searchButton" layoutX="315.0" layoutY="24.0" mnemonicParsing="false" onAction="#search" text="搜素" />
+                        <CheckBox fx:id="isFuzzySearch" layoutX="368.0" layoutY="19.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" text="模糊查找" />
+                        <Button fx:id="pre" layoutX="537.0" layoutY="24.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="54.0" />
+                        <Button fx:id="next" layoutX="472.0" layoutY="24.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="54.0" />
+                     </children>
+                  </Pane>
                </children>
             </VBox>
          </children></AnchorPane>
