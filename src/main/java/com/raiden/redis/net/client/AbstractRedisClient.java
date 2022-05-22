@@ -1,6 +1,7 @@
 package com.raiden.redis.net.client;
 
 import com.raiden.redis.net.cluster.RedisDecoder;
+import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.core.RedisClientInitializer;
 import com.raiden.redis.net.handle.RedisClientHandler;
 import com.raiden.redis.net.model.RedisNodeInfo;
@@ -71,6 +72,14 @@ public abstract class AbstractRedisClient implements RedisClient{
             throw new NullPointerException("key is null");
         }
         return sendCommands(RedisCommand.GET, key);
+    }
+
+    public DataType type(String key){
+        if (StringUtils.isBlank(key)){
+            throw new NullPointerException("key is null");
+        }
+        String type = sendCommands(RedisCommand.TYPE, key);
+        return DataType.of(type);
     }
 
     @Override
@@ -170,6 +179,8 @@ public abstract class AbstractRedisClient implements RedisClient{
         public static final String M_GET = "MGET";
         public static final String AUTH = "AUTH";
         public static final String MEMORY = "MEMORY";
+        //获取类型
+        public static final String TYPE = "type";
         //关闭连接退出
         public static final String QUIT = "QUIT";
         //集群

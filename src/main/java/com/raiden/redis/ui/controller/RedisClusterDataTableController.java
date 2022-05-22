@@ -91,16 +91,16 @@ public class RedisClusterDataTableController implements Initializable {
         value.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
-    public void search(){
+    public void search() {
         String text = searchKey.getText();
-        if (StringUtils.isBlank(text)){
+        if (StringUtils.isBlank(text)) {
             table.getItems().clear();
             initTableData();
-        }else {
+        } else {
             String key = text.trim();
             RedisClient client = redisNode.getRedisClient();
             //是否模糊查找
-            if (isFuzzySearch.isSelected()){
+            if (isFuzzySearch.isSelected()) {
                 RedisDatas datas = scanRedisDatas(client, START_INDEX, key);
                 stack.clear();
                 currentIndex.set(START_INDEX);
@@ -109,29 +109,29 @@ public class RedisClusterDataTableController implements Initializable {
                 items.clear();
                 items.addAll(datas.getItems());
                 setButtonEvent(client, START_INDEX, datas.getNextIndex());
-            }else {
+            } else {
                 //精确查找
                 String value = client.get(key);
                 ObservableList items = table.getItems();
-                if (StringUtils.isNotBlank(value)){
-                    if (value.startsWith(MOVED)){
+                if (StringUtils.isNotBlank(value)) {
+                    if (value.startsWith(MOVED)) {
                         String[] values = StringUtils.split(value, " ");
-                        if (values.length != 3){
-                            Alert alert = new Alert(Alert.AlertType.ERROR,"系统异常！");
+                        if (values.length != 3) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "系统异常！");
                             alert.showAndWait();
-                        }else {
-                            Alert alert = new Alert(Alert.AlertType.WARNING,"请跳转到HOST:{ " + values[2] + " }");
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.WARNING, "请跳转到HOST:{ " + values[2] + " }");
                             alert.showAndWait();
                         }
                         return;
-                    }else {
+                    } else {
                         stack.clear();
                         currentIndex.set(START_INDEX);
                         nextIndex.set(START_INDEX);
                         items.clear();
                         table.getItems().add(new RedisDataItem(key, value));
                     }
-                }else {
+                } else {
                     stack.clear();
                     currentIndex.set(START_INDEX);
                     nextIndex.set(START_INDEX);
@@ -163,6 +163,10 @@ public class RedisClusterDataTableController implements Initializable {
         }
         return RedisDatas.build(items, scan[0]);
     }
+
+
+
+
 
     public void initTable(){
         if (isInitTab.compareAndSet(false, true)){
