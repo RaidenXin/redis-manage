@@ -239,6 +239,17 @@ public class TestClient {
     }
 
     @Test
+    public void testCircularFifoQueueDesc(){
+        CircularFifoQueue<Integer> queue = new CircularFifoQueue<>(10);
+        for (int i = 0; i < 100; i++) {
+            queue.add(i);
+            if (i % 5 == 0){
+                System.err.println(queue.getDesc(10));
+            }
+        }
+    }
+
+    @Test
     public void testUsageRate() throws InterruptedException {
         RedisSingleClient redisClient = new RedisSingleClient("redis.test.yiyaowang.com",6379);
         System.err.println(redisClient.auth("foobared"));

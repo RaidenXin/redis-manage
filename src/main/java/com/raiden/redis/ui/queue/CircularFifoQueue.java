@@ -62,6 +62,34 @@ public class CircularFifoQueue<T> {
         return result;
     }
 
+    public List<T> getDesc(int limit){
+        limit = limit > size ? size : limit;
+        List<T> result = new ArrayList<>(limit);
+        /**
+         * 环形数组 如果倒叙 index - i(向前移动的值) 可能为负数
+         *  所以 (index - i(向前移动的值) + size) 在对 size 取模
+         *  如果是负数 加上 size 变成正数 取模就获得了真实下标
+         *  如果是正数 加上 size 还是正数而且 大于 size  在取模获得真实下标
+         */
+        synchronized (this){
+            int tempIndex = index - 1;
+            for (int i = 0;i < limit; i++){
+                int index = (tempIndex - i + size) % size;
+                T t = (T) arr[index];
+                //如果是遍历到为空的 说明还未成环 而且有数据的地方已经遍历过了 打断循环
+                if (t == null){
+                    break;
+                }
+                result.add(t);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 这个方法可能拿到 null 在未初始化的时候
+     * @return
+     */
     public T getLast(){
         synchronized (this){
             //先要找到尾部 分两种可能

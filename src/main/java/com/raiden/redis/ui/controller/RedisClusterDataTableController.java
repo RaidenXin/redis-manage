@@ -6,12 +6,14 @@ import com.raiden.redis.ui.mode.RedisDataItem;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,7 +44,7 @@ public class RedisClusterDataTableController implements Initializable {
     @FXML
     private Pane bottomBar;
     @FXML
-    private TableView table;
+    private TableView<RedisDataItem> table;
     @FXML
     private TableColumn<RedisDataItem, String> key;
     @FXML
@@ -51,6 +53,10 @@ public class RedisClusterDataTableController implements Initializable {
     private CheckBox isFuzzySearch;
     @FXML
     private ComboBox<String> pageSize;
+    @FXML
+    private TextArea keyTextArea;
+    @FXML
+    private TextArea valueTextArea;
 
     private RedisNode redisNode;
     private AtomicReference<String> currentIndex;
@@ -69,17 +75,20 @@ public class RedisClusterDataTableController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         searchButton.setGraphic(new ImageView("/icon/search.jpg"));
-        table.setEditable(true);
+        table.setRowFactory( tv -> {
+                    TableRow<RedisDataItem> row = new TableRow<>();
+                    row.setOnMouseClicked(event -> {
+                        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                            RedisDataItem rowData = row.getItem();
+                            keyTextArea.setText(rowData.getKey());
+                            valueTextArea.setText(rowData.getValue());
+                        }
+                    });
+                    return row ;
+                }
+        );
         key.setCellFactory(TextFieldTableCell.forTableColumn());
         value.setCellFactory(TextFieldTableCell.forTableColumn());
-        value.setOnEditCommit(event -> {
-            TableView tempTable = event.getTableView();
-            RedisDataItem item = (RedisDataItem) tempTable.getItems().get(event.getTablePosition().getRow());
-            RedisClient redisClient = redisNode.getRedisClient();
-            String newValue = event.getNewValue();
-            redisClient.set(item.getKey(), newValue);
-            item.setValue(newValue);//放置新值
-        });
     }
 
     public void search(){
@@ -227,5 +236,16 @@ public class RedisClusterDataTableController implements Initializable {
                 nextIndex.compareAndSet(index, datas.getNextIndex());
             }
         });
+    }
+
+    public void updateValue(){
+        String key = keyTextArea.getText();
+        String value = valueTextArea.getText();
+        if (StringUtils.isBlank(value)){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Value不能为空！");
+            alert.showAndWait();
+        }
+        RedisClient redisClient = redisNode.getRedisClient();
+        redisClient.set(key, value);
     }
 }

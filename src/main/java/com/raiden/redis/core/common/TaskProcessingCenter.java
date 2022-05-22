@@ -46,13 +46,8 @@ public final class TaskProcessingCenter {
         }
     }
 
-    public static final void submit(Task task,int delayTime,TimeUnit unit){
-        TASK_DELAY_QUEUE.add(DelayedTask.build(task, delayTime, unit));
-    }
-
-
     public static final void submit(Task task){
-        TASK_DELAY_QUEUE.add(DelayedTask.build(task, 0, TimeUnit.MILLISECONDS));
+        TASK_DELAY_QUEUE.add(DelayedTask.build(task));
     }
 
 
@@ -90,9 +85,9 @@ public final class TaskProcessingCenter {
             return Long.compare(this.getDelay(TimeUnit.MILLISECONDS), o.getDelay(TimeUnit.MILLISECONDS));
         }
 
-        public static final DelayedTask build(Task task,int delayTime,TimeUnit unit){
+        public static final DelayedTask build(Task task){
             DelayedTask delayedTask = new DelayedTask();
-            delayedTask.nextExecutionTime = System.currentTimeMillis() + unit.toMillis(delayTime);
+            delayedTask.nextExecutionTime = System.currentTimeMillis() + task.getDelayTime();
             delayedTask.task = task;
             return delayedTask;
         }

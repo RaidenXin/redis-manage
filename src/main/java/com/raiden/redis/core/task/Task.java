@@ -8,4 +8,5 @@ package com.raiden.redis.core.task;
  * @Modified By:
  */
 public interface Task extends Runnable {
+    long getDelayTime();
 }
