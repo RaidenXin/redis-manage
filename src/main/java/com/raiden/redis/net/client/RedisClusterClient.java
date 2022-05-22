@@ -1,6 +1,7 @@
 package com.raiden.redis.net.client;
 
 import com.raiden.redis.net.cluster.RedisClusterDecoder;
+import com.raiden.redis.net.common.RedisCommand;
 import com.raiden.redis.net.handle.RedisClientHandler;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.net.pool.RedisClientPool;

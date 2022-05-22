@@ -2,6 +2,7 @@ package com.raiden.redis.net.client;
 
 import com.raiden.redis.net.cluster.RedisDecoder;
 import com.raiden.redis.net.common.DataType;
+import com.raiden.redis.net.common.RedisCommand;
 import com.raiden.redis.net.core.RedisClientInitializer;
 import com.raiden.redis.net.handle.RedisClientHandler;
 import com.raiden.redis.net.model.RedisNodeInfo;
@@ -64,7 +65,7 @@ public abstract class AbstractRedisClient implements RedisClient{
 
     @Override
     public String hSet(String key, String field, String value) {
-        return sendCommands(RedisCommand.H_SET, key, field, value);
+        return sendCommands(RedisCommand.HSet.H_SET, key, field, value);
     }
 
     public String get(String key){
@@ -165,41 +166,6 @@ public abstract class AbstractRedisClient implements RedisClient{
             return false;
         }else {
             return channel.isActive();
-        }
-    }
-
-
-    protected static class RedisCommand {
-        public static final String SET = "SET";
-        public static final String H_SET = "HSET";
-        public static final String GET = "GET";
-        public static final String INFO = "INFO";
-        public static final String SCAN = "SCAN";
-        public static final String SELECT = "SELECT";
-        public static final String M_GET = "MGET";
-        public static final String AUTH = "AUTH";
-        public static final String MEMORY = "MEMORY";
-        //获取类型
-        public static final String TYPE = "type";
-        //关闭连接退出
-        public static final String QUIT = "QUIT";
-        //集群
-        public static final String CLUSTER  = "CLUSTER";
-
-        //Debug
-        public static final String DEBUG  = "DEBUG";
-
-        protected static class Memory{
-            public static final String USAGE = "USAGE";
-        }
-
-        protected static class Scan{
-            public static final String COUNT = "COUNT";
-            public static final String MATCH = "MATCH";
-        }
-
-        protected static class Debug {
-            public static final String OBJECT = "OBJECT";
         }
     }
 }

@@ -2,9 +2,60 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="931.0" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+      <AnchorPane prefHeight="340.0" prefWidth="931.0">
+          <children>
+              <SplitPane dividerPositions="0.35" layoutX="5.0" layoutY="2.0" orientation="VERTICAL" prefHeight="340.0" prefWidth="931.0">
+                  <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="119.0" prefWidth="931.0">
+                          <children>
+                              <HBox layoutX="-1.0" layoutY="-2.0" prefHeight="119.0" prefWidth="931.0">
+                                  <children>
+                                      <Pane prefHeight="119.0" prefWidth="100.0">
+                                          <children>
+                                              <Label layoutX="19.0" layoutY="46.0" text="Key:">
+                                                  <font>
+                                                      <Font name="System Bold Italic" size="20.0" />
+                                                  </font>
+                                              </Label>
+                                          </children>
+                                      </Pane>
+                                      <TextArea fx:id="keyTextArea" editable="false" prefHeight="119.0" prefWidth="825.0" wrapText="true" />
+                                  </children>
+                              </HBox>
+                          </children>
+                      </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="211.0" prefWidth="929.0">
+                          <children>
+                              <HBox layoutX="-1.0" layoutY="-2.0" prefHeight="211.0" prefWidth="931.0">
+                                  <children>
+                                      <Pane prefHeight="211.0" prefWidth="100.0">
+                                          <children>
+                                              <Label layoutX="17.0" layoutY="44.0" text="Value:">
+                                                  <font>
+                                                      <Font name="System Bold Italic" size="20.0" />
+                                                  </font>
+                                              </Label>
+                                              <Button layoutX="18.0" layoutY="157.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="修改" />
+                                          </children>
+                                      </Pane>
+                                      <ScrollPane hbarPolicy="NEVER" prefHeight="600.0" prefWidth="825.0" >
+                                          <content>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="825.0">
+                                                  <TextArea fx:id="valueTextArea" layoutY="90.0" prefHeight="600.0" prefWidth="825.0" wrapText="true" />
+                                              </AnchorPane>
+                                          </content>
+                                      </ScrollPane>
+                                  </children>
+                              </HBox>
+                          </children>
+                      </AnchorPane>
+                  </items>
+              </SplitPane>
+          </children>
+      </AnchorPane>
   </content>
 </ScrollPane>

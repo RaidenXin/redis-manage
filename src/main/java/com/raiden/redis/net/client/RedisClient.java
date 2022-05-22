@@ -1,5 +1,6 @@
 package com.raiden.redis.net.client;
 
+import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.model.RedisNodeInfo;
 
 /**
@@ -15,6 +16,8 @@ public interface RedisClient {
     String hSet(String key,String field,String value);
 
     String get(String key);
+
+    DataType type(String key);
 
     String[] scan(String startIndex,String limit);
 

@@ -17,7 +17,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="服务信息">
+                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="服务信息" collapsible="false">
                     <content>
                         <TableView fx:id="redisServerTable" layoutX="0.0" layoutY="0.0" prefHeight="461.0" prefWidth="467.0">
                             <columns>
@@ -27,11 +27,11 @@
                         </TableView>
                     </content>
                 </TitledPane>
-                <TitledPane fx:id="redisCPUTitledPane" animated="false" prefHeight="517.0" prefWidth="467.0" text="CPU" GridPane.columnIndex="1">
+                <TitledPane fx:id="redisCPUTitledPane" animated="false" prefHeight="517.0" prefWidth="467.0" text="CPU" GridPane.columnIndex="1" collapsible="false">
                     <content>
                     </content>
                 </TitledPane>
-                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="客户端信息" GridPane.rowIndex="1">
+                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="客户端信息" GridPane.rowIndex="1" collapsible="false">
                     <content>
                         <TableView fx:id="redisClientTable" layoutX="0.0" layoutY="0.0" prefHeight="461.0" prefWidth="467.0">
                             <columns>
@@ -41,7 +41,7 @@
                         </TableView>
                     </content>
                 </TitledPane>
-                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="数据仓库信息" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="数据仓库信息" GridPane.columnIndex="1" GridPane.rowIndex="1" collapsible="false">
                <content>
                   <TreeTableView fx:id="redisStatsTable" prefHeight="517.0" prefWidth="467.0">
                     <columns>

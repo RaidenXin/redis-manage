@@ -11,18 +11,68 @@
         <children>
             <Pane fx:id="searchPane" prefHeight="60.0" prefWidth="800.0">
                 <children>
-                    <Label layoutX="33.0" layoutY="23.0" text="Key:" />
+                    <Label layoutX="35.0" layoutY="22.0" text="Key:">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font></Label>
                     <TextField fx:id="searchKey" accessibleRole="TEXT_FIELD" layoutX="78.0" layoutY="18.0" prefHeight="25.0" prefWidth="322.0" />
                     <Button fx:id="searchButton" layoutX="420.0" layoutY="18.0" mnemonicParsing="false" onAction="#search" prefHeight="25.0" prefWidth="70.0" text="搜索" />
                     <CheckBox fx:id="isFuzzySearch" layoutX="513.0" layoutY="15.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" text="模糊查找" />
                 </children>
             </Pane>
-            <TableView fx:id="table" prefHeight="500.0" prefWidth="931.0">
-                <columns>
-                    <TableColumn fx:id="key" prefWidth="260.0" text="Key" />
-                    <TableColumn fx:id="value" prefWidth="670.0" text="Value" />
-                </columns>
-            </TableView>
+         <HBox prefHeight="840.0" prefWidth="800.0">
+            <children>
+               <TitledPane animated="false" collapsible="false" prefHeight="876.0" prefWidth="292.0" text="Key">
+                 <content>
+                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="862.0" prefWidth="310.0">
+                        <children>
+                           <ListView fx:id="keyList" prefHeight="816.0" prefWidth="292.0" />
+                        </children>
+                   </AnchorPane>
+                 </content>
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font>
+               </TitledPane>
+               <AnchorPane prefHeight="840.0" prefWidth="630.0">
+                  <children>
+                     <SplitPane dividerPositions="0.1" orientation="VERTICAL" prefHeight="846.0" prefWidth="639.0">
+                       <items>
+                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="84.0" prefWidth="630.0">
+                              <children>
+                                 <Label layoutX="14.0" layoutY="32.0" text="类型">
+                                    <font>
+                                       <Font name="System Bold" size="14.0" />
+                                    </font>
+                                 </Label>
+                                  <ChoiceBox fx:id="dataType" layoutX="50.0" layoutY="29.0" prefHeight="25.0" prefWidth="100.0">
+                                      <items>
+                                          <FXCollections fx:factory="observableArrayList">
+                                              <String fx:value="string" />
+                                              <String fx:value="list" />
+                                              <String fx:value="set" />
+                                              <String fx:value="zset" />
+                                              <String fx:value="hash" />
+                                          </FXCollections>
+                                      </items>
+                                  </ChoiceBox>
+                                 <Button fx:id="add" layoutX="515.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="100.0" text="添加" />
+                                 <Button fx:id="delete" layoutX="515.0" layoutY="42.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="100.0" text="删除" />
+                                 <TextField fx:id="key" layoutX="209.0" layoutY="30.0" prefHeight="24.0" prefWidth="280.0" />
+                                 <Label layoutX="167.0" layoutY="31.0" text="Key:">
+                                    <font>
+                                       <Font name="System Bold Italic" size="14.0" />
+                                    </font>
+                                 </Label>
+                              </children>
+                         </AnchorPane>
+                         <AnchorPane fx:id="dataView" minHeight="0.0" minWidth="0.0" prefHeight="756.0" prefWidth="630.0" />
+                       </items>
+                     </SplitPane>
+                  </children>
+               </AnchorPane>
+            </children>
+         </HBox>
             <Pane fx:id="bottomBar" prefHeight="70.0" prefWidth="931.0">
                 <children>
                     <Button layoutX="156.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
@@ -38,57 +88,6 @@
                     </ComboBox>
                 </children>
             </Pane>
-         <AnchorPane prefHeight="340.0" prefWidth="931.0">
-            <children>
-               <SplitPane dividerPositions="0.35" layoutX="5.0" layoutY="2.0" orientation="VERTICAL" prefHeight="340.0" prefWidth="931.0">
-                 <items>
-                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="119.0" prefWidth="931.0">
-                        <children>
-                           <HBox layoutX="-1.0" layoutY="-2.0" prefHeight="119.0" prefWidth="931.0">
-                              <children>
-                                 <Pane prefHeight="119.0" prefWidth="100.0">
-                                    <children>
-                                       <Label layoutX="19.0" layoutY="46.0" text="Key:">
-                                          <font>
-                                             <Font name="System Bold Italic" size="20.0" />
-                                          </font>
-                                       </Label>
-                                    </children>
-                                 </Pane>
-                                 <TextArea fx:id="keyTextArea" prefHeight="119.0" prefWidth="825.0" wrapText="true" editable="false"/>
-                              </children>
-                           </HBox>
-                        </children>
-                   </AnchorPane>
-                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="211.0" prefWidth="929.0">
-                         <children>
-                             <HBox layoutX="-1.0" layoutY="-2.0" prefHeight="211.0" prefWidth="931.0">
-                                 <children>
-                                     <Pane prefHeight="211.0" prefWidth="100.0">
-                                         <children>
-                                             <Label layoutX="17.0" layoutY="44.0" text="Value:">
-                                                 <font>
-                                                     <Font name="System Bold Italic" size="20.0" />
-                                                 </font>
-                                             </Label>
-                                       <Button layoutX="18.0" layoutY="157.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="修改" onAction="#updateValue"/>
-                                         </children>
-                                     </Pane>
-                                 <ScrollPane hbarPolicy="NEVER" prefHeight="600.0" prefWidth="825.0">
-                                   <content>
-                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="825.0">
-                                           <TextArea fx:id="valueTextArea" prefHeight="600.0" prefWidth="825.0" wrapText="true"/>
-                                       </AnchorPane>
-                                   </content>
-                                 </ScrollPane>
-                                 </children>
-                             </HBox>
-                         </children>
-                     </AnchorPane>
-                 </items>
-               </SplitPane>
-            </children>
-         </AnchorPane>
         </children>
     </VBox>
 </AnchorPane>

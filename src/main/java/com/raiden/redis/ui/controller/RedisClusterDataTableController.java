@@ -2,18 +2,16 @@ package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisClusterClient;
-import com.raiden.redis.ui.mode.RedisDataItem;
+import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,23 +38,25 @@ public class RedisClusterDataTableController implements Initializable {
     @FXML
     private Button searchButton;
     @FXML
+    private Button add;
+    @FXML
+    private Button delete;
+    @FXML
     private TextField searchKey;
     @FXML
     private Pane bottomBar;
-    @FXML
-    private TableView<RedisDataItem> table;
-    @FXML
-    private TableColumn<RedisDataItem, String> key;
-    @FXML
-    private TableColumn<RedisDataItem, String> value;
     @FXML
     private CheckBox isFuzzySearch;
     @FXML
     private ComboBox<String> pageSize;
     @FXML
-    private TextArea keyTextArea;
+    private ListView<String> keyList;
     @FXML
-    private TextArea valueTextArea;
+    private ChoiceBox<String> dataType;
+    @FXML
+    private TextField key;
+    @FXML
+    private AnchorPane dataView;
 
     private RedisNode redisNode;
     private AtomicReference<String> currentIndex;
@@ -75,26 +75,26 @@ public class RedisClusterDataTableController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         searchButton.setGraphic(new ImageView("/icon/search.jpg"));
-        table.setRowFactory( tv -> {
-                    TableRow<RedisDataItem> row = new TableRow<>();
-                    row.setOnMouseClicked(event -> {
-                        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                            RedisDataItem rowData = row.getItem();
-                            keyTextArea.setText(rowData.getKey());
-                            valueTextArea.setText(rowData.getValue());
-                        }
-                    });
-                    return row ;
+        add.setGraphic(new ImageView("/icon/add.png"));
+        delete.setGraphic(new ImageView("/icon/delete.png"));
+        keyList.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
+            if (redisNode != null){
+                if (StringUtils.isNotBlank(newValue)){
+                    RedisClient redisClient = redisNode.getRedisClient();
+                    DataType type = redisClient.type(newValue);
+                    dataType.getSelectionModel().select(type.getType());
+                }else {
+                    dataType.getSelectionModel().select(null);
                 }
-        );
-        key.setCellFactory(TextFieldTableCell.forTableColumn());
-        value.setCellFactory(TextFieldTableCell.forTableColumn());
+                key.setText(newValue);
+            }
+        });
     }
 
     public void search() {
         String text = searchKey.getText();
         if (StringUtils.isBlank(text)) {
-            table.getItems().clear();
+            keyList.getItems().clear();
             initTableData();
         } else {
             String key = text.trim();
@@ -105,14 +105,14 @@ public class RedisClusterDataTableController implements Initializable {
                 stack.clear();
                 currentIndex.set(START_INDEX);
                 nextIndex.set(START_INDEX);
-                ObservableList items = table.getItems();
+                ObservableList items = keyList.getItems();
                 items.clear();
                 items.addAll(datas.getItems());
                 setButtonEvent(client, START_INDEX, datas.getNextIndex());
             } else {
                 //精确查找
                 String value = client.get(key);
-                ObservableList items = table.getItems();
+                ObservableList items = keyList.getItems();
                 if (StringUtils.isNotBlank(value)) {
                     if (value.startsWith(MOVED)) {
                         String[] values = StringUtils.split(value, " ");
@@ -129,7 +129,7 @@ public class RedisClusterDataTableController implements Initializable {
                         currentIndex.set(START_INDEX);
                         nextIndex.set(START_INDEX);
                         items.clear();
-                        table.getItems().add(new RedisDataItem(key, value));
+                        keyList.getItems().add(key);
                     }
                 } else {
                     stack.clear();
@@ -143,25 +143,22 @@ public class RedisClusterDataTableController implements Initializable {
 
     private RedisDatas scanRedisDatas(RedisClient client, String index, String pattern){
         boolean selected = isFuzzySearch.isSelected();
-        String[] scan;
+        String[] keys;
         if (selected){
             //如果不是以模糊搜索后缀结尾的 补上后缀
             if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
                 pattern += FUZZY_SEARCH_SUFFIX;
             }
-            scan = client.scanMatch(START_INDEX, pattern, pageSize.getValue());
+            keys = client.scanMatch(START_INDEX, pattern, pageSize.getValue());
         }else {
-            scan = client.scan(index, pageSize.getValue());
+            keys = client.scan(index, pageSize.getValue());
         }
-        String[] keys = new String[scan.length - 1];
-        System.arraycopy(scan, 1, keys, 0, keys.length);
-        String[] values = client.mGet(keys);
-        List<RedisDataItem> items = new ArrayList<>(values.length);
-        int i = 0;
-        for (String k : keys){
-            items.add(new RedisDataItem(k, values[i++]));
+
+        List<String> items = new ArrayList<>(keys.length - 1);
+        for (int i = 1; i < keys.length; i++){
+            items.add(keys[i]);
         }
-        return RedisDatas.build(items, scan[0]);
+        return RedisDatas.build(items, keys[0]);
     }
 
 
@@ -176,18 +173,12 @@ public class RedisClusterDataTableController implements Initializable {
 
     private void initTableData(){
         RedisClusterClient client = (RedisClusterClient) redisNode.getRedisClient();
-        String[] scan = client.scan(START_INDEX, pageSize.getValue());
-        key.setCellValueFactory(new PropertyValueFactory<>("key"));
-        value.setCellValueFactory(new PropertyValueFactory<>("value"));
-        String[] keys = new String[scan.length - 1];
-        System.arraycopy(scan, 1, keys, 0, keys.length);
-        String[] values = client.mGet(keys);
-        ObservableList items = table.getItems();
-        int index = 0;
-        for (String key : keys){
-            items.add(new RedisDataItem(key, values[index++]));
+        String[] keys = client.scan(START_INDEX, pageSize.getValue());
+        ObservableList items = keyList.getItems();
+        for (int i = 1; i < keys.length; i++){
+            items.add(keys[i]);
         }
-        setButtonEvent(client, START_INDEX, scan[0]);
+        setButtonEvent(client, START_INDEX, keys[0]);
     }
 
 
@@ -204,11 +195,11 @@ public class RedisClusterDataTableController implements Initializable {
             String index = stack.pop();
             //如果没有证明当前是第一页
             if (index != null){
-                //清理掉之前的数据
-                ObservableList items = table.getItems();
-                items.clear();
                 //刷新数据
                 RedisDatas datas = scanRedisDatas(client, index, searchKey.getText());
+                //清理掉之前的数据
+                ObservableList items = keyList.getItems();
+                items.clear();
                 items.addAll(datas.getItems());
                 //将上一页标记为当前页
                 String currentPageIndex = currentIndex.get();
@@ -225,7 +216,7 @@ public class RedisClusterDataTableController implements Initializable {
             //如果为空或者 为 0 证明没有下一页
             if (index != null && !START_INDEX.equals(index)){
                 //清理掉之前的数据
-                ObservableList items = table.getItems();
+                ObservableList items = keyList.getItems();
                 items.clear();
                 //获取当前 的下标
                 String currentValue = currentIndex.get();
@@ -240,16 +231,5 @@ public class RedisClusterDataTableController implements Initializable {
                 nextIndex.compareAndSet(index, datas.getNextIndex());
             }
         });
-    }
-
-    public void updateValue(){
-        String key = keyTextArea.getText();
-        String value = valueTextArea.getText();
-        if (StringUtils.isBlank(value)){
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Value不能为空！");
-            alert.showAndWait();
-        }
-        RedisClient redisClient = redisNode.getRedisClient();
-        redisClient.set(key, value);
     }
 }

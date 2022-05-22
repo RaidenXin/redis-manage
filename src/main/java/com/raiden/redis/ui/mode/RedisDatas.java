@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class RedisDatas {
 
-    private List<RedisDataItem> items;
+    private List<String> items;
     private String nextIndex;
 
-    public List<RedisDataItem> getItems() {
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(List<RedisDataItem> items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
 
@@ -31,7 +31,7 @@ public class RedisDatas {
         this.nextIndex = nextIndex;
     }
 
-    public static final RedisDatas build(List<RedisDataItem> items,String nextIndex){
+    public static final RedisDatas build(List<String> items,String nextIndex){
         if (items == null || StringUtils.isBlank(nextIndex)){
             throw new IllegalArgumentException("参数异常！");
         }
