@@ -57,7 +57,7 @@ public class RedisClusterDataTableController implements Initializable {
     @FXML
     private ListView<String> keyList;
     @FXML
-    private ChoiceBox<String> dataType;
+    private ComboBox<String> dataType;
     @FXML
     private TextField key;
     @FXML

@@ -81,8 +81,21 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     @Override
-    public String hSet(String key, String field, String value) {
-        return sendCommands(RedisCommand.HSet.H_SET, key, field, value);
+    public String hDel(String key, String... field) {
+        if (StringUtils.isBlank(key)){
+            throw new NullPointerException("key is null");
+        }
+        String[] commands = new String[field.length + 2];
+        commands[0] = RedisCommand.HSet.H_DEL;
+        commands[1] = key;
+        System.arraycopy(field, 0, commands, 2, field.length);
+        return sendCommands(commands);
+    }
+
+    @Override
+    public boolean hSet(String key, String field, String value) {
+        String response = sendCommands(RedisCommand.HSet.H_SET, key, field, value);
+        return SUCCESS.equalsIgnoreCase(response);
     }
 
     public String get(String key){

@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<TitledPane animated="false" collapsible="false" prefHeight="449.0" prefWidth="630.0" text="添加元素" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<TitledPane animated="false" collapsible="false" prefHeight="449.0" prefWidth="630.0" text="添加元素" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.raiden.redis.ui.controller.add.AddElementsController">
     <content>
         <SplitPane dividerPositions="0.35" layoutX="5.0" layoutY="2.0" orientation="VERTICAL" prefHeight="340.0" prefWidth="630.0">
             <items>
@@ -21,7 +22,7 @@
                                         </Label>
                                     </children>
                                 </Pane>
-                                <TextArea fx:id="fieldTextArea" editable="false" prefHeight="135.0" prefWidth="515.0" wrapText="true" />
+                                <TextArea fx:id="keyTextArea" prefHeight="135.0" prefWidth="515.0" wrapText="true" />
                             </children>
                         </HBox>
                     </children>
@@ -54,7 +55,7 @@
             </items>
         </SplitPane>
     </content>
-   <font>
-      <Font name="System Bold" size="14.0" />
-   </font>
+    <font>
+        <Font name="System Bold" size="14.0" />
+    </font>
 </TitledPane>

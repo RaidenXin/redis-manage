@@ -292,4 +292,10 @@ public class TestClient {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
         LOGGER.info(redisClient.hScan("1", "0", "10"));
     }
+
+    @Test
+    public void testHDel()  {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        LOGGER.info(redisClient.hDel("1", "0"));
+    }
 }

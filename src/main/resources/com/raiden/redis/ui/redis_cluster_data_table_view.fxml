@@ -45,7 +45,7 @@
                                        <Font name="System Bold" size="14.0" />
                                     </font>
                                  </Label>
-                                  <ChoiceBox fx:id="dataType" layoutX="50.0" layoutY="29.0" prefHeight="25.0" prefWidth="100.0">
+                                  <ComboBox fx:id="dataType" layoutX="50.0" layoutY="29.0" prefHeight="25.0" prefWidth="100.0">
                                       <items>
                                           <FXCollections fx:factory="observableArrayList">
                                               <String fx:value="string" />
@@ -55,7 +55,7 @@
                                               <String fx:value="hash" />
                                           </FXCollections>
                                       </items>
-                                  </ChoiceBox>
+                                  </ComboBox>
                                  <Button fx:id="add" layoutX="515.0" layoutY="14.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="100.0" text="添加" />
                                  <Button fx:id="delete" layoutX="515.0" layoutY="42.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="100.0" text="删除" />
                                  <TextField fx:id="key" layoutX="209.0" layoutY="30.0" prefHeight="24.0" prefWidth="280.0" />

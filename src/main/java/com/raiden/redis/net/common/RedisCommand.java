@@ -35,6 +35,7 @@ public class RedisCommand {
         public static class HSet{
             public static final String H_SET = "HSET";
             public static final String H_GET = "HGET";
+            public static final String H_DEL = "HDEL";
             public static final String H_SCAN = "HSCAN";
             public static final String H_M_SET = "HMSET";
             public static final String H_M_GET = "HMGET";

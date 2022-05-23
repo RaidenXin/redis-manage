@@ -15,11 +15,13 @@ public interface RedisClient {
 
     String set(String key,String value);
 
-    String hSet(String key,String field,String value);
+    boolean hSet(String key,String field,String value);
 
     String get(String key);
 
     String hGet(String key,String field);
+
+    String hDel(String key,String... field);
 
     DataType type(String key);
 
