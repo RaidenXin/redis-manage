@@ -32,8 +32,10 @@ public final class TaskProcessingCenter {
         TASK_THREAD_POOL = new ThreadPoolExecutor(CORE_POOL_SIZE, CORE_POOL_SIZE, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), threadFactory);
         for (int i = 0; i < CORE_POOL_SIZE; i++) {
             TASK_THREAD_POOL.submit(() -> {
+                //这里是为了安全结束任务设置的结束标识
                 while (SIGN.get()){
                     try {
+                        //如果没有就等待 1 秒钟
                         DelayedTask poll = TASK_DELAY_QUEUE.poll(1, TimeUnit.SECONDS);
                         if (poll != null){
                             poll.run();
@@ -70,7 +72,7 @@ public final class TaskProcessingCenter {
                 task.run();
                 return false;
             }catch (Exception e){
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
                 return false;
             }
         }
