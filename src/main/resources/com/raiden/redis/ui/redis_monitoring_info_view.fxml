@@ -9,7 +9,7 @@
         <tabs>
             <Tab fx:id="qps" text="QPS">
                 <content>
-                    <ScrollPane prefHeight="967.0" prefWidth="1872.0" vbarPolicy="NEVER">
+                    <ScrollPane prefHeight="967.0" minWidth="936.0" vbarPolicy="NEVER">
                         <content>
                         </content>
                     </ScrollPane>
@@ -17,7 +17,7 @@
             </Tab>
             <Tab fx:id="cpu" text="CPU">
                 <content>
-                    <ScrollPane prefHeight="967.0" prefWidth="1872.0" vbarPolicy="NEVER">
+                    <ScrollPane prefHeight="967.0" prefWidth="936.0" vbarPolicy="NEVER">
                         <content>
                         </content>
                     </ScrollPane>
@@ -25,7 +25,7 @@
             </Tab>
             <Tab fx:id="timeSharingTraffic" text="Redis瞬时网络流量">
                 <content>
-                    <ScrollPane prefHeight="967.0" prefWidth="1872.0" vbarPolicy="NEVER">
+                    <ScrollPane prefHeight="967.0" prefWidth="936.0" vbarPolicy="NEVER">
                         <content>
                         </content>
                     </ScrollPane>

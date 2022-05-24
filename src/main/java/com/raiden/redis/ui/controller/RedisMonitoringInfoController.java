@@ -79,7 +79,7 @@ public class RedisMonitoringInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.prefHeight = tabPane.getPrefHeight();
+        this.prefHeight = tabPane.getPrefHeight() - STANDARD_HEIGHT_INTERVAL;
         this.prefWidth = tabPane.getPrefWidth();
     }
 
@@ -139,7 +139,7 @@ public class RedisMonitoringInfoController implements Initializable {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
             String time = dtf.format(LocalTime.now());
             queue.add(new Pair<>(time, info));
-            List<Pair<String, RedisNodeInfo>> desc = queue.getDesc(35);
+            List<Pair<String, RedisNodeInfo>> desc = queue.getDesc(90);
             for (Tab tab : tabs){
                 switch (tab.getId()){
                     case QPS://服务
@@ -195,7 +195,8 @@ public class RedisMonitoringInfoController implements Initializable {
         instantaneousOpsPerSecSeries.setName("QPS");
         ObservableList<XYChart.Data<String, Integer>> instantaneousOpsPerSecSeriesData = instantaneousOpsPerSecSeries.getData();
         //因为是倒序 所以要从后面开始遍历
-        for (int i = redisNodeInfos.size() - 1; i > -1; i--){
+        int size = redisNodeInfos.size();
+        for (int i = size - 1; i > -1; i--){
             Pair<String, RedisNodeInfo> redisNodeInfo = redisNodeInfos.get(i);
             RedisNodeInfo info = redisNodeInfo.getValue();
             String time = redisNodeInfo.getKey();
@@ -205,8 +206,8 @@ public class RedisMonitoringInfoController implements Initializable {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel("处理命令数(个/秒)");
         LineChart lineChart = new LineChart(new CategoryAxis(), numberAxis);
-        lineChart.setPrefHeight(prefHeight - STANDARD_HEIGHT_INTERVAL);
-        lineChart.setPrefWidth(this.prefWidth * 2);
+        lineChart.setPrefHeight(this.prefHeight);
+        lineChart.setPrefWidth(this.prefWidth * ((size >> 4) + 1));
         ObservableList<XYChart.Series<String, Integer>> data = lineChart.getData();
         data.add(instantaneousOpsPerSecSeries);
         ScrollPane content = (ScrollPane) tab.getContent();
@@ -250,7 +251,8 @@ public class RedisMonitoringInfoController implements Initializable {
         ObservableList<XYChart.Data<String, Number>> usedCpuUserChildrenSeriesData = usedCpuUserChildrenSeries.getData();
         usedCpuUserChildrenSeries.setName("后台进程用户CPU使用率");
         //因为是倒序 所以要从后面开始遍历 第一个前面没有了无法比较 所以直接从第二个开始
-        for (int i = redisNodeInfos.size() - 2; i > -1; i--){
+        int size = redisNodeInfos.size();
+        for (int i = size - 2; i > -1; i--){
             Pair<String, RedisNodeInfo> info = redisNodeInfos.get(i);
             String time = info.getKey();
             RedisNodeInfo redisNodeInfo = info.getValue();
@@ -277,25 +279,26 @@ public class RedisMonitoringInfoController implements Initializable {
             usedCpuUserChildrenSeriesData.add(new XYChart.Data<>(time, usedCpuUserChildren));
 
         }
-        double prefHeight = this.prefHeight / 3 - 15;
-        LineChart usedCpu = createLineChart(prefHeight, usedCpuSysSeries, usedCpuUserSeries);
-        LineChart mainThread = createLineChart(prefHeight, usedCpuSysMainThreadSeries, usedCpuUserMainThreadSeries);
-        LineChart backgroundProcess = createLineChart(prefHeight, usedCpuSysChildrenSeries, usedCpuUserChildrenSeries);
+        double prefWidth = this.prefWidth * ((size >> 4) + 1);
+        double prefHeight = this.prefHeight / 3;
+        LineChart usedCpu = createLineChart(prefHeight, prefWidth, usedCpuSysSeries, usedCpuUserSeries);
+        LineChart mainThread = createLineChart(prefHeight, prefWidth, usedCpuSysMainThreadSeries, usedCpuUserMainThreadSeries);
+        LineChart backgroundProcess = createLineChart(prefHeight, prefWidth, usedCpuSysChildrenSeries, usedCpuUserChildrenSeries);
         VBox vBox = new VBox();
-        vBox.setPrefWidth(this.prefWidth * 2);
-        vBox.setPrefHeight(this.prefHeight);
+        vBox.setPrefHeight(tabPane.getPrefHeight());
+        vBox.setPrefWidth(prefWidth);
         ObservableList<Node> children = vBox.getChildren();
         children.addAll(usedCpu, backgroundProcess, mainThread);
         ScrollPane content = (ScrollPane) tab.getContent();
         content.setContent(vBox);
     }
 
-    private LineChart createLineChart(double prefHeight,XYChart.Series<String,Number>... series){
+    private LineChart createLineChart(double prefHeight,double prefWidth,XYChart.Series<String,Number>... series){
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel("CPU占用率(%)");
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
         lineChart.setPrefHeight(prefHeight);
-        lineChart.setPrefWidth(this.prefWidth * 2);
+        lineChart.setPrefWidth(prefWidth);
         ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();
         data.addAll(series);
         return lineChart;
@@ -322,7 +325,8 @@ public class RedisMonitoringInfoController implements Initializable {
         ObservableList<XYChart.Data<String, Number>> instantaneousOutputKbpsSeriesData = instantaneousOutputKbpsSeries.getData();
         ObservableList<XYChart.Data<String, Number>> instantaneousInputKbpsSeriesData = instantaneousInputKbpsSeries.getData();
         //因为是倒序 所以要从后面开始遍历
-        for (int i = redisNodeInfos.size() - 1; i > -1; i--){
+        int size = redisNodeInfos.size();
+        for (int i = size - 1; i > -1; i--){
             Pair<String, RedisNodeInfo> info = redisNodeInfos.get(i);
             RedisNodeInfo redisNodeInfo = info.getValue();
             String time = info.getKey();
@@ -333,8 +337,8 @@ public class RedisMonitoringInfoController implements Initializable {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel("IO流量(kb/s)");
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
-        lineChart.setPrefHeight(this.prefHeight - STANDARD_HEIGHT_INTERVAL);
-        lineChart.setPrefWidth(prefWidth * 2);
+        lineChart.setPrefHeight(this.prefHeight);
+        lineChart.setPrefWidth(this.prefWidth * ((size >> 4) + 1));
         ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();
         data.addAll(instantaneousOutputKbpsSeries, instantaneousInputKbpsSeries);
         ScrollPane content = (ScrollPane) tab.getContent();

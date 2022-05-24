@@ -271,7 +271,7 @@ public class TestClient {
     public void testHSet() throws InterruptedException {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
         for (int i = 0; i < 20; i++) {
-            redisClient.hSet("1", String.valueOf(i), "大师兄" + i);
+            LOGGER.info(redisClient.hGet("1", String.valueOf(i)));
         }
     }
 
