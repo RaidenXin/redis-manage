@@ -16,10 +16,10 @@ public enum  DataType {
 
     NONE("none", null, null),
     STRING("string", "", "add/add_hash_z_set_elements_view.fxml"),
-    LIST("list", "", "add/add_hash_z_set_elements_view.fxml"),
+    LIST("list", "data/redis_list_data_table_view.fxml", "add/add_hash_z_set_elements_view.fxml"),
     SET("set", "", "add/add_hash_z_set_elements_view.fxml"),
     ZSET("zset", "", "add/add_hash_z_set_elements_view.fxml"),
-    HASH("hash", "add/redis_h_set_data_table_view.fxml", "add/add_hash_z_set_elements_view.fxml");
+    HASH("hash", "data/redis_hash_data_table_view.fxml", "add/add_hash_z_set_elements_view.fxml");
 
     private static final Map<String,DataType> CODE_LOOKUP;
 

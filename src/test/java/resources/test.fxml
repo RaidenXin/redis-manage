@@ -9,22 +9,9 @@
         <SplitPane dividerPositions="0.35" layoutX="5.0" layoutY="2.0" orientation="VERTICAL" prefHeight="340.0" prefWidth="630.0">
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="115.0" prefWidth="600.0">
-                    <children>
-                        <HBox layoutX="0.0" layoutY="0.0" prefHeight="140.0" prefWidth="616.0">
-                            <children>
-                                <Pane prefHeight="119.0" prefWidth="100.0">
-                                    <children>
-                                        <Label fx:id="keyTitle" layoutX="19.0" layoutY="46.0" text="Key:">
-                                            <font>
-                                                <Font name="System Bold Italic" size="20.0" />
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </Pane>
-                                <TextArea fx:id="fieldTextArea" editable="false" prefHeight="135.0" prefWidth="515.0" wrapText="true" />
-                            </children>
-                        </HBox>
-                    </children>
+               <children>
+                  <Pagination layoutX="176.0" layoutY="32.0" prefHeight="60.0" prefWidth="200.0" />
+               </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="211.0" prefWidth="628.0">
                     <children>

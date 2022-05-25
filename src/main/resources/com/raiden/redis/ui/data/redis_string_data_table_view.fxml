@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<SplitPane dividerPositions="0.57" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="756.0" prefWidth="630.0"
+           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.data.RedisHashDataViewController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.8" prefWidth="630.0">
+         <children>
+            <VBox prefHeight="415.8" prefWidth="630.0">
+               <children>
+                  <TableView fx:id="tableView" prefHeight="417.0" prefWidth="630.0">
+                    <columns>
+                      <TableColumn fx:id="field" prefWidth="245.0" text="field" />
+                      <TableColumn fx:id="value" prefWidth="380.0" text="value" />
+                    </columns>
+                  </TableView>
+                  <Pane prefHeight="140.0" prefWidth="630.0">
+                     <children>
+                        <TextField fx:id="searchKey" layoutX="50.0" layoutY="32.0" prefHeight="23.0" prefWidth="250.0" />
+                        <Label layoutX="14.0" layoutY="36.0" text="Key:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="searchButton" layoutX="315.0" layoutY="32.0" mnemonicParsing="false" onAction="#search" text="搜索" />
+                        <CheckBox fx:id="isFuzzySearch" layoutX="367.0" layoutY="27.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" text="模糊查找" />
+                        <Button fx:id="pre" layoutX="460.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="上一页" />
+                        <Button fx:id="next" layoutX="460.0" layoutY="48.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="下一页" />
+                        <Button fx:id="addButton" layoutX="537.0" layoutY="15.0" mnemonicParsing="false" onAction="#openAddView" prefHeight="25.0" prefWidth="65.0" text="添加" />
+                        <Button fx:id="deleteButton" layoutX="537.0" layoutY="48.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="删除" />
+                     </children>
+                  </Pane>
+               </children>
+            </VBox>
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="340.2" prefWidth="630.0">
+         <children>
+             <SplitPane dividerPositions="0.35" layoutX="5.0" layoutY="2.0" orientation="VERTICAL" prefHeight="340.0" prefWidth="630.0">
+                 <items>
+                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="115.0" prefWidth="600.0">
+                         <children>
+                             <HBox layoutX="-1.0" layoutY="-2.0" prefHeight="119.0" prefWidth="611.0">
+                                 <children>
+                                     <Pane prefHeight="119.0" prefWidth="100.0">
+                                         <children>
+                                             <Label layoutX="19.0" layoutY="46.0" text="Field:">
+                                                 <font>
+                                                     <Font name="System Bold Italic" size="20.0" />
+                                                 </font>
+                                             </Label>
+                                         </children>
+                                     </Pane>
+                                     <TextArea fx:id="fieldTextArea" editable="false" prefHeight="119.0" prefWidth="512.0" wrapText="true" />
+                                 </children>
+                             </HBox>
+                         </children>
+                     </AnchorPane>
+                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="190.0" prefWidth="628.0">
+                         <children>
+                             <HBox layoutX="0.0" layoutY="0.0" prefHeight="190.0" prefWidth="630.0">
+                                 <children>
+                                     <Pane prefHeight="190.0" prefWidth="100.0">
+                                         <children>
+                                             <Label layoutX="17.0" layoutY="44.0" text="Value:">
+                                                 <font>
+                                                     <Font name="System Bold Italic" size="20.0" />
+                                                 </font>
+                                             </Label>
+                                             <Button layoutX="13.0" layoutY="101.0" mnemonicParsing="false" onAction="#updateValue" prefHeight="25.0" prefWidth="75.0" text="修改" />
+                                         </children>
+                                     </Pane>
+                                     <ScrollPane hbarPolicy="NEVER" prefHeight="190.0" prefWidth="524.0">
+                                         <content>
+                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="190.0" prefWidth="524.0">
+                                                 <TextArea fx:id="valueTextArea" layoutY="1.0" prefHeight="190.0" prefWidth="516.0" wrapText="true" />
+                                             </AnchorPane>
+                                         </content>
+                                     </ScrollPane>
+                                 </children>
+                             </HBox>
+                         </children>
+                     </AnchorPane>
+                 </items>
+             </SplitPane>
+         </children>
+    </AnchorPane>
+  </items>
+</SplitPane>

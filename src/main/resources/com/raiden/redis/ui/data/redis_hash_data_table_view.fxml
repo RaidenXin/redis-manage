@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 
 <SplitPane dividerPositions="0.57" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="756.0" prefWidth="630.0"
-           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisHSetDataViewController">
+           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.data.RedisHashDataViewController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.8" prefWidth="630.0">
          <children>

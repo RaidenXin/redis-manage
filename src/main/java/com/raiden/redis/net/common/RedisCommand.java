@@ -32,7 +32,15 @@ public class RedisCommand {
             public static final String OBJECT = "OBJECT";
         }
 
-        public static class HSet{
+        public static class List{
+            public static final String R_PUSH = "RPUSH";
+            public static final String L_PUSH = "LPUSH";
+            public static final String LR_ANGE = "LRANGE";
+            public static final String L_LEN = "LLEN";
+            public static final String L_SET = "LSET";
+        }
+
+        public static class Hash {
             public static final String H_SET = "HSET";
             public static final String H_GET = "HGET";
             public static final String H_DEL = "HDEL";

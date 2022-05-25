@@ -285,7 +285,7 @@ public class RedisClusterDataTableController implements Initializable {
             FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(addView);
             TitledPane load = fxmlLoader.load();
             AddElementsController controller = fxmlLoader.getController();
-            controller.addHashField(redisNode, window);
+            controller.addString(redisNode, window);
             Scene scene = new Scene(load);
             window.setScene(scene);
             window.showAndWait();

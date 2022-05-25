@@ -77,7 +77,7 @@ public abstract class AbstractRedisClient implements RedisClient{
         if (StringUtils.isBlank(field)){
             throw new NullPointerException("field is null");
         }
-        return sendCommands(RedisCommand.HSet.H_GET, key, field);
+        return sendCommands(RedisCommand.Hash.H_GET, key, field);
     }
 
     @Override
@@ -85,17 +85,44 @@ public abstract class AbstractRedisClient implements RedisClient{
         if (StringUtils.isBlank(key)){
             throw new NullPointerException("key is null");
         }
-        String[] commands = new String[field.length + 2];
-        commands[0] = RedisCommand.HSet.H_DEL;
-        commands[1] = key;
-        System.arraycopy(field, 0, commands, 2, field.length);
+        String[] commands = encapsulationCommands(RedisCommand.Hash.H_DEL, key, field);
         return sendCommands(commands);
     }
 
     @Override
     public boolean hSet(String key, String field, String value) {
-        String response = sendCommands(RedisCommand.HSet.H_SET, key, field, value);
+        String response = sendCommands(RedisCommand.Hash.H_SET, key, field, value);
         return SUCCESS.equalsIgnoreCase(response);
+    }
+
+    @Override
+    public boolean lSet(String key, String index, String value) {
+        String response = sendCommands(RedisCommand.List.L_SET, key, index, value);
+        return SUCCESS.equalsIgnoreCase(response);
+    }
+
+    @Override
+    public int rPush(String key, String... value) {
+        String[] commands = encapsulationCommands(RedisCommand.List.R_PUSH, key, value);
+        String response = sendCommands(commands);
+        return Integer.parseInt(response);
+    }
+
+    @Override
+    public int lPush(String key, String... value) {
+        String[] commands = encapsulationCommands(RedisCommand.List.L_PUSH, key, value);
+        String response = sendCommands(commands);
+        return Integer.parseInt(response);
+    }
+
+    @Override
+    public String[] lrAnge(String key, String start,String stop) {
+        return  sendCommands(RedisCommand.List.LR_ANGE, key, start, stop);
+    }
+
+    @Override
+    public int lLen(String key) {
+        return Integer.parseInt(sendCommands(RedisCommand.List.L_LEN, key));
     }
 
     public String get(String key){
@@ -130,7 +157,7 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     public ScanResult<Pair<String, String>> hScan(String key, String startIndex, String limit){
-        String[] result = sendCommands(RedisCommand.HSet.H_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
+        String[] result = sendCommands(RedisCommand.Hash.H_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
         List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
         for (int i = 1;i < result.length;i+=2){
@@ -140,7 +167,7 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     public ScanResult<Pair<String, String>> hScanMatch(String key, String startIndex, String pattern, String limit){
-        String[] result = sendCommands(RedisCommand.HSet.H_SCAN, key, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
+        String[] result = sendCommands(RedisCommand.Hash.H_SCAN, key, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
         List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
         for (int i = 1;i < result.length;i+=2){
@@ -173,6 +200,14 @@ public abstract class AbstractRedisClient implements RedisClient{
         return response;
     }
 
+
+    private String[] encapsulationCommands(String command1,String command2,String... values){
+        String[] commands = new String[values.length + 2];
+        commands[0] = command1;
+        commands[1] = command2;
+        System.arraycopy(values, 0, commands, 2, values.length);
+        return commands;
+    }
 
     protected <T> T sendCommands(String... commands){
         if (channel != null){

@@ -17,6 +17,16 @@ public interface RedisClient {
 
     boolean hSet(String key,String field,String value);
 
+    boolean lSet(String key,String index,String value);
+
+    int rPush(String key,String... value);
+
+    int lPush(String key,String... value);
+
+    String[] lrAnge(String key, String start,String stop);
+
+    int lLen(String key);
+
     String get(String key);
 
     String hGet(String key,String field);

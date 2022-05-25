@@ -296,4 +296,15 @@ public class TestClient {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
         LOGGER.info(redisClient.hDel("1", "0"));
     }
+
+    @Test
+    public void testList()  {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+//        LOGGER.info(redisClient.rPush("{aaa}List", "one"));
+//        LOGGER.info(redisClient.rPush("{aaa}List", "two"));
+        for (int i = 0; i < 100; i++) {
+            LOGGER.info(redisClient.rPush("{aaa}List", "" + i));
+        }
+//        LOGGER.info(Arrays.toString(redisClient.lrAnge("{aaa}List", "0" , "5")));
+    }
 }
