@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractRedisClient implements RedisClient{
 
@@ -59,14 +58,15 @@ public abstract class AbstractRedisClient implements RedisClient{
         this.isObjectPooling = pool != null;
     }
 
-    public String set(String key,String value){
+    public boolean set(String key,String value){
         if (StringUtils.isBlank(key)){
             throw new NullPointerException("key is null");
         }
         if (StringUtils.isBlank(value)){
             throw new NullPointerException("value is null");
         }
-        return sendCommands(RedisCommand.SET, key, value);
+        String response = sendCommands(RedisCommand.SET, key, value);
+        return SUCCESS.equals(response);
     }
 
     @Override

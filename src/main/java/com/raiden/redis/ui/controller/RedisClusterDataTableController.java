@@ -4,6 +4,7 @@ import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.Separator;
+import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -13,10 +14,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -88,7 +92,7 @@ public class RedisClusterDataTableController implements Initializable {
                     RedisClient redisClient = redisNode.getRedisClient();
                     DataType type = redisClient.type(newValue);
                     dataType.getSelectionModel().select(type.getType());
-                    FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(type.getPath());
+                    FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(type.getShowView());
                     try {
                         Node load = fxmlLoader.load();
                         Controller controller = fxmlLoader.getController();
@@ -257,5 +261,37 @@ public class RedisClusterDataTableController implements Initializable {
                 nextIndex.compareAndSet(index, datas.getNextCursor());
             }
         });
+    }
+
+    public void add(){
+        Stage window = new Stage();
+        window.setTitle("添加");
+        //modality要使用Modality.APPLICATION_MODEL
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setMinWidth(300);
+        window.setMinHeight(150);
+
+        String type = dataType.getSelectionModel().getSelectedItem();
+        if (StringUtils.isBlank(type)){
+            return;
+        }
+        try {
+            DataType dataType = DataType.of(type);
+            switch (dataType){
+                case SET:
+
+            }
+            String addView = dataType.getAddView();
+            FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(addView);
+            TitledPane load = fxmlLoader.load();
+            AddElementsController controller = fxmlLoader.getController();
+            controller.addHashField(redisNode, window);
+            Scene scene = new Scene(load);
+            window.setScene(scene);
+            window.showAndWait();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "系统发生错误!" + e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

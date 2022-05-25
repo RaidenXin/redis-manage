@@ -13,7 +13,7 @@ import javafx.util.Pair;
  */
 public interface RedisClient {
 
-    String set(String key,String value);
+    boolean set(String key,String value);
 
     boolean hSet(String key,String field,String value);
 

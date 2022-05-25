@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
  */
 public enum  DataType {
 
-    NONE("none", null),
-    STRING("string", ""),
-    LIST("list", ""),
-    SET("set", ""),
-    ZSET("zset", ""),
-    HASH("hash", "redis_h_set_data_table_view.fxml");
+    NONE("none", null, null),
+    STRING("string", "", "add/add_hash_z_set_elements_view.fxml"),
+    LIST("list", "", "add/add_hash_z_set_elements_view.fxml"),
+    SET("set", "", "add/add_hash_z_set_elements_view.fxml"),
+    ZSET("zset", "", "add/add_hash_z_set_elements_view.fxml"),
+    HASH("hash", "add/redis_h_set_data_table_view.fxml", "add/add_hash_z_set_elements_view.fxml");
 
     private static final Map<String,DataType> CODE_LOOKUP;
 
@@ -28,19 +28,25 @@ public enum  DataType {
     }
 
     private String type;
-    private String path;
+    private String showView;
+    private String addView;
 
-     DataType(String type,String path){
+     DataType(String type,String showView,String addView){
         this.type = type;
-        this.path = path;
+        this.showView = showView;
+        this.addView = addView;
     }
 
     public String getType() {
         return type;
     }
 
-    public String getPath() {
-        return path;
+    public String getShowView() {
+        return showView;
+    }
+
+    public String getAddView(){
+         return addView;
     }
 
     public static DataType of(String type){

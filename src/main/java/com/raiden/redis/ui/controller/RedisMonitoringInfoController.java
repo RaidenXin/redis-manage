@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RedisMonitoringInfoController implements Initializable {
 
-    private static final Logger LOGGER = LogManager.getLogger(Window.class);
+    private static final Logger LOGGER = LogManager.getLogger(RedisMonitoringInfoController.class);
     //标准高度间隔
     private static final double STANDARD_HEIGHT_INTERVAL = 45D;
 
@@ -196,8 +196,7 @@ public class RedisMonitoringInfoController implements Initializable {
         ObservableList<XYChart.Data<String, Integer>> instantaneousOpsPerSecSeriesData = instantaneousOpsPerSecSeries.getData();
         //因为是倒序 所以要从后面开始遍历
         int size = redisNodeInfos.size();
-        for (int i = size - 1; i > -1; i--){
-            Pair<String, RedisNodeInfo> redisNodeInfo = redisNodeInfos.get(i);
+        for (Pair<String, RedisNodeInfo> redisNodeInfo : redisNodeInfos){
             RedisNodeInfo info = redisNodeInfo.getValue();
             String time = redisNodeInfo.getKey();
             RedisStats stats = info.getStats();
@@ -252,11 +251,11 @@ public class RedisMonitoringInfoController implements Initializable {
         usedCpuUserChildrenSeries.setName("后台进程用户CPU使用率");
         //因为是倒序 所以要从后面开始遍历 第一个前面没有了无法比较 所以直接从第二个开始
         int size = redisNodeInfos.size();
-        for (int i = size - 2; i > -1; i--){
+        for (int i = 1; i < size; i++){
             Pair<String, RedisNodeInfo> info = redisNodeInfos.get(i);
             String time = info.getKey();
             RedisNodeInfo redisNodeInfo = info.getValue();
-            Pair<String, RedisNodeInfo> beforeInfo = redisNodeInfos.get(i + 1);
+            Pair<String, RedisNodeInfo> beforeInfo = redisNodeInfos.get(i - 1);
             RedisNodeInfo beforeRedisNodeInfo = beforeInfo.getValue();
             long beforeTimeStamp = beforeRedisNodeInfo.getTimeStamp();
             long nowTimeStamp = redisNodeInfo.getTimeStamp();
@@ -326,8 +325,7 @@ public class RedisMonitoringInfoController implements Initializable {
         ObservableList<XYChart.Data<String, Number>> instantaneousInputKbpsSeriesData = instantaneousInputKbpsSeries.getData();
         //因为是倒序 所以要从后面开始遍历
         int size = redisNodeInfos.size();
-        for (int i = size - 1; i > -1; i--){
-            Pair<String, RedisNodeInfo> info = redisNodeInfos.get(i);
+        for (Pair<String, RedisNodeInfo> info : redisNodeInfos){
             RedisNodeInfo redisNodeInfo = info.getValue();
             String time = info.getKey();
             RedisStats redisStats = redisNodeInfo.getStats();

@@ -24,10 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -270,7 +267,8 @@ public class TestClient {
     @Test
     public void testHSet() throws InterruptedException {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 1000; i++) {
+            TimeUnit.SECONDS.sleep(i % 3);
             LOGGER.info(redisClient.hGet("1", String.valueOf(i)));
         }
     }

@@ -260,7 +260,7 @@ public class RedisHSetDataViewController implements Controller, Initializable {
         try {
             TitledPane load = fxmlLoader.load();
             AddElementsController controller = fxmlLoader.getController();
-            controller.init(redisNode, window, true, this.key);
+            controller.addHashField(redisNode, window, this.key);
             Scene scene = new Scene(load);
             window.setScene(scene);
             window.showAndWait();
