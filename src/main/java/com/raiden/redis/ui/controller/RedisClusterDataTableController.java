@@ -5,6 +5,7 @@ import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.Separator;
 import com.raiden.redis.ui.controller.add.AddElementsController;
+import com.raiden.redis.ui.controller.add.AddHashElementsController;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -277,15 +278,21 @@ public class RedisClusterDataTableController implements Initializable {
         }
         try {
             DataType dataType = DataType.of(type);
+            FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(dataType.getAddView());
+            TitledPane load = fxmlLoader.load();
             switch (dataType){
-                case SET:
+                case HASH:{
+                    AddHashElementsController controller = fxmlLoader.getController();
+                    controller.addHash(redisNode, window);
+                    break;
+                }
+                case LIST:{
+                    AddElementsController controller = fxmlLoader.getController();
+                    controller.addList(redisNode, window);
+                    break;
+                }
 
             }
-            String addView = dataType.getAddView();
-            FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(addView);
-            TitledPane load = fxmlLoader.load();
-            AddElementsController controller = fxmlLoader.getController();
-            controller.addString(redisNode, window);
             Scene scene = new Scene(load);
             window.setScene(scene);
             window.showAndWait();

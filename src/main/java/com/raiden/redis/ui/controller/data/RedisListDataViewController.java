@@ -8,6 +8,7 @@ import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.model.ScanResult;
 import com.raiden.redis.ui.controller.Controller;
 import com.raiden.redis.ui.controller.add.AddElementsController;
+import com.raiden.redis.ui.controller.add.AddValueController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.beans.value.ChangeListener;
@@ -65,9 +66,6 @@ public class RedisListDataViewController implements Controller, Initializable {
     private Button addButton;
 
     private RedisNode redisNode;
-    private AtomicReference<Integer> currentIndex;
-    private AtomicReference<Integer> nextIndex;
-    private Stack<Integer> stack;
     private String key;
 
     @Override
@@ -163,11 +161,11 @@ public class RedisListDataViewController implements Controller, Initializable {
         window.setMinWidth(300);
         window.setMinHeight(150);
 
-        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("add/add_elements_view.fxml");
+        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("add/add_value_view.fxml");
         try {
             TitledPane load = fxmlLoader.load();
-            AddElementsController controller = fxmlLoader.getController();
-            controller.addHashField(redisNode, window, this.key);
+            AddValueController controller = fxmlLoader.getController();
+            controller.addList(redisNode, window, this.key);
             Scene scene = new Scene(load);
             window.setScene(scene);
             window.showAndWait();

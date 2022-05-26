@@ -16,31 +16,29 @@ import org.apache.commons.lang3.StringUtils;
  * @Date:Created in 22:54 2022/5/23
  * @Modified By:
  */
-public class AddHashElementsController {
-    @FXML
-    private TextArea keyTextArea;
-    @FXML
-    private TextArea fieldTextArea;
+public class AddValueController {
+
     @FXML
     private TextArea valueTextArea;
     @FXML
     private Button submit;
 
-    public void addHash(RedisNode redisNode, Stage window) {
-        if (redisNode == null || window == null){
-            throw new RuntimeException("参数不能为空！");
-        }
+    /**
+     * hash 和 ZSet 添加 子元素时候用的初始化方法
+     * @param redisNode
+     * @param window
+     * @param key
+     */
+    public void addList(RedisNode redisNode, Stage window, String key) {
         submit.setOnAction((event) -> {
-            String key = this.keyTextArea.getText();
-            String field = fieldTextArea.getText();
             String value = this.valueTextArea.getText();
-            if (StringUtils.isNoneBlank(key, field, value)){
-                Alert alert = new Alert(Alert.AlertType.WARNING, "数据不能为空!");
+            if (StringUtils.isBlank(value)){
+                Alert alert = new Alert(Alert.AlertType.WARNING, "value不能为空!");
                 alert.showAndWait();
                 return;
             }
             RedisClient redisClient = redisNode.getRedisClient();
-            redisClient.hSet(key, field, value);
+            redisClient.rPush(key, value);
             window.close();
         });
     }

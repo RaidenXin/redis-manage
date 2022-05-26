@@ -4,8 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<TitledPane animated="false" collapsible="false" prefHeight="495.0" prefWidth="630.0" text="添加元素" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.raiden.redis.ui.controller.add.AddHashElementsController">
+<TitledPane animated="false" collapsible="false" prefHeight="495.0" prefWidth="630.0" text="添加元素" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.add.AddHashElementsController">
     <font>
         <Font name="System Bold" size="14.0" />
     </font>
@@ -40,7 +39,7 @@
                                     <children>
                                         <Pane prefHeight="128.0" prefWidth="98.0">
                                             <children>
-                                                <Label fx:id="keyTitle" layoutX="35.0" layoutY="49.0" text="Field/Score:">
+                                                <Label fx:id="keyTitle" layoutX="7.0" layoutY="47.0" text="Field/Score:">
                                                     <font>
                                                         <Font name="System Bold Italic" size="14.0" />
                                                     </font>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<TitledPane animated="false" collapsible="false" prefHeight="449.0" prefWidth="630.0" text="添加元素" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.raiden.redis.ui.controller.add.AddValueController">
+    <font>
+        <Font name="System Bold" size="14.0" />
+    </font>
+    <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="211.0" prefWidth="628.0">
+            <children>
+                <HBox layoutX="0.0" layoutY="0.0" prefHeight="354.0" prefWidth="630.0">
+                    <children>
+                        <Pane prefHeight="211.0" prefWidth="100.0">
+                            <children>
+                                <Label layoutX="18.0" layoutY="164.0" text="Value:">
+                                    <font>
+                                        <Font name="System Bold Italic" size="20.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </Pane>
+                        <ScrollPane hbarPolicy="NEVER" prefHeight="350.0" prefWidth="532.0">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="524.0">
+                                    <TextArea fx:id="valueTextArea" layoutY="1.0" prefHeight="700.0" prefWidth="525.0" wrapText="true" />
+                                </AnchorPane>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </HBox>
+                <Button fx:id="submit" layoutX="264.0" layoutY="372.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="确定" />
+            </children>
+        </AnchorPane>
+    </content>
+</TitledPane>

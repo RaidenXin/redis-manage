@@ -79,4 +79,28 @@ public class AddElementsController {
             window.close();
         });
     }
+
+
+    public void addList(RedisNode redisNode, Stage window) {
+        if (redisNode == null || window == null){
+            throw new RuntimeException("参数不能为空！");
+        }
+        submit.setOnAction((event) -> {
+            String key = this.keyTextArea.getText();
+            String value = this.valueTextArea.getText();
+            if (StringUtils.isBlank(key)){
+                Alert alert = new Alert(Alert.AlertType.WARNING, "key不能为空!");
+                alert.showAndWait();
+                return;
+            }
+            if (StringUtils.isBlank(value)){
+                Alert alert = new Alert(Alert.AlertType.WARNING, "value不能为空!");
+                alert.showAndWait();
+                return;
+            }
+            RedisClient redisClient = redisNode.getRedisClient();
+            redisClient.rPush(key, value);
+            window.close();
+        });
+    }
 }
