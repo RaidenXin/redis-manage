@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<SplitPane dividerPositions="0.09814323607427056" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="756.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.data.RedisStringDataViewController">
+<SplitPane dividerPositions="0.09814323607427056" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="756.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.data.RedisStringDataViewController">
     <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.8" prefWidth="630.0">
             <children>
@@ -31,10 +31,10 @@
                                     </Label>
                                 </children>
                             </Pane>
-                            <ScrollPane hbarPolicy="NEVER" prefHeight="693.0" prefWidth="525.0">
+                            <ScrollPane hbarPolicy="NEVER" prefHeight="693.0" prefWidth="532.0">
                                 <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="524.0">
-                                        <TextArea fx:id="valueTextArea" layoutY="1.0" prefHeight="677.0" prefWidth="527.0" wrapText="true" />
+                                        <TextArea fx:id="valueTextArea" layoutY="1.0" prefHeight="677.0" prefWidth="532.0" wrapText="true" />
                                     </AnchorPane>
                                 </content>
                             </ScrollPane>

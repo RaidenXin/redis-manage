@@ -24,7 +24,7 @@ public class AddValueController {
     private Button submit;
 
     /**
-     * hash 和 ZSet 添加 子元素时候用的初始化方法
+     * 添加 list 使用的方法
      * @param redisNode
      * @param window
      * @param key
@@ -39,6 +39,26 @@ public class AddValueController {
             }
             RedisClient redisClient = redisNode.getRedisClient();
             redisClient.rPush(key, value);
+            window.close();
+        });
+    }
+
+    /**
+     * 添加 list 使用的方法
+     * @param redisNode
+     * @param window
+     * @param key
+     */
+    public void sAdd(RedisNode redisNode, Stage window, String key) {
+        submit.setOnAction((event) -> {
+            String value = this.valueTextArea.getText();
+            if (StringUtils.isBlank(value)){
+                Alert alert = new Alert(Alert.AlertType.WARNING, "value不能为空!");
+                alert.showAndWait();
+                return;
+            }
+            RedisClient redisClient = redisNode.getRedisClient();
+            redisClient.sAdd(key, value);
             window.close();
         });
     }

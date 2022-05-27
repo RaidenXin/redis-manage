@@ -40,6 +40,12 @@ public class RedisCommand {
             public static final String L_SET = "LSET";
         }
 
+    public static class Set{
+        public static final String S_SCAN = "SSCAN";
+        public static final String S_ADD = "SADD";
+        public static final String S_REM = "SREM";
+    }
+
         public static class Hash {
             public static final String H_SET = "HSET";
             public static final String H_GET = "HGET";

@@ -291,7 +291,16 @@ public class RedisClusterDataTableController implements Initializable {
                     controller.addList(redisNode, window);
                     break;
                 }
-
+                case SET:{
+                    AddElementsController controller = fxmlLoader.getController();
+                    controller.sAdd(redisNode, window);
+                    break;
+                }
+                case STRING:{
+                    AddElementsController controller = fxmlLoader.getController();
+                    controller.addString(redisNode, window);
+                    break;
+                }
             }
             Scene scene = new Scene(load);
             window.setScene(scene);

@@ -102,6 +102,20 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     @Override
+    public int sAdd(String key, String... value) {
+        String[] commands = encapsulationCommands(RedisCommand.Set.S_ADD, key, value);
+        String response = sendCommands(commands);
+        return Integer.parseInt(response);
+    }
+
+    @Override
+    public int sRem(String key, String... value) {
+        String[] commands = encapsulationCommands(RedisCommand.Set.S_REM, key, value);
+        String response = sendCommands(commands);
+        return Integer.parseInt(response);
+    }
+
+    @Override
     public int rPush(String key, String... value) {
         String[] commands = encapsulationCommands(RedisCommand.List.R_PUSH, key, value);
         String response = sendCommands(commands);
@@ -149,11 +163,31 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     public String[] scan(String startIndex, String limit){
-        return sendCommands(RedisCommand.SCAN, startIndex,RedisCommand.Scan.COUNT, limit);
+        return sendCommands(RedisCommand.SCAN, startIndex, RedisCommand.Scan.COUNT, limit);
     }
 
     public String[] scanMatch(String startIndex,String pattern,String limit){
-        return sendCommands(RedisCommand.SCAN, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
+        return sendCommands(RedisCommand.SCAN, startIndex, RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
+    }
+
+    public ScanResult<String> sScan(String key,String startIndex, String limit){
+        String[] result =  sendCommands(RedisCommand.Set.S_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
+        String cursor = result[0];
+        List<String> pairs = new ArrayList<>(result.length - 1);
+        for (int i = 1;i < result.length;i++){
+            pairs.add(result[i]);
+        }
+        return ScanResult.build(cursor, pairs);
+    }
+
+    public ScanResult<String> sScanMatch(String key,String startIndex,String pattern,String limit){
+        String[] result = sendCommands(RedisCommand.Set.S_SCAN, key, startIndex, RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
+        String cursor = result[0];
+        List<String> pairs = new ArrayList<>(result.length - 1);
+        for (int i = 1;i < result.length;i++){
+            pairs.add(result[i]);
+        }
+        return ScanResult.build(cursor, pairs);
     }
 
     public ScanResult<Pair<String, String>> hScan(String key, String startIndex, String limit){

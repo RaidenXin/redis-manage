@@ -9,6 +9,7 @@ import com.raiden.redis.net.decoder.RedisNodeInfoDecoder;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.net.model.RedisCpuInfo;
 import com.raiden.redis.net.model.RedisNodeInfo;
+import com.raiden.redis.net.model.ScanResult;
 import com.raiden.redis.net.pool.RedisClusterClientPool;
 import com.raiden.redis.net.pool.RedisSingleClientPool;
 import com.raiden.redis.ui.common.Path;
@@ -306,5 +307,12 @@ public class TestClient {
             LOGGER.info(redisClient.rPush("{aaa}List", "" + i));
         }
 //        LOGGER.info(Arrays.toString(redisClient.lrAnge("{aaa}List", "0" , "5")));
+    }
+
+    @Test
+    public void testSet()  {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        ScanResult<String> stringScanResult = redisClient.sScan("{aaa}Set", "0", "5");
+        LOGGER.info(stringScanResult);
     }
 }

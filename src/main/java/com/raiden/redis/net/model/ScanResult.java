@@ -36,4 +36,12 @@ public class ScanResult<T> {
         scanResult.result = result;
         return scanResult;
     }
+
+    @Override
+    public String toString() {
+        return "ScanResult{" +
+                "cursor='" + cursor + '\'' +
+                ", result=" + result +
+                '}';
+    }
 }

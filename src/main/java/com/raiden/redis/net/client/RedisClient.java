@@ -19,6 +19,8 @@ public interface RedisClient {
 
     boolean lSet(String key,String index,String value);
 
+    int sAdd(String key, String... value);
+
     int rPush(String key,String... value);
 
     int lPush(String key,String... value);
@@ -33,11 +35,17 @@ public interface RedisClient {
 
     String hDel(String key,String... field);
 
+    int sRem(String key,String... value);
+
     DataType type(String key);
 
     String[] scan(String startIndex,String limit);
 
     String[] scanMatch(String startIndex,String pattern,String limit);
+
+    ScanResult<String> sScan(String key,String startIndex,String limit);
+
+    ScanResult<String> sScanMatch(String key,String startIndex,String pattern,String limit);
 
     ScanResult<Pair<String, String>> hScan(String key, String startIndex, String limit);
 

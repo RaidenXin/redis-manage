@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -39,21 +40,12 @@ public class AddElementsController {
             throw new RuntimeException("参数不能为空！");
         }
         submit.setOnAction((event) -> {
-            String field = this.keyTextArea.getText();
-            String value = this.valueTextArea.getText();
-            if (StringUtils.isBlank(field)){
-                Alert alert = new Alert(Alert.AlertType.WARNING, "field不能为空!");
-                alert.showAndWait();
-                return;
+            Pair<String, String> keyAndValue = getKeyAndValue();
+            if (valueTextArea != null){
+                RedisClient redisClient = redisNode.getRedisClient();
+                redisClient.hSet(key, keyAndValue.getKey(), keyAndValue.getValue());
+                window.close();
             }
-            if (StringUtils.isBlank(value)){
-                Alert alert = new Alert(Alert.AlertType.WARNING, "value不能为空!");
-                alert.showAndWait();
-                return;
-            }
-            RedisClient redisClient = redisNode.getRedisClient();
-            redisClient.hSet(key, field, value);
-            window.close();
         });
     }
 
@@ -62,21 +54,12 @@ public class AddElementsController {
             throw new RuntimeException("参数不能为空！");
         }
         submit.setOnAction((event) -> {
-            String key = this.keyTextArea.getText();
-            String value = this.valueTextArea.getText();
-            if (StringUtils.isBlank(key)){
-                Alert alert = new Alert(Alert.AlertType.WARNING, "key不能为空!");
-                alert.showAndWait();
-                return;
+            Pair<String, String> keyAndValue = getKeyAndValue();
+            if (keyAndValue != null){
+                RedisClient redisClient = redisNode.getRedisClient();
+                redisClient.set(keyAndValue.getKey(), keyAndValue.getValue());
+                window.close();
             }
-            if (StringUtils.isBlank(value)){
-                Alert alert = new Alert(Alert.AlertType.WARNING, "value不能为空!");
-                alert.showAndWait();
-                return;
-            }
-            RedisClient redisClient = redisNode.getRedisClient();
-            redisClient.set(key, value);
-            window.close();
         });
     }
 
@@ -86,21 +69,42 @@ public class AddElementsController {
             throw new RuntimeException("参数不能为空！");
         }
         submit.setOnAction((event) -> {
-            String key = this.keyTextArea.getText();
-            String value = this.valueTextArea.getText();
-            if (StringUtils.isBlank(key)){
-                Alert alert = new Alert(Alert.AlertType.WARNING, "key不能为空!");
-                alert.showAndWait();
-                return;
+            Pair<String, String> keyAndValue = getKeyAndValue();
+            if (keyAndValue != null){
+                RedisClient redisClient = redisNode.getRedisClient();
+                redisClient.rPush(keyAndValue.getKey(), keyAndValue.getValue());
+                window.close();
             }
-            if (StringUtils.isBlank(value)){
-                Alert alert = new Alert(Alert.AlertType.WARNING, "value不能为空!");
-                alert.showAndWait();
-                return;
-            }
-            RedisClient redisClient = redisNode.getRedisClient();
-            redisClient.rPush(key, value);
-            window.close();
         });
+    }
+
+    public void sAdd(RedisNode redisNode, Stage window) {
+        if (redisNode == null || window == null){
+            throw new RuntimeException("参数不能为空！");
+        }
+        submit.setOnAction((event) -> {
+            Pair<String, String> keyAndValue = getKeyAndValue();
+            if (keyAndValue != null){
+                RedisClient redisClient = redisNode.getRedisClient();
+                redisClient.sAdd(keyAndValue.getKey(), keyAndValue.getValue());
+                window.close();
+            }
+        });
+    }
+
+    private Pair<String,String> getKeyAndValue(){
+        String key = this.keyTextArea.getText();
+        String value = this.valueTextArea.getText();
+        if (StringUtils.isBlank(key)){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "key不能为空!");
+            alert.showAndWait();
+            return null;
+        }
+        if (StringUtils.isBlank(value)){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "value不能为空!");
+            alert.showAndWait();
+            return null;
+        }
+        return new Pair<>(key, value);
     }
 }
