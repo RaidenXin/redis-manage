@@ -64,6 +64,8 @@ public class RedisListDataViewController implements Controller, Initializable {
     private Pagination pagination;
     @FXML
     private Button addButton;
+    @FXML
+    private Button editorButton;
 
     private RedisNode redisNode;
     private String key;
@@ -91,6 +93,7 @@ public class RedisListDataViewController implements Controller, Initializable {
         index.setCellValueFactory(new PropertyValueFactory<>("key"));
         value.setCellValueFactory(new PropertyValueFactory<>("value"));
         addButton.setGraphic(new ImageView("/icon/add.png"));
+        editorButton.setGraphic(new ImageView("/icon/editor.png"));
     }
 
     @Override
