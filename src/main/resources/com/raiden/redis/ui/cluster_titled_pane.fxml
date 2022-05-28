@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<TitledPane animated="false" prefHeight="1000.0" prefWidth="415.0" text="cluster" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.ReidsClusterController">
+<TitledPane animated="false" prefHeight="1000.0" prefWidth="415.0" text="cluster" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisClusterController">
     <content>
         <AnchorPane fx:id="cluster" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="415.0">
             <children>

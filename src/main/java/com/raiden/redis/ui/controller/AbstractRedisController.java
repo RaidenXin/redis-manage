@@ -1,14 +1,9 @@
 package com.raiden.redis.ui.controller;
 
-import com.raiden.redis.net.client.RedisClusterClient;
-import com.raiden.redis.net.model.RedisClusterNodeInfo;
+import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.ui.common.AlertText;
-import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.dao.RecordDao;
 import com.raiden.redis.ui.mode.Record;
-import com.raiden.redis.ui.mode.RedisClusterNode;
-import com.raiden.redis.ui.mode.RedisNode;
-import com.raiden.redis.ui.tab.ClusterRedisInfoTabPane;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,25 +16,23 @@ import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @创建人:Raiden
  * @Descriotion:
- * @Date:Created in 8:57 2022/5/14
+ * @Date:Created in 15:32 2022/5/28
  * @Modified By:
  */
-public class ReidsClusterController implements Initializable {
+public abstract class AbstractRedisController implements Initializable {
 
     @FXML
     private TextField name;
     @FXML
-    private TextField clusterHost;
-    @FXML
-    private TextField clusterPort;
-    @FXML
-    private CheckBox isVerification;
+    protected CheckBox isVerification;
     @FXML
     private Label passwordText;
     @FXML
@@ -59,39 +52,11 @@ public class ReidsClusterController implements Initializable {
 
     private RecordDao recordDao;
 
-    public ReidsClusterController(){
-        this.recordDao = new RecordDao(Path.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH);
+    public AbstractRedisController(RecordDao recordDao){
+        this.recordDao = recordDao;
     }
 
-    public void connectionRedisCluster(){
-        String host = clusterHost.getText();
-        String port = clusterPort.getText();
-        RedisController redisController = BeanContext.getBean(RedisController.class.getName());
-        if (StringUtils.isNoneBlank(host, port)){
-            try {
-                RedisClusterClient redisClient = new RedisClusterClient(host.trim(),Integer.parseInt(port.trim()));
-                if (isVerification.isSelected()){
-                    //验证不成功停止执行
-                    if (!verification(redisClient)){
-                        return;
-                    }
-                }
-                List<RedisClusterNodeInfo> redisClusterNodes = redisClient.clusterNodes();
-                ClusterRedisInfoTabPane redisInfoTabPane = new ClusterRedisInfoTabPane();
-                List<RedisNode> hosts = redisClusterNodes.stream()
-                        .sorted()
-                        .map(RedisClusterNode::build)
-                        .collect(Collectors.toList());
-                redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), hosts);
-                redisClient.close();
-            }catch (Exception e){
-                Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-                alert.showAndWait();
-            }
-        }
-    }
-
-    private boolean verification(RedisClusterClient redisClient){
+    protected boolean verification(RedisClient redisClient){
         String pd = password.getText();
         if (StringUtils.isNotBlank(pd)){
             boolean auth = redisClient.auth(pd.trim());
@@ -107,10 +72,18 @@ public class ReidsClusterController implements Initializable {
         }
     }
 
+    protected abstract String getHost();
+
+    protected abstract String getPort();
+
+    protected abstract void setHost(String host);
+
+    protected abstract void setPort(String port);
+
     public void addRecord(){
         String nameText = name.getText();
-        String host = clusterHost.getText();
-        String port = clusterPort.getText();
+        String host = getHost();
+        String port = getPort();
         if (StringUtils.isAnyBlank(host, port)){
             return;
         }
@@ -145,8 +118,8 @@ public class ReidsClusterController implements Initializable {
         // 对data操作即对表格操作，会同步更新的
         use.setOnAction((event) ->{
             name.setText(recordItem.getName());
-            clusterHost.setText(recordItem.getHost());
-            clusterPort.setText(String.valueOf(recordItem.getPort()));
+            setHost(recordItem.getHost());
+            setPort(String.valueOf(recordItem.getPort()));
             String password = recordItem.getPassword();
             if (StringUtils.isNotBlank(password)){
                 isVerification.setSelected(true);
@@ -164,8 +137,8 @@ public class ReidsClusterController implements Initializable {
 
     public void clearInputField(){
         name.setText(StringUtils.EMPTY);
-        clusterHost.setText(StringUtils.EMPTY);
-        clusterPort.setText(StringUtils.EMPTY);
+        setHost(StringUtils.EMPTY);
+        setPort(StringUtils.EMPTY);
         isVerification.setSelected(false);
         password.setText(StringUtils.EMPTY);
     }

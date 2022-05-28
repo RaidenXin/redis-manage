@@ -250,6 +250,7 @@ public class TestClient {
 
     @Test
     public void testUsageRate() throws InterruptedException {
+        //测试环境Redis
         RedisSingleClient redisClient = new RedisSingleClient("redis.test.yiyaowang.com",6379);
         System.err.println(redisClient.auth("foobared"));
         RedisNodeInfo beforeInfo = redisClient.info();
@@ -323,6 +324,16 @@ public class TestClient {
     public void testZSet()  {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
         Pair<String, String>[] pairs = redisClient.zRangeByScore("{aaa}zset", "1", "20", "0", "10");
-        LOGGER.info(Arrays.toString(pairs));
+        LOGGER.error(Arrays.toString(pairs));
+    }
+
+
+    @Test
+    public void testLog()  {
+        try {
+            int i = 1/0;
+        }catch (Exception e){
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 }

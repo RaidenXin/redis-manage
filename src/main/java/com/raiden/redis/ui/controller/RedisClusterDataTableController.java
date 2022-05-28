@@ -1,10 +1,8 @@
 package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.Separator;
-import com.raiden.redis.ui.Window;
 import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.controller.add.AddHashElementsController;
 import com.raiden.redis.ui.mode.RedisDatas;
@@ -206,7 +204,7 @@ public class RedisClusterDataTableController implements Initializable {
     }
 
     private void initTableData(){
-        RedisClusterClient client = (RedisClusterClient) redisNode.getRedisClient();
+        RedisClient client = redisNode.getRedisClient();
         String[] keys = client.scan(START_INDEX, pageSize.getValue());
         ObservableList items = keyList.getItems();
         for (int i = 1; i < keys.length; i++){

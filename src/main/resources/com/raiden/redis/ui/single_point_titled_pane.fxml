@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<TitledPane animated="false" prefHeight="1000.0" prefWidth="415.0" text="single point" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisSinglePointController">
+<TitledPane animated="false" prefHeight="1000.0" prefWidth="415.0" text="single point" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.raiden.redis.ui.controller.RedisSinglePointController">
     <content>
         <AnchorPane fx:id="singlePoint" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="415.0">
             <children>
@@ -39,11 +40,11 @@
                     <font>
                         <Font name="System Bold Italic" size="12.0" />
                     </font></CheckBox>
-                <Label fx:id="passwordText" layoutX="32.0" layoutY="336.0" text="密码:" visible="true">
+                <Label fx:id="passwordText" layoutX="32.0" layoutY="336.0" text="密码:" visible="false">
                     <font>
                         <Font name="System Bold Italic" size="16.0" />
                     </font></Label>
-                <PasswordField fx:id="password" layoutX="107.0" layoutY="334.0" prefHeight="25.0" prefWidth="250.0" visible="true" />
+                <PasswordField fx:id="password" layoutX="107.0" layoutY="334.0" prefHeight="25.0" prefWidth="250.0" visible="false" />
                 <TableView fx:id="record" layoutX="2.0" layoutY="414.0" prefHeight="515.0" prefWidth="408.0">
                     <columns>
                         <TableColumn fx:id="recordName" prefWidth="80.0" resizable="false" text="名称" />

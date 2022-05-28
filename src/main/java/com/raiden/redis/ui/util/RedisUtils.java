@@ -14,16 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class RedisUtils {
 
-    private static final ConcurrentHashMap<String, RedisClient> CLIENT_CACHE = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, RedisClient> SINGLE_CLIENT_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, RedisClusterClient> CLIENT_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, RedisSingleClient> SINGLE_CLIENT_CACHE = new ConcurrentHashMap<>();
 
     private static final String COLON = ":";
 
-    public static final RedisClient getRedisClusterClient(String host,int port){
+    public static final RedisClusterClient getRedisClusterClient(String host,int port){
         return CLIENT_CACHE.computeIfAbsent(host + COLON + port, (key) -> new RedisClusterClient(host, port));
     }
 
-    public static final RedisClient getRedisSingleClient(String host,int port){
+    public static final RedisSingleClient getRedisSingleClient(String host,int port){
         return SINGLE_CLIENT_CACHE.computeIfAbsent(host + COLON + port, (key) -> new RedisSingleClient(host, port));
     }
 

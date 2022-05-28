@@ -34,15 +34,15 @@ public class RedisKeyspace {
         /**
          *  Key数量
          */
-        private int keys;
+        private long keys;
         /**
          * 过期时间个数
          */
-        private int expires;
+        private long expires;
         /**
          * 设置生存时间键的平均寿命
          */
-        private int avgTtl;
+        private long avgTtl;
 
         public String getName() {
             return name;
@@ -52,27 +52,27 @@ public class RedisKeyspace {
             this.name = name;
         }
 
-        public int getKeys() {
+        public long getKeys() {
             return keys;
         }
 
-        public void setKeys(int keys) {
+        public void setKeys(long keys) {
             this.keys = keys;
         }
 
-        public int getExpires() {
+        public long getExpires() {
             return expires;
         }
 
-        public void setExpires(int expires) {
+        public void setExpires(long expires) {
             this.expires = expires;
         }
 
-        public int getAvgTtl() {
+        public long getAvgTtl() {
             return avgTtl;
         }
 
-        public void setAvgTtl(int avgTtl) {
+        public void setAvgTtl(long avgTtl) {
             this.avgTtl = avgTtl;
         }
 

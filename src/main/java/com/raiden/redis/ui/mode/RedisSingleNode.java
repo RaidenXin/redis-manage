@@ -26,20 +26,14 @@ public class RedisSingleNode implements RedisNode{
         return myself;
     }
 
-    public static RedisSingleNode build(RedisClusterNodeInfo node){
+    public static RedisSingleNode build(String host,int port){
         RedisSingleNode redisNode = new RedisSingleNode();
-        redisNode.host = node.getHost();
+        redisNode.host = host;
         StringBuilder hostAndPort = new StringBuilder();
-        if (node.isMaster()){
-            hostAndPort.append(RedisNodeType.MASTER);
-        }else {
-            hostAndPort.append(RedisNodeType.SLAVE);
-        }
-        hostAndPort.append(":");
-        hostAndPort.append(node.getHostAndPort());
+        hostAndPort.append(host + ":" + port);
         redisNode.hostAndPort = hostAndPort.toString();
-        redisNode.port = node.getPort();
-        redisNode.myself = node.isMyself();
+        redisNode.port = port;
+        redisNode.myself = true;
         return redisNode;
     }
 

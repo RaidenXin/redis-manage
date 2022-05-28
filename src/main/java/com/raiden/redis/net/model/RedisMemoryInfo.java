@@ -53,7 +53,7 @@ public class RedisMemoryInfo {
     /**
      * 由 Redis 分配器分配的内存总量，以字节（byte）为单位
      */
-    private long usedMemoryPeakPerc;
+    private String usedMemoryPeakPerc;
     /**
      * 服务器为管理其内部数据结构而分配的所有开销的总和（以字节为单位）
      */
@@ -151,11 +151,11 @@ public class RedisMemoryInfo {
         this.usedMemoryLuaHuman = usedMemoryLuaHuman;
     }
 
-    public long getUsedMemoryPeakPerc() {
+    public String getUsedMemoryPeakPerc() {
         return usedMemoryPeakPerc;
     }
 
-    public void setUsedMemoryPeakPerc(long usedMemoryPeakPerc) {
+    public void setUsedMemoryPeakPerc(String usedMemoryPeakPerc) {
         this.usedMemoryPeakPerc = usedMemoryPeakPerc;
     }
 

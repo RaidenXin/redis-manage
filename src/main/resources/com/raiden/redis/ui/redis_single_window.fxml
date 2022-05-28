@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisSinglePointWindowController">
-   <children>
-       <ListView prefHeight="200.0" prefWidth="150.0">
-           <Button mnemonicParsing="false" onAction="#switchingDataViews" prefHeight="25.0" prefWidth="133.0" text="数据" />
-           <Button mnemonicParsing="false" onAction="#switchingMonitoringViews" prefHeight="25.0" prefWidth="133.0" text="监控信息" />
-       </ListView>
-   </children>
-</HBox>
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="1087.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.raiden.redis.ui.controller.RedisTabController">
+    <children>
+        <HBox fx:id="hBox" prefHeight="1000.0" prefWidth="1087.0">
+            <children>
+                <VBox prefHeight="600.0" prefWidth="150.0">
+                    <children>
+                        <Pane prefHeight="58.0" prefWidth="150.0" />
+                        <ListView fx:id="sidebar" prefHeight="845.0" prefWidth="150.0">
+                            <Button mnemonicParsing="false" onAction="#switchingMonitoringViews" prefHeight="25.0" prefWidth="133.0" text="监控信息" />
+                        </ListView>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>

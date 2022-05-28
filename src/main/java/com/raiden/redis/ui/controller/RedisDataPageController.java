@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
  * @Date:Created in 20:26 2022/5/8
  * @Modified By:
  */
-public class RedisController implements Initializable {
+public class RedisDataPageController implements Initializable {
 
     @FXML
     private Pane redisDataPage;

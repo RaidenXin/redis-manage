@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @Date:Created in 0:14 2022/5/14
  * @Modified By:
  */
-public class RedisClusterTabController{
+public class RedisTabController {
 
-    private static final Logger LOGGER = LogManager.getLogger(RedisClusterTabController.class);
+    private static final Logger LOGGER = LogManager.getLogger(RedisTabController.class);
 
 
     @FXML
@@ -41,7 +41,7 @@ public class RedisClusterTabController{
     private AnchorPane dataView;
     private AnchorPane monitoringView;
 
-    public RedisClusterTabController(){
+    public RedisTabController(){
         this.isInitTab = new AtomicBoolean(false);
     }
 
@@ -60,12 +60,13 @@ public class RedisClusterTabController{
         if (dataView == null){
             try {
                 //初始化数据视图
-                FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_cluster_data_table_view.fxml"));
+                FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_data_table_view.fxml"));
                 dataView = loader.load();
                 RedisClusterDataTableController dataTableController = loader.getController();
                 dataTableController.setRedisNode(redisNode);
                 dataTableController.initTable();
             }catch (Exception e){
+                LOGGER.error(e.getMessage(), e);
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
             }
