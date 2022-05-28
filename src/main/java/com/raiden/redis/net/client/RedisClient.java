@@ -21,6 +21,8 @@ public interface RedisClient {
 
     int sAdd(String key, String... value);
 
+    int zAdd(String key, String score, String value);
+
     int rPush(String key,String... value);
 
     int lPush(String key,String... value);
@@ -35,7 +37,15 @@ public interface RedisClient {
 
     String hDel(String key,String... field);
 
+    int zRemRangeByScore(String key,String min,String max);
+
     int sRem(String key,String... value);
+
+    int zRem(String key, String... value);
+
+    String zScore(String key,String member);
+
+    boolean sIsMember(String key, String value);
 
     DataType type(String key);
 
@@ -50,6 +60,10 @@ public interface RedisClient {
     ScanResult<Pair<String, String>> hScan(String key, String startIndex, String limit);
 
     ScanResult<Pair<String, String>> hScanMatch(String key, String startIndex,String pattern,String limit);
+
+    ScanResult<Pair<String, String>> zScan(String key, String startIndex, String limit);
+
+    ScanResult<Pair<String, String>> zScanMatch(String key, String startIndex,String pattern,String limit);
 
     String[] mGet(String... keys);
 

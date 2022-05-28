@@ -6,7 +6,7 @@ import com.raiden.redis.net.exception.MovedException;
 import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.model.ScanResult;
 import com.raiden.redis.ui.controller.Controller;
-import com.raiden.redis.ui.controller.add.AddValueController;
+import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.beans.value.ObservableValue;
@@ -16,9 +16,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -35,14 +39,34 @@ import static com.raiden.redis.net.common.ScanCommonParams.*;
  * @Date:Created in 20:04 2022/5/22
  * @Modified By:
  */
-public class RedisSetDataViewController implements Controller, Initializable {
+public class RedisSortedSetDataViewController implements Controller, Initializable {
 
     @FXML
-    private ListView<String> dataList;
+    private TableView<Pair<String, String>> tableView;
+    @FXML
+    private TableColumn<Pair<String,String>, String> score;
+    @FXML
+    private TableColumn<Pair<String,String>, String> value;
+    @FXML
+    private Label searchTitle;
+    @FXML
+    private TextField minScore;
+    @FXML
+    private Label scoreSeparator;
+    @FXML
+    private TextField maxScore;
+    @FXML
+    private Button deleteButtonByScore;
+    @FXML
+    private RadioButton valueQueryPatterns;
+    @FXML
+    private RadioButton scoreQueryPatterns;
+    @FXML
+    private TextArea scoreTextArea;
     @FXML
     private TextArea valueTextArea;
     @FXML
-    private TextField searchKey;
+    private TextField searchValue;
     @FXML
     private CheckBox isFuzzySearch;
     @FXML
@@ -62,21 +86,63 @@ public class RedisSetDataViewController implements Controller, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //添加点击事件
-        dataList.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
-            valueTextArea.setText(newValue);
-            deleteButton.setOnAction(event -> {
-                RedisClient redisClient = redisNode.getRedisClient();
-                int i = redisClient.sRem(this.key, newValue);
-                if (i == 1){
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "删除成功！");
-                    alert.showAndWait();
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.setRowFactory( tv -> {
+                    TableRow<Pair<String, String>> row = new TableRow<>();
+                    row.setOnMouseClicked(event -> {
+                        int clickCount = event.getClickCount();
+                        if ((clickCount == 1 || clickCount == 2) && !row.isEmpty()){
+                            Pair<String, String> rowData = row.getItem();
+                            deleteButton.setOnAction((actionEvent) -> {
+                                RedisClient redisClient = redisNode.getRedisClient();
+                                redisClient.zRem(this.key, rowData.getValue());
+                                refreshTableData();
+                            });
+                            if (clickCount == 2 ) {
+                                scoreTextArea.setText(rowData.getKey());
+                                valueTextArea.setText(rowData.getValue());
+                            }
+                        }
+                    });
+                    return row ;
                 }
-                refreshTableData();
-            });
-        });
+        );
+        score.setCellFactory(TextFieldTableCell.forTableColumn());
+        value.setCellFactory(TextFieldTableCell.forTableColumn());
+        score.setCellValueFactory(new PropertyValueFactory<>("key"));
+        value.setCellValueFactory(new PropertyValueFactory<>("value"));
         addButton.setGraphic(new ImageView("/icon/add.png"));
         deleteButton.setGraphic(new ImageView("icon/delete.png"));
+        ToggleGroup group = new ToggleGroup();
+        valueQueryPatterns.setToggleGroup(group);
+        scoreQueryPatterns.setToggleGroup(group);
+        valueQueryPatterns.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            //默认设置隐藏
+            boolean isVisible = false;
+            if (newValue){
+                searchTitle.setText("Value:");
+                //设置显现
+                isVisible = true;
+            }
+            isFuzzySearch.setVisible(isVisible);
+            searchValue.setText(StringUtils.EMPTY);
+            searchValue.setVisible(isVisible);
+        });
+        scoreQueryPatterns.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            //默认设置隐藏
+            boolean isVisible = false;
+            if (newValue){
+                searchTitle.setText("Score:");
+                //设置显现
+                isVisible = true;
+            }
+            minScore.setVisible(isVisible);
+            minScore.setText(StringUtils.EMPTY);
+            scoreSeparator.setVisible(isVisible);
+            maxScore.setVisible(isVisible);
+            maxScore.setText(StringUtils.EMPTY);
+            deleteButtonByScore.setVisible(isVisible);
+        });
     }
 
     @Override
@@ -89,34 +155,34 @@ public class RedisSetDataViewController implements Controller, Initializable {
     }
 
     public void search() {
-        String text = searchKey.getText();
+        String text = searchValue.getText();
         if (StringUtils.isBlank(text)) {
-            dataList.getItems().clear();
+            tableView.getItems().clear();
             refreshTableData();
         } else {
             String field = text.trim();
             RedisClient client = redisNode.getRedisClient();
             //是否模糊查找
             if (isFuzzySearch.isSelected()) {
-                ScanResult<String> data = sScan(client, START_INDEX, field);
+                ScanResult<Pair<String, String>> data = zScan(client, START_INDEX, field);
                 stack.clear();
                 currentIndex.set(START_INDEX);
                 nextIndex.set(START_INDEX);
-                ObservableList items = dataList.getItems();
+                ObservableList items = tableView.getItems();
                 items.clear();
                 items.addAll(data.getResult());
                 setButtonEvent(client, START_INDEX, data.getCursor());
             } else {
                 try {
                     //精确查找
-                    boolean isMember = client.sIsMember(this.key, field);
-                    ObservableList items = dataList.getItems();
-                    if (isMember) {
+                    String score = client.zScore(this.key, field);
+                    ObservableList items = tableView.getItems();
+                    if (StringUtils.isNotBlank(score)) {
                         stack.clear();
                         currentIndex.set(START_INDEX);
                         nextIndex.set(START_INDEX);
                         items.clear();
-                        items.add(field);
+                        items.add(new Pair<>(score, value));
                     } else {
                         stack.clear();
                         currentIndex.set(START_INDEX);
@@ -135,25 +201,25 @@ public class RedisSetDataViewController implements Controller, Initializable {
         }
     }
 
-    private ScanResult<String> sScan(RedisClient client, String index, String pattern){
+    private ScanResult<Pair<String, String>> zScan(RedisClient client, String index, String pattern){
         boolean selected = isFuzzySearch.isSelected();
-        ScanResult<String> scan;
+        ScanResult<Pair<String, String>> scan;
         if (selected){
             //如果不是以模糊搜索后缀结尾的 补上后缀
             if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
                 pattern += FUZZY_SEARCH_SUFFIX;
             }
-            scan = client.sScanMatch(this.key, START_INDEX, pattern, STEP_LENGTH);
+            scan = client.zScanMatch(this.key, START_INDEX, pattern, STEP_LENGTH);
         }else {
-            scan = client.sScan(this.key, index, STEP_LENGTH);
+            scan = client.zScan(this.key, index, STEP_LENGTH);
         }
         return scan;
     }
 
     private void refreshTableData(){
         RedisClusterClient client = (RedisClusterClient) redisNode.getRedisClient();
-        ScanResult<String> scan = client.sScan(this.key, START_INDEX, STEP_LENGTH);
-        ObservableList<String> items = dataList.getItems();
+        ScanResult<Pair<String, String>> scan = client.zScan(this.key, START_INDEX, STEP_LENGTH);
+        ObservableList<Pair<String, String>> items = tableView.getItems();
         items.clear();
         items.addAll(scan.getResult());
         setButtonEvent(client, START_INDEX, scan.getCursor());
@@ -173,10 +239,10 @@ public class RedisSetDataViewController implements Controller, Initializable {
             //如果没有证明当前是第一页
             if (index != null){
                 //清理掉之前的数据
-                ObservableList items = dataList.getItems();
+                ObservableList items = tableView.getItems();
                 items.clear();
                 //刷新数据
-                ScanResult<String> data = sScan(client, index, searchKey.getText());
+                ScanResult<Pair<String, String>> data = zScan(client, index, searchValue.getText());
                 items.addAll(data.getResult());
                 //将上一页标记为当前页
                 String currentPageIndex = currentIndex.get();
@@ -192,14 +258,14 @@ public class RedisSetDataViewController implements Controller, Initializable {
             //如果为空或者 为 0 证明没有下一页
             if (index != null && !START_INDEX.equals(index)){
                 //清理掉之前的数据
-                ObservableList items = dataList.getItems();
+                ObservableList items = tableView.getItems();
                 items.clear();
                 //获取当前 的下标
                 String currentValue = currentIndex.get();
                 //将当前的下标 放入栈中存储 供上一页按钮使用
                 stack.add(currentValue);
                 //获取下一页key
-                ScanResult<String> data = sScan(client, index, searchKey.getText());
+                ScanResult<Pair<String, String>> data = zScan(client, index, searchValue.getText());
                 items.addAll(data.getResult());
                 //完成翻页后 将下一个设置为当前页
                 currentIndex.compareAndSet(currentValue, index);
@@ -207,6 +273,42 @@ public class RedisSetDataViewController implements Controller, Initializable {
                 nextIndex.compareAndSet(index, data.getCursor());
             }
         });
+    }
+
+    public void deleteByScore(){
+        String max = maxScore.getText();
+        if (StringUtils.isBlank(max)){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "最大值不能为空!");
+            alert.showAndWait();
+        }
+        String min = minScore.getText();
+        if (StringUtils.isBlank(max)){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "最小值不能为空!");
+            alert.showAndWait();
+        }
+        DialogPane dialog = new DialogPane();
+        dialog.setContentText("你是否确认要删除当前Score(分度值):{" + max + "-" + min + "}范围内所有的值？");
+        ObservableList<ButtonType> buttonTypes = dialog.getButtonTypes();
+        buttonTypes.addAll(ButtonType.YES, ButtonType.NO);
+        Stage dialogStage = new Stage();
+        Scene dialogScene = new Scene(dialog);
+        Button yes = (Button) dialog.lookupButton(ButtonType.YES);
+        yes.setOnAction(event -> {
+            RedisClient redisClient = redisNode.getRedisClient();
+            redisClient.zRemRangeByScore(this.key, max, min);
+            dialogStage.close();
+            refreshTableData();
+        });
+        Button no = (Button) dialog.lookupButton(ButtonType.NO);
+        no.setOnAction(event -> {
+            dialogStage.close();
+        });
+        dialogStage.setScene(dialogScene);
+        dialogStage.setTitle("删除提醒");
+        dialogStage.initStyle(StageStyle.UTILITY);
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.setResizable(false);
+        dialogStage.show();
     }
 
 
@@ -218,11 +320,11 @@ public class RedisSetDataViewController implements Controller, Initializable {
         window.setMinWidth(300);
         window.setMinHeight(150);
 
-        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("add/add_value_view.fxml");
+        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("add/add_elements_view.fxml");
         try {
             TitledPane load = fxmlLoader.load();
-            AddValueController controller = fxmlLoader.getController();
-            controller.sAdd(redisNode, window, this.key);
+            AddElementsController controller = fxmlLoader.getController();
+            controller.zAdd(redisNode, window, this.key);
             Scene scene = new Scene(load);
             window.setScene(scene);
             window.showAndWait();

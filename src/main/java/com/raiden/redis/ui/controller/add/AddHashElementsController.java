@@ -34,13 +34,32 @@ public class AddHashElementsController {
             String key = this.keyTextArea.getText();
             String field = fieldTextArea.getText();
             String value = this.valueTextArea.getText();
-            if (StringUtils.isNoneBlank(key, field, value)){
+            if (StringUtils.isAnyBlank(key, field, value)){
                 Alert alert = new Alert(Alert.AlertType.WARNING, "数据不能为空!");
                 alert.showAndWait();
                 return;
             }
             RedisClient redisClient = redisNode.getRedisClient();
             redisClient.hSet(key, field, value);
+            window.close();
+        });
+    }
+
+    public void zAdd(RedisNode redisNode, Stage window) {
+        if (redisNode == null || window == null){
+            throw new RuntimeException("参数不能为空！");
+        }
+        submit.setOnAction((event) -> {
+            String key = this.keyTextArea.getText();
+            String score = fieldTextArea.getText();
+            String value = this.valueTextArea.getText();
+            if (StringUtils.isAnyBlank(key, score, value)){
+                Alert alert = new Alert(Alert.AlertType.WARNING, "数据不能为空!");
+                alert.showAndWait();
+                return;
+            }
+            RedisClient redisClient = redisNode.getRedisClient();
+            redisClient.zAdd(key, score, value);
             window.close();
         });
     }

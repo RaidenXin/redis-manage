@@ -92,6 +92,21 @@ public class AddElementsController {
         });
     }
 
+    public void zAdd(RedisNode redisNode, Stage window, String key) {
+        if (redisNode == null || window == null){
+            throw new RuntimeException("参数不能为空！");
+        }
+        keyTitle.setText("Score:");
+        submit.setOnAction((event) -> {
+            Pair<String, String> keyAndValue = getKeyAndValue();
+            if (keyAndValue != null){
+                RedisClient redisClient = redisNode.getRedisClient();
+                redisClient.zAdd(key, keyAndValue.getKey(), keyAndValue.getValue());
+                window.close();
+            }
+        });
+    }
+
     private Pair<String,String> getKeyAndValue(){
         String key = this.keyTextArea.getText();
         String value = this.valueTextArea.getText();

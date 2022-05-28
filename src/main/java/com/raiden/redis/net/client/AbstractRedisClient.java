@@ -90,7 +90,22 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     @Override
+    public int zRemRangeByScore(String key, String min, String max) {
+        if (StringUtils.isBlank(key)){
+            throw new NullPointerException("key is null");
+        }
+        String response = sendCommands(RedisCommand.SortedSet.Z_REM_RANGE_BY_SCORE, key, min, max);
+        return Integer.parseInt(response);
+    }
+
+    @Override
     public boolean hSet(String key, String field, String value) {
+        if (StringUtils.isBlank(key)){
+            throw new NullPointerException("key is null");
+        }
+        if (StringUtils.isBlank(field)){
+            throw new NullPointerException("field is null");
+        }
         String response = sendCommands(RedisCommand.Hash.H_SET, key, field, value);
         return SUCCESS.equalsIgnoreCase(response);
     }
@@ -109,10 +124,34 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     @Override
+    public int zAdd(String key, String score,String value) {
+        String response = sendCommands(RedisCommand.SortedSet.Z_ADD, key, score, value);
+        return Integer.parseInt(response);
+    }
+
+    @Override
     public int sRem(String key, String... value) {
         String[] commands = encapsulationCommands(RedisCommand.Set.S_REM, key, value);
         String response = sendCommands(commands);
         return Integer.parseInt(response);
+    }
+
+    @Override
+    public int zRem(String key, String... value) {
+        String[] commands = encapsulationCommands(RedisCommand.SortedSet.Z_REM, key, value);
+        String response = sendCommands(commands);
+        return Integer.parseInt(response);
+    }
+
+    @Override
+    public String zScore(String key, String member) {
+        return sendCommands(RedisCommand.SortedSet.Z_SCORE, key, member);
+    }
+
+    @Override
+    public boolean sIsMember(String key, String value){
+        String response = sendCommands(RedisCommand.Set.S_IS_MEMBER, key, value);
+        return "1".equals(response);
     }
 
     @Override
@@ -206,6 +245,26 @@ public abstract class AbstractRedisClient implements RedisClient{
         List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
         for (int i = 1;i < result.length;i+=2){
             pairs.add(new Pair<>(result[i], result[i + 1]));
+        }
+        return ScanResult.build(cursor, pairs);
+    }
+
+    public ScanResult<Pair<String, String>> zScan(String key, String startIndex, String limit){
+        String[] result = sendCommands(RedisCommand.SortedSet.Z_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
+        String cursor = result[0];
+        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        for (int i = 1;i < result.length;i+=2){
+            pairs.add(new Pair<>(result[i + 1], result[i]));
+        }
+        return ScanResult.build(cursor, pairs);
+    }
+
+    public  ScanResult<Pair<String, String>> zScanMatch(String key, String startIndex,String pattern,String limit){
+        String[] result = sendCommands(RedisCommand.SortedSet.Z_SCAN, key, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
+        String cursor = result[0];
+        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        for (int i = 1;i < result.length;i+=2){
+            pairs.add(new Pair<>(result[i + 1], result[i]));
         }
         return ScanResult.build(cursor, pairs);
     }

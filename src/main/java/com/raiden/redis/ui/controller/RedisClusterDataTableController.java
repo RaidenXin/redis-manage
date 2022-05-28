@@ -4,6 +4,7 @@ import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.Separator;
+import com.raiden.redis.ui.Window;
 import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.controller.add.AddHashElementsController;
 import com.raiden.redis.ui.mode.RedisDatas;
@@ -23,6 +24,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,6 +45,8 @@ import static com.raiden.redis.net.common.ScanCommonParams.*;
  * @Modified By:
  */
 public class RedisClusterDataTableController implements Initializable {
+
+    private static final Logger LOGGER = LogManager.getLogger(RedisClusterDataTableController.class);
 
     private static final String MOVED = "MOVED";
 
@@ -99,7 +104,11 @@ public class RedisClusterDataTableController implements Initializable {
                         Controller controller = fxmlLoader.getController();
                         controller.init(redisNode, newValue);
                         dataView.getChildren().add(load);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
+                        String message = e.getMessage();
+                        LOGGER.error(message, e);
+                        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+                        alert.showAndWait();
                     }
                 }else {
                     dataType.getSelectionModel().select(null);
@@ -299,6 +308,11 @@ public class RedisClusterDataTableController implements Initializable {
                 case STRING:{
                     AddElementsController controller = fxmlLoader.getController();
                     controller.addString(redisNode, window);
+                    break;
+                }
+                case ZSET:{
+                    AddHashElementsController controller = fxmlLoader.getController();
+                    controller.zAdd(redisNode, window);
                     break;
                 }
             }

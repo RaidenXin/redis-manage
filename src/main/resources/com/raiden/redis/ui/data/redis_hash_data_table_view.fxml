@@ -12,7 +12,7 @@
                <children>
                   <TableView fx:id="tableView" prefHeight="417.0" prefWidth="635.0">
                     <columns>
-                      <TableColumn fx:id="field" prefWidth="245.0" text="field" />
+                      <TableColumn fx:id="field" maxWidth="245.0" minWidth="50.0" prefWidth="245.0" text="field" />
                       <TableColumn fx:id="value" prefWidth="385.0" text="value" />
                     </columns>
                   </TableView>

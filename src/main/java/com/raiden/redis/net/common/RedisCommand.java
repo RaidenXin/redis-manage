@@ -40,18 +40,25 @@ public class RedisCommand {
             public static final String L_SET = "LSET";
         }
 
-    public static class Set{
-        public static final String S_SCAN = "SSCAN";
-        public static final String S_ADD = "SADD";
-        public static final String S_REM = "SREM";
-    }
+        public static class Set{
+            public static final String S_SCAN = "SSCAN";
+            public static final String S_ADD = "SADD";
+            public static final String S_REM = "SREM";
+            public static final String S_IS_MEMBER = "SISMEMBER";
+        }
+
+        public static class SortedSet {
+            public static final String Z_SCAN = "ZSCAN";
+            public static final String Z_ADD = "ZADD";
+            public static final String Z_REM = "ZREM";
+            public static final String Z_SCORE = "ZSCORE";
+            public static final String Z_REM_RANGE_BY_SCORE = "ZREMRANGEBYSCORE";
+        }
 
         public static class Hash {
             public static final String H_SET = "HSET";
             public static final String H_GET = "HGET";
             public static final String H_DEL = "HDEL";
             public static final String H_SCAN = "HSCAN";
-            public static final String H_M_SET = "HMSET";
-            public static final String H_M_GET = "HMGET";
         }
     }

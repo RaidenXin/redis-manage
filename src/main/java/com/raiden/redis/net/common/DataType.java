@@ -18,7 +18,7 @@ public enum  DataType {
     STRING("string", "data/redis_string_data_table_view.fxml", "add/add_elements_view.fxml"),
     LIST("list", "data/redis_list_data_table_view.fxml", "add/add_elements_view.fxml"),
     SET("set", "data/redis_set_data_table_view.fxml", "add/add_elements_view.fxml"),
-    ZSET("zset", "", "add/add_hash_z_set_elements_view.fxml"),
+    ZSET("zset", "data/redis_z_set_data_table_view.fxml", "add/add_hash_z_set_elements_view.fxml"),
     HASH("hash", "data/redis_hash_data_table_view.fxml", "add/add_hash_z_set_elements_view.fxml");
 
     private static final Map<String,DataType> CODE_LOOKUP;

@@ -20,6 +20,7 @@ import com.raiden.redis.ui.util.RecordStorageUtils;
 import com.raiden.redis.net.utils.RedisClusterSlotUtil;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.CategoryAxis;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -312,7 +313,19 @@ public class TestClient {
     @Test
     public void testSet()  {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        for (int i = 0; i < 50; i++) {
+            redisClient.sAdd("{aaa}Set", "大师兄桂越是猥琐帝" + i + "号");
+        }
         ScanResult<String> stringScanResult = redisClient.sScan("{aaa}Set", "0", "5");
+        LOGGER.info(stringScanResult);
+    }
+    @Test
+    public void testZSet()  {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        for (int i = 3; i < 50; i++) {
+            redisClient.zAdd("{aaa}zset", i + "" ,"大师兄桂越是猥琐帝" + i + "号");
+        }
+        ScanResult<Pair<String, String>> stringScanResult = redisClient.zScan("{aaa}zset", "0", "5");
         LOGGER.info(stringScanResult);
     }
 }
