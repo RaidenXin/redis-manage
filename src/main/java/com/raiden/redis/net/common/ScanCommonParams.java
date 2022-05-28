@@ -10,5 +10,6 @@ public final class ScanCommonParams {
 
     public static final String START_INDEX = "0";
     public static final String FUZZY_SEARCH_SUFFIX = "*";
-    public static final String STEP_LENGTH = "10";
+    public static final String STEP_LENGTH = "20";
+    public static final int STEP_LENGTH_NUMBER = 20;
 }

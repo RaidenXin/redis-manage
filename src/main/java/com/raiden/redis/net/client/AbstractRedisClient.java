@@ -212,7 +212,7 @@ public abstract class AbstractRedisClient implements RedisClient{
     public ScanResult<String> sScan(String key,String startIndex, String limit){
         String[] result =  sendCommands(RedisCommand.Set.S_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
-        List<String> pairs = new ArrayList<>(result.length - 1);
+        List<String> pairs = new ArrayList<>((result.length - 1 )<< 1);
         for (int i = 1;i < result.length;i++){
             pairs.add(result[i]);
         }
@@ -222,7 +222,7 @@ public abstract class AbstractRedisClient implements RedisClient{
     public ScanResult<String> sScanMatch(String key,String startIndex,String pattern,String limit){
         String[] result = sendCommands(RedisCommand.Set.S_SCAN, key, startIndex, RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
-        List<String> pairs = new ArrayList<>(result.length - 1);
+        List<String> pairs = new ArrayList<>((result.length - 1 )<< 1);
         for (int i = 1;i < result.length;i++){
             pairs.add(result[i]);
         }
@@ -232,7 +232,7 @@ public abstract class AbstractRedisClient implements RedisClient{
     public ScanResult<Pair<String, String>> hScan(String key, String startIndex, String limit){
         String[] result = sendCommands(RedisCommand.Hash.H_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
-        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        List<Pair<String,String>> pairs = new ArrayList<>((result.length - 1 )<< 1);
         for (int i = 1;i < result.length;i+=2){
             pairs.add(new Pair<>(result[i], result[i + 1]));
         }
@@ -242,7 +242,7 @@ public abstract class AbstractRedisClient implements RedisClient{
     public ScanResult<Pair<String, String>> hScanMatch(String key, String startIndex, String pattern, String limit){
         String[] result = sendCommands(RedisCommand.Hash.H_SCAN, key, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
-        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        List<Pair<String,String>> pairs = new ArrayList<>((result.length - 1 )<< 1);
         for (int i = 1;i < result.length;i+=2){
             pairs.add(new Pair<>(result[i], result[i + 1]));
         }
@@ -252,7 +252,7 @@ public abstract class AbstractRedisClient implements RedisClient{
     public ScanResult<Pair<String, String>> zScan(String key, String startIndex, String limit){
         String[] result = sendCommands(RedisCommand.SortedSet.Z_SCAN, key, startIndex, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
-        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        List<Pair<String,String>> pairs = new ArrayList<>((result.length - 1 )<< 1);
         for (int i = 1;i < result.length;i+=2){
             pairs.add(new Pair<>(result[i + 1], result[i]));
         }
@@ -262,11 +262,28 @@ public abstract class AbstractRedisClient implements RedisClient{
     public  ScanResult<Pair<String, String>> zScanMatch(String key, String startIndex,String pattern,String limit){
         String[] result = sendCommands(RedisCommand.SortedSet.Z_SCAN, key, startIndex,RedisCommand.Scan.MATCH, pattern, RedisCommand.Scan.COUNT, limit);
         String cursor = result[0];
-        List<Pair<String,String>> pairs = new ArrayList<>(result.length - 1);
+        List<Pair<String,String>> pairs = new ArrayList<>((result.length - 1 )<< 1);
         for (int i = 1;i < result.length;i+=2){
             pairs.add(new Pair<>(result[i + 1], result[i]));
         }
         return ScanResult.build(cursor, pairs);
+    }
+
+    @Override
+    public Pair<String,String>[] zRangeByScore(String key, String min, String max, String startIndex, String limit) {
+        String[] result = sendCommands(RedisCommand.SortedSet.Z_RANGE_BY_SCORE, key, min , max, RedisCommand.SortedSet.WITH_SCORES, RedisCommand.SortedSet.LIMIT, startIndex, limit);
+        Pair<String,String>[] pairs = new Pair[(result.length - 1 )<< 1];
+        int index = 0;
+        for (int i = 1;i < result.length;i+=2){
+            pairs[index ++] = new Pair<>(result[i + 1], result[i]);
+        }
+        return pairs;
+    }
+
+    @Override
+    public int zCount(String key, String min, String max) {
+        String result = sendCommands(RedisCommand.SortedSet.Z_COUNT, key, min , max);
+        return Integer.parseInt(result);
     }
 
     @Override

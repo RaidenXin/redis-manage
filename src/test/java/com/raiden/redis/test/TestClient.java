@@ -322,10 +322,7 @@ public class TestClient {
     @Test
     public void testZSet()  {
         RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-        for (int i = 3; i < 50; i++) {
-            redisClient.zAdd("{aaa}zset", i + "" ,"大师兄桂越是猥琐帝" + i + "号");
-        }
-        ScanResult<Pair<String, String>> stringScanResult = redisClient.zScan("{aaa}zset", "0", "5");
-        LOGGER.info(stringScanResult);
+        Pair<String, String>[] pairs = redisClient.zRangeByScore("{aaa}zset", "1", "20", "0", "10");
+        LOGGER.info(Arrays.toString(pairs));
     }
 }

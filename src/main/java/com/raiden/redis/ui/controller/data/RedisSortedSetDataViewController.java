@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.raiden.redis.net.common.ScanCommonParams.*;
@@ -83,6 +84,8 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
     private AtomicReference<String> nextIndex;
     private Stack<String> stack;
     private String key;
+    private AtomicInteger pageNo;
+    private AtomicInteger pageTotal;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -155,6 +158,15 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
     }
 
     public void search() {
+        boolean selected = valueQueryPatterns.isSelected();
+        if (selected){
+            searchByValue();
+        }else {
+            searchByScore();
+        }
+    }
+
+    private void searchByValue() {
         String text = searchValue.getText();
         if (StringUtils.isBlank(text)) {
             tableView.getItems().clear();
@@ -200,6 +212,50 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
             }
         }
     }
+
+
+    private void searchByScore() {
+        String max = maxScore.getText();
+        String min = minScore.getText();
+        if (StringUtils.isAnyBlank(max, min)){
+            tableView.getItems().clear();
+            refreshTableData();
+        }else {
+            RedisClient client = redisNode.getRedisClient();
+            int count = client.zCount(this.key, min, max);
+            pageNo = new AtomicInteger(1);
+            pageTotal = new AtomicInteger( count / STEP_LENGTH_NUMBER + (count % STEP_LENGTH_NUMBER == 0 ? 0 : 1));
+            Pair<String, String>[] pairs = client.zRangeByScore(this.key, min, max, START_INDEX, STEP_LENGTH);
+            ObservableList<Pair<String, String>> items = tableView.getItems();
+            items.addAll(pairs);
+            pre.setOnMouseClicked((event) -> {
+                int oldPageNo = pageNo.get();
+                //如果没有证明当前是第一页
+                if (oldPageNo > 0){
+                    //清理掉之前的数据
+                    items.clear();
+                    //刷新数据
+                    int newPageNo = pageNo.addAndGet(-1);
+                    Pair<String, String>[] data = client.zRangeByScore(this.key, min, max, String.valueOf(STEP_LENGTH_NUMBER * newPageNo), STEP_LENGTH);
+                    items.addAll(data);
+                }
+            });
+            next.setOnMouseClicked((event) -> {
+                //获取下一页的下标
+                int oldPageNo = pageNo.get();
+                //如果为空或者 为 0 证明没有下一页
+                if (oldPageNo < pageTotal.get()){
+                    //清理掉之前的数据
+                    items.clear();
+                    //刷新数据
+                    int newPageNo = pageNo.addAndGet(1);
+                    Pair<String, String>[] data = client.zRangeByScore(this.key, min, max, String.valueOf(STEP_LENGTH_NUMBER * newPageNo), STEP_LENGTH);
+                    items.addAll(data);
+                }
+            });
+        }
+    }
+
 
     private ScanResult<Pair<String, String>> zScan(RedisClient client, String index, String pattern){
         boolean selected = isFuzzySearch.isSelected();

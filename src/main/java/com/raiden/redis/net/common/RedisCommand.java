@@ -53,6 +53,10 @@ public class RedisCommand {
             public static final String Z_REM = "ZREM";
             public static final String Z_SCORE = "ZSCORE";
             public static final String Z_REM_RANGE_BY_SCORE = "ZREMRANGEBYSCORE";
+            public static final String Z_RANGE_BY_SCORE = "ZRANGEBYSCORE";
+            public static final String Z_COUNT = "ZCOUNT";
+            public static final String WITH_SCORES = "WITHSCORES";
+            public static final String LIMIT = "LIMIT";
         }
 
         public static class Hash {

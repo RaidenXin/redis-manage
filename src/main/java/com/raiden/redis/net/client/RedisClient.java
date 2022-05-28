@@ -65,6 +65,10 @@ public interface RedisClient {
 
     ScanResult<Pair<String, String>> zScanMatch(String key, String startIndex,String pattern,String limit);
 
+    Pair<String,String>[] zRangeByScore(String key,String min,String max, String startIndex, String limit);
+
+    int zCount(String key,String min,String max);
+
     String[] mGet(String... keys);
 
     String select(String index);
