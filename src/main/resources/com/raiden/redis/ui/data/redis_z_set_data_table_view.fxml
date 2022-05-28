@@ -23,21 +23,21 @@
                                  <Font name="System Bold" size="12.0" />
                              </font>
                          </Label>
-                         <TextField fx:id="searchValue" layoutX="50.0" layoutY="61.0"  visible="true" prefHeight="23.0" prefWidth="250.0" />
-                         <TextField fx:id="minScore" layoutX="50.0" layoutY="61.0"  visible="false" prefHeight="23.0" prefWidth="120.0" />
-                         <Label fx:id="scoreSeparator" layoutX="171.0" layoutY="61.0"  visible="false" text="-">
+                         <TextField fx:id="searchValue" layoutX="50.0" layoutY="61.0" prefHeight="23.0" prefWidth="250.0" visible="true" />
+                         <TextField fx:id="minScore" layoutX="50.0" layoutY="61.0" prefHeight="23.0" prefWidth="120.0" visible="false" />
+                         <Label fx:id="scoreSeparator" layoutX="171.0" layoutY="61.0" text="-" visible="false">
                              <font>
                                  <Font name="System Bold Italic" size="18.0" />
                              </font>
                          </Label>
-                         <TextField fx:id="maxScore" layoutX="179.0" layoutY="61.0"  visible="false" prefHeight="23.0" prefWidth="120.0" />
+                         <TextField fx:id="maxScore" layoutX="179.0" layoutY="61.0" prefHeight="23.0" prefWidth="120.0" visible="false" />
                          <Button fx:id="searchButton" layoutX="318.0" layoutY="62.0" mnemonicParsing="false" onAction="#search" text="搜索" />
-                         <CheckBox fx:id="isFuzzySearch" layoutX="368.0" layoutY="57.0" visible="true" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" text="模糊查找" />
-                         <Button fx:id="deleteButtonByScore" layoutX="368.0" layoutY="61.0" mnemonicParsing="false" onAction="#deleteByScore"  visible="false" prefHeight="25.0" prefWidth="78.0" text="Score删除" />
+                         <CheckBox fx:id="isFuzzySearch" layoutX="368.0" layoutY="57.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" text="模糊查找" visible="true" />
+                         <Button fx:id="deleteButtonByScore" layoutX="368.0" layoutY="61.0" mnemonicParsing="false" onAction="#deleteByScore" prefHeight="25.0" prefWidth="78.0" text="Score删除" visible="false" />
                          <Button fx:id="pre" layoutX="455.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="上一页" />
                          <Button fx:id="next" layoutX="538.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="下一页" />
-                         <Button fx:id="addButton" layoutX="455.0" layoutY="60.0" mnemonicParsing="false" onAction="#openAddView" prefHeight="25.0" prefWidth="65.0" text="添加" />
-                         <Button fx:id="deleteButton" layoutX="538.0" layoutY="60.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="删除" />
+                         <Button fx:id="addButton" layoutX="455.0" layoutY="61.0" mnemonicParsing="false" onAction="#openAddView" prefHeight="25.0" prefWidth="65.0" text="添加" />
+                         <Button fx:id="deleteButton" layoutX="538.0" layoutY="61.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="删除" />
                          <RadioButton fx:id="valueQueryPatterns" layoutX="59.0" layoutY="22.0" mnemonicParsing="false" selected="true" text="根据Value查询" />
                          <RadioButton fx:id="scoreQueryPatterns" layoutX="188.0" layoutY="22.0" mnemonicParsing="false" text="根据Score查询" />
                      </children>

@@ -217,8 +217,9 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
     private void searchByScore() {
         String max = maxScore.getText();
         String min = minScore.getText();
+        ObservableList<Pair<String, String>> items = tableView.getItems();
+        items.clear();
         if (StringUtils.isAnyBlank(max, min)){
-            tableView.getItems().clear();
             refreshTableData();
         }else {
             RedisClient client = redisNode.getRedisClient();
@@ -226,16 +227,15 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
             pageNo = new AtomicInteger(1);
             pageTotal = new AtomicInteger( count / STEP_LENGTH_NUMBER + (count % STEP_LENGTH_NUMBER == 0 ? 0 : 1));
             Pair<String, String>[] pairs = client.zRangeByScore(this.key, min, max, START_INDEX, STEP_LENGTH);
-            ObservableList<Pair<String, String>> items = tableView.getItems();
             items.addAll(pairs);
             pre.setOnMouseClicked((event) -> {
                 int oldPageNo = pageNo.get();
                 //如果没有证明当前是第一页
-                if (oldPageNo > 0){
+                if (oldPageNo > 1){
                     //清理掉之前的数据
                     items.clear();
                     //刷新数据
-                    int newPageNo = pageNo.addAndGet(-1);
+                    int newPageNo = pageNo.addAndGet(-1) - 1;
                     Pair<String, String>[] data = client.zRangeByScore(this.key, min, max, String.valueOf(STEP_LENGTH_NUMBER * newPageNo), STEP_LENGTH);
                     items.addAll(data);
                 }
@@ -248,7 +248,7 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
                     //清理掉之前的数据
                     items.clear();
                     //刷新数据
-                    int newPageNo = pageNo.addAndGet(1);
+                    int newPageNo = pageNo.addAndGet(1) - 1;
                     Pair<String, String>[] data = client.zRangeByScore(this.key, min, max, String.valueOf(STEP_LENGTH_NUMBER * newPageNo), STEP_LENGTH);
                     items.addAll(data);
                 }
@@ -343,7 +343,7 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
             alert.showAndWait();
         }
         DialogPane dialog = new DialogPane();
-        dialog.setContentText("你是否确认要删除当前Score(分度值):{" + max + "-" + min + "}范围内所有的值？");
+        dialog.setContentText("你是否确认要删除当前Score(分度值):{" + min + "-" + max + "}范围内所有的值？");
         ObservableList<ButtonType> buttonTypes = dialog.getButtonTypes();
         buttonTypes.addAll(ButtonType.YES, ButtonType.NO);
         Stage dialogStage = new Stage();
@@ -351,7 +351,7 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
         Button yes = (Button) dialog.lookupButton(ButtonType.YES);
         yes.setOnAction(event -> {
             RedisClient redisClient = redisNode.getRedisClient();
-            redisClient.zRemRangeByScore(this.key, max, min);
+            redisClient.zRemRangeByScore(this.key, min, max);
             dialogStage.close();
             refreshTableData();
         });
