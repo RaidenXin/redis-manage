@@ -96,7 +96,6 @@ public class RedisServerInfoController {
                 }
                 return  new ReadOnlyStringWrapper(null);
             });
-            ImageView depIcon = new ImageView (new Image(getClass().getResourceAsStream("/icon/db.jpg")));
             final TreeItem root = new TreeItem<>("Keyspace");//创建树形结构根节点选项
             redisStatsTable.setRoot(root);
             root.setExpanded(true);
@@ -105,7 +104,7 @@ public class RedisServerInfoController {
             List<RedisKeyspace.RedisDB> db = keyspace.getDb();
             if (db != null){
                 for (RedisKeyspace.RedisDB redisDB : db){
-                    TreeItem secondaryNode = new TreeItem<>(redisDB.getName(), depIcon);//创建树形结构次级节点
+                    TreeItem secondaryNode = new TreeItem<>(redisDB.getName(), new ImageView (new Image(getClass().getResourceAsStream("/icon/db.jpg"))));//创建树形结构次级节点
                     secondaryNode.setExpanded(true);
                     TreeItem<Pair<String, String>> childNode1 = new TreeItem<>(new Pair<>("-Key的数量", String.valueOf(redisDB.getKeys())));//创建树形结构子节点
                     TreeItem<Pair<String, String>> childNode2 = new TreeItem<>(new Pair<>("-设置了过期时间的Key的个数", String.valueOf(redisDB.getExpires())));//创建树形结构子节点

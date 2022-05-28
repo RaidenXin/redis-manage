@@ -1,5 +1,7 @@
 package com.raiden.redis.net.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 /**
@@ -32,6 +34,10 @@ public class RedisKeyspace {
          */
         private String name;
         /**
+         * 仓库下标
+         */
+        private String index;
+        /**
          *  Key数量
          */
         private long keys;
@@ -50,6 +56,9 @@ public class RedisKeyspace {
 
         public void setName(String name) {
             this.name = name;
+            if (StringUtils.isNotBlank(name)){
+                this.index = name.substring(2);
+            }
         }
 
         public long getKeys() {
@@ -76,10 +85,19 @@ public class RedisKeyspace {
             this.avgTtl = avgTtl;
         }
 
+        public String getIndex() {
+            return index;
+        }
+
+        public void setIndex(String index) {
+            this.index = index;
+        }
+
         @Override
         public String toString() {
             return "RedisDB{" +
                     "name='" + name + '\'' +
+                    ", index=" + index +
                     ", keys=" + keys +
                     ", expires=" + expires +
                     ", avgTtl=" + avgTtl +

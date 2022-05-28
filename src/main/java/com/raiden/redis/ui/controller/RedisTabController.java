@@ -56,13 +56,15 @@ public class RedisTabController {
     /**
      * 切换成数据视图
      */
-    public void switchingDataViews(){
+    public void switchingDataViews(String dbIndex){
         if (dataView == null){
             try {
+                RedisClient redisClient = redisNode.getRedisClient();
+                redisClient.select(dbIndex);
                 //初始化数据视图
                 FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_data_table_view.fxml"));
                 dataView = loader.load();
-                RedisClusterDataTableController dataTableController = loader.getController();
+                RedisDataTableController dataTableController = loader.getController();
                 dataTableController.setRedisNode(redisNode);
                 dataTableController.initTable();
             }catch (Exception e){
@@ -124,7 +126,7 @@ public class RedisTabController {
                                     button.setGraphic(new ImageView("/icon/db.jpg"));
                                     button.setOnAction((event) -> {
                                         //这里设置View并加载数据 懒加载
-                                        switchingDataViews();
+                                        switchingDataViews(db.getIndex());
                                     });
                                     items.add(button);
                                 });

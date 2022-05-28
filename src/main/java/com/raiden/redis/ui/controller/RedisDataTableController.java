@@ -42,9 +42,9 @@ import static com.raiden.redis.net.common.ScanCommonParams.*;
  * @Date:Created in 16:22 2022/5/15
  * @Modified By:
  */
-public class RedisClusterDataTableController implements Initializable {
+public class RedisDataTableController implements Initializable {
 
-    private static final Logger LOGGER = LogManager.getLogger(RedisClusterDataTableController.class);
+    private static final Logger LOGGER = LogManager.getLogger(RedisDataTableController.class);
 
     private static final String MOVED = "MOVED";
 
@@ -77,7 +77,7 @@ public class RedisClusterDataTableController implements Initializable {
     private Stack<String> stack;
     private AtomicBoolean isInitTab;
 
-    public RedisClusterDataTableController(){
+    public RedisDataTableController(){
         this.isInitTab = new AtomicBoolean(false);
     }
 

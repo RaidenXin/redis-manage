@@ -3,8 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="967.0" prefWidth="934.0"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisServerInfoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="967.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisServerInfoController">
     <children>
         <GridPane prefHeight="967.0" prefWidth="934.0">
             <columnConstraints>
@@ -16,7 +15,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="服务信息" collapsible="false">
+                <TitledPane animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="服务信息">
                     <content>
                         <TableView fx:id="redisServerTable" layoutX="0.0" layoutY="0.0" prefHeight="461.0" prefWidth="467.0">
                             <columns>
@@ -26,26 +25,26 @@
                         </TableView>
                     </content>
                 </TitledPane>
-                <TitledPane fx:id="redisCPUTitledPane" animated="false" prefHeight="517.0" prefWidth="467.0" text="CPU" GridPane.columnIndex="1" collapsible="false">
+                <TitledPane fx:id="redisCPUTitledPane" animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="CPU" GridPane.columnIndex="1">
                     <content>
                     </content>
                 </TitledPane>
-                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="客户端信息" GridPane.rowIndex="1" collapsible="false">
+                <TitledPane animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="客户端信息" GridPane.rowIndex="1">
                     <content>
                         <TableView fx:id="redisClientTable" layoutX="0.0" layoutY="0.0" prefHeight="461.0" prefWidth="467.0">
                             <columns>
                                 <TableColumn fx:id="redisClientTableTableKey" prefWidth="240.0" style="-fx-font: 14 arial;" text="介绍" />
-                                <TableColumn fx:id="redisClientTableTableValue" prefWidth="400.0" style="-fx-font: 14 arial; -fx-font-weight: bold;"  />
+                                <TableColumn fx:id="redisClientTableTableValue" prefWidth="400.0" style="-fx-font: 14 arial; -fx-font-weight: bold;" />
                             </columns>
                         </TableView>
                     </content>
                 </TitledPane>
-                <TitledPane animated="false" prefHeight="517.0" prefWidth="467.0" text="数据仓库信息" GridPane.columnIndex="1" GridPane.rowIndex="1" collapsible="false">
+                <TitledPane animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="数据仓库信息" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <content>
                   <TreeTableView fx:id="redisStatsTable" prefHeight="517.0" prefWidth="467.0">
                     <columns>
-                      <TreeTableColumn fx:id="redisStatsTableTableKey" prefWidth="367.0" style="-fx-font: 14 arial;" text="介绍" />
-                      <TreeTableColumn fx:id="redisStatsTableTableValue" prefWidth="100.0" style="-fx-font: 14 arial; -fx-font-weight: bold;"/>
+                      <TreeTableColumn fx:id="redisStatsTableTableKey" prefWidth="330.0" style="-fx-font: 14 arial;" text="介绍" />
+                      <TreeTableColumn fx:id="redisStatsTableTableValue" prefWidth="135.33339436848956" style="-fx-font: 14 arial; -fx-font-weight: bold;" />
                     </columns>
                   </TreeTableView>
                </content>

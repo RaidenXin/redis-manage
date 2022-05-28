@@ -330,10 +330,7 @@ public class TestClient {
 
     @Test
     public void testLog()  {
-        try {
-            int i = 1/0;
-        }catch (Exception e){
-            LOGGER.error(e.getMessage(), e);
-        }
+        String db = "db32";
+        LOGGER.info(db.substring(2));
     }
 }

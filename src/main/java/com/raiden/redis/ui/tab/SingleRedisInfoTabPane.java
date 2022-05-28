@@ -1,35 +1,19 @@
 package com.raiden.redis.ui.tab;
 
-import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.net.model.RedisKeyspace;
-import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.ui.Window;
-import com.raiden.redis.ui.common.ProjectValues;
-import com.raiden.redis.ui.controller.RedisClusterDataTableController;
 import com.raiden.redis.ui.controller.RedisTabController;
 import com.raiden.redis.ui.mode.RedisNode;
-import com.raiden.redis.ui.page.impl.TablePage;
-import com.raiden.redis.ui.util.DataUtil;
-import com.raiden.redis.ui.util.StyleUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @创建人:Raiden
