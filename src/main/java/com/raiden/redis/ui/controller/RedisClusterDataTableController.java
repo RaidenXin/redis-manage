@@ -283,6 +283,8 @@ public class RedisClusterDataTableController implements Initializable {
 
         String type = dataType.getSelectionModel().getSelectedItem();
         if (StringUtils.isBlank(type)){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "请选择数据类型!");
+            alert.showAndWait();
             return;
         }
         try {
