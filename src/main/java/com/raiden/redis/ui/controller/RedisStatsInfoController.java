@@ -56,6 +56,10 @@ public class RedisStatsInfoController implements Initializable {
     public void refresh(Pair<String, RedisNodeInfo> info) {
         RedisNodeInfo redisNodeInfo = info.getValue();
         RedisStats stats = redisNodeInfo.getStats();
+        //排除为null的
+        if (stats == null){
+            return;
+        }
         String time = info.getKey();
         Pair<String, RedisStats> pair = new Pair<>(time, stats);
         queue.add(pair);

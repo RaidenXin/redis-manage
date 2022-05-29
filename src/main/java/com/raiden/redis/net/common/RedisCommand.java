@@ -15,7 +15,8 @@ public class RedisCommand {
         public static final String QUIT = "QUIT";
         //集群
         public static final String CLUSTER  = "CLUSTER";
-
+        //哨兵
+        public static final String SENTINEL  = "SENTINEL";
         //Debug
         public static final String DEBUG  = "DEBUG";
 
@@ -64,5 +65,11 @@ public class RedisCommand {
             public static final String H_GET = "HGET";
             public static final String H_DEL = "HDEL";
             public static final String H_SCAN = "HSCAN";
+        }
+
+        public static class Sentinel{
+            public static final String MASTERS = "MASTERS";
+            public static final String SLAVES = "SLAVES";
+            public static final String SENTINEL_GET_MASTER_ADDR_BY_NAME = "GET-MASTER-ADDR-BY-NAME";
         }
     }

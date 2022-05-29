@@ -2,15 +2,15 @@ package com.raiden.redis.net.handle;
 
 import com.raiden.redis.net.exception.MovedException;
 import com.raiden.redis.net.exception.RedisException;
-import com.raiden.redis.net.model.RedisArrResponse;
-import com.raiden.redis.net.model.RedisResponse;
-import com.raiden.redis.net.model.RedisSingleResponse;
+import com.raiden.redis.net.response.RedisDataResponse;
+import com.raiden.redis.net.response.RedisResponse;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.redis.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
 @ChannelHandler.Sharable
 public class RedisClientHandler extends ChannelDuplexHandler {
@@ -97,7 +98,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
     }
 
     public void caught(Channel channel, Throwable cause){
-        this.response.put(channel, RedisSingleResponse.build(cause, true));
+        this.response.put(channel, RedisDataResponse.build(cause, true));
         Condition condition = this.conditions.get(channel);
         try {
             lock.lock();
@@ -109,26 +110,56 @@ public class RedisClientHandler extends ChannelDuplexHandler {
 
     private RedisResponse parseMessage(RedisMessage message){
         if (message instanceof ArrayRedisMessage){
-            return RedisArrResponse.build(message2Arr(message));
+            return RedisDataResponse.build(message2Arr(message));
         }else {
-            return RedisSingleResponse.build(message2String(message));
+            return RedisDataResponse.build(message2String(message));
         }
     }
 
-    private static String[] message2Arr(RedisMessage msg) {
+    private static <T> T message2Arr(RedisMessage msg) {
         if (msg instanceof ArrayRedisMessage) {
-            List<String> result = new ArrayList<>();
-            for (RedisMessage child : ((ArrayRedisMessage) msg).children()) {
-                if (child instanceof ArrayRedisMessage){
-                    String[] messages = message2Arr(child);
-                    for (String message : messages){
-                        result.add(message);
-                    }
+            ArrayRedisMessage arr = (ArrayRedisMessage) msg;
+            List<RedisMessage> children = arr.children();
+            assert children != null;
+            //是否存在数组
+            boolean isExistArr = children.stream().filter(child -> child instanceof ArrayRedisMessage).findFirst().isPresent();
+            //是否存在非数组
+            boolean isExistNonArr = children.stream().filter(child -> !(child instanceof ArrayRedisMessage)).findFirst().isPresent();
+            //数组和非数组同时存在
+            if (isExistArr && isExistNonArr){
+                return (T) children.stream()
+                        .flatMap(child -> child instanceof ArrayRedisMessage ? Stream.of(messageToArr(child)) : Stream.of(message2String(child)))
+                        .toArray((value -> new String[value]));
+            }else {
+                //不存在数组 只存在非数组
+                if (!isExistArr){
+                    return (T) messageToArr(msg);
                 }else {
-                    result.add(message2String(child));
+                    //不存在非数组 只存在数组
+                    String[][] result = new String[children.size()][];
+                    int index = 0;
+                    for (RedisMessage child : children) {
+                        result[index++] = messageToArr(child);
+                    }
+                    return (T) result;
                 }
             }
-            return result.toArray(new String[]{});
+        } else {
+            throw new CodecException("unknown message type: " + msg);
+        }
+    }
+
+    private static String[] messageToArr(RedisMessage msg) {
+        if (msg instanceof ArrayRedisMessage) {
+            ArrayRedisMessage arr = (ArrayRedisMessage) msg;
+            List<RedisMessage> children = arr.children();
+            assert children != null;
+            String[] result = new String[children.size()];
+            int index = 0;
+            for (RedisMessage child : children) {
+                result[index++] = message2String(child);
+            }
+            return result;
         } else {
             throw new CodecException("unknown message type: " + msg);
         }

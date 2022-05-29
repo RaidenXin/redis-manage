@@ -9,7 +9,6 @@ import com.raiden.redis.net.model.RedisStats;
 import com.raiden.redis.ui.Window;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.queue.CircularFifoQueue;
-import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

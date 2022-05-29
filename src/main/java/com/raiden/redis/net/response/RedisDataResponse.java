@@ -1,19 +1,26 @@
-package com.raiden.redis.net.model;
+package com.raiden.redis.net.response;
 
 import com.raiden.redis.net.exception.RedisReadException;
 import com.raiden.redis.net.exception.RedisWriteException;
 
-public class RedisSingleResponse implements RedisResponse {
+/**
+ * @创建人:Raiden
+ * @Descriotion:
+ * @Date:Created in 19:32 2022/5/29
+ * @Modified By:
+ */
+public class RedisDataResponse implements RedisResponse{
 
-    private String body;
+    private Object body;
     private boolean success;
     private RuntimeException error;
 
+    @Override
     public <T> T getBody() {
         return (T) body;
     }
 
-    public void setBody(String body) {
+    public void setBody(Object body) {
         this.body = body;
     }
 
@@ -33,16 +40,17 @@ public class RedisSingleResponse implements RedisResponse {
         this.error = error;
     }
 
-    public static final RedisSingleResponse build(String body){
-        RedisSingleResponse redisResponse = new RedisSingleResponse();
+
+    public static final RedisDataResponse build(Object body){
+        RedisDataResponse redisResponse = new RedisDataResponse();
         redisResponse.body = body;
         redisResponse.success = true;
         return redisResponse;
     }
 
 
-    public static final RedisSingleResponse build(Throwable error, boolean isRead){
-        RedisSingleResponse redisResponse = new RedisSingleResponse();
+    public static final RedisDataResponse build(Throwable error, boolean isRead){
+        RedisDataResponse redisResponse = new RedisDataResponse();
         if (isRead){
             redisResponse.error = new RedisReadException(error.getMessage(), error);
         }else {

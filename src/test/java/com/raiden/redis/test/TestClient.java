@@ -1,10 +1,7 @@
 package com.raiden.redis.test;
 
 
-import com.raiden.redis.net.client.AbstractRedisClient;
-import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.net.client.RedisClusterClient;
-import com.raiden.redis.net.client.RedisSingleClient;
+import com.raiden.redis.net.client.*;
 import com.raiden.redis.net.decoder.RedisNodeInfoDecoder;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.net.model.RedisCpuInfo;
@@ -14,6 +11,7 @@ import com.raiden.redis.net.pool.RedisClusterClientPool;
 import com.raiden.redis.net.pool.RedisSingleClientPool;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.mode.Record;
+import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.queue.CircularFifoQueue;
 import com.raiden.redis.ui.util.PathUtils;
 import com.raiden.redis.ui.util.RecordStorageUtils;
@@ -327,10 +325,11 @@ public class TestClient {
         LOGGER.error(Arrays.toString(pairs));
     }
 
-
     @Test
-    public void testLog()  {
-        String db = "db32";
-        LOGGER.info(db.substring(2));
+    public void testSentinelClient()  {
+        RedisSentinelClient client = new RedisSentinelClient("redis1.test.yiyaowang.com", 26379);
+        client.getSlaves("imaster");
+
+
     }
 }

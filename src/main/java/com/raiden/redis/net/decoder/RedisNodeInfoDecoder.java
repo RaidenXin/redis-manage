@@ -40,7 +40,7 @@ public final class RedisNodeInfoDecoder {
                 try {
                     Field field = redisNodeInfoClass.getDeclaredField(data);
                     field.setAccessible(true);
-                    field.set(redisNodeInfo, build(field.getType(), dataMap));
+                    field.set(redisNodeInfo, DecoderUtils.build(field.getType(), dataMap));
                     dataMap = new HashMap<>();
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
@@ -99,68 +99,6 @@ public final class RedisNodeInfoDecoder {
 
 
     public static String lineToHump(String str) {
-        if (StringUtils.isBlank(str)){
-            return StringUtils.EMPTY;
-        }
-        StringBuilder builder = new StringBuilder();
-        char[] chars = str.toCharArray();
-        boolean sign = false;
-        for (char c : chars){
-            if (c == 95){
-                sign = true;
-                continue;
-            }
-            if (sign){
-                if (c > 64 && c < 91){
-                    builder.append(c);
-                }else {
-                    builder.append((char) (c - 32));
-                }
-                sign = false;
-            }else {
-                builder.append(c);
-            }
-        }
-        return builder.toString();
-    }
-
-
-    private static final <T> T build(Class<T> clazz, Map<String, Object> data){
-        try {
-            T t = clazz.newInstance();
-            Field[] declaredFields = clazz.getDeclaredFields();
-            for (Field field : declaredFields){
-                field.setAccessible(true);
-                String name = field.getName();
-                Object value = data.get(name);
-                if (value != null){
-                    Class<?> curFieldType = field.getType();;
-                    if (value instanceof List){
-                        //如果字段不是List接口类型 就放弃赋值
-                        if (curFieldType != List.class){
-                            continue;
-                        }
-                        //获取字段的泛型没有获取到则放弃赋值
-                        Type genericType = field.getGenericType();
-                        if (genericType == null){
-                            continue;
-                        }
-                        if (genericType instanceof ParameterizedType) {
-                            ParameterizedType pt = (ParameterizedType) genericType;
-                            Class<?> actualTypeArgument = (Class<?>)pt.getActualTypeArguments()[0];
-                            value = ((List) value).stream().map(v -> build(actualTypeArgument, (Map<String, Object>) v)).collect(Collectors.toList());
-                            field.set(t, value);
-                        }
-                    }else {
-                        field.set(t, GeneralDataTypeConversionUtils.conversion(curFieldType, value));
-                    }
-                }
-            }
-            return t;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            LOGGER.error(e.getMessage(), e);
-        }
-        return null;
+        return DecoderUtils.lineToHump(str, (char) 95);
     }
 }

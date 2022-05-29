@@ -57,28 +57,26 @@ public class RedisTabController {
      * 切换成数据视图
      */
     public void switchingDataViews(String dbIndex){
-        if (dataView == null){
-            try {
-                RedisClient redisClient = redisNode.getRedisClient();
-                redisClient.select(dbIndex);
-                //初始化数据视图
-                FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_data_table_view.fxml"));
-                dataView = loader.load();
-                RedisDataTableController dataTableController = loader.getController();
-                dataTableController.setRedisNode(redisNode);
-                dataTableController.initTable();
-            }catch (Exception e){
-                LOGGER.error(e.getMessage(), e);
-                Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-                alert.showAndWait();
+        try {
+            RedisClient redisClient = redisNode.getRedisClient();
+            redisClient.select(dbIndex);
+            //初始化数据视图
+            FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_data_table_view.fxml"));
+            dataView = loader.load();
+            RedisDataTableController dataTableController = loader.getController();
+            dataTableController.setRedisNode(redisNode);
+            dataTableController.initTable();
+            //设置数据视图
+            ObservableList<Node> children = hBox.getChildren();
+            if (children.size() > 1){
+                children.set(1, dataView);
+            }else {
+                children.add(dataView);
             }
-        }
-        //设置数据视图
-        ObservableList<Node> children = hBox.getChildren();
-        if (children.size() > 1){
-            children.set(1, dataView);
-        }else {
-            children.add(dataView);
+        }catch (Exception e){
+            LOGGER.error(e.getMessage(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -115,22 +113,20 @@ public class RedisTabController {
                 RedisClient redisClient = redisNode.getRedisClient();
                 RedisNodeInfo info = redisClient.info();
                 RedisKeyspace keyspace = info.getKeyspace();
-                if (keyspace != null){
-                    List<RedisKeyspace.RedisDB> dbs = keyspace.getDb();
-                    if (dbs != null){
-                        dbs.stream().sorted(Comparator.comparing(RedisKeyspace.RedisDB::getName))
-                                .forEach(db -> {
-                                    ObservableList items = sidebar.getItems();
-                                    Button button = new Button(db.getName());
-                                    button.setPrefWidth(133.0);
-                                    button.setGraphic(new ImageView("/icon/db.jpg"));
-                                    button.setOnAction((event) -> {
-                                        //这里设置View并加载数据 懒加载
-                                        switchingDataViews(db.getIndex());
-                                    });
-                                    items.add(button);
+                List<RedisKeyspace.RedisDB> dbs;
+                if (keyspace != null && (dbs = keyspace.getDb()) != null){
+                    dbs.stream().sorted(Comparator.comparing(RedisKeyspace.RedisDB::getName))
+                            .forEach(db -> {
+                                ObservableList items = sidebar.getItems();
+                                Button button = new Button(db.getName());
+                                button.setPrefWidth(133.0);
+                                button.setGraphic(new ImageView("/icon/db.jpg"));
+                                button.setOnAction((event) -> {
+                                    //这里设置View并加载数据 懒加载
+                                    switchingDataViews(db.getIndex());
                                 });
-                    }
+                                items.add(button);
+                            });
                 }
             }catch (Exception e){
                 LOGGER.error("初始化数据页面失败！", e);

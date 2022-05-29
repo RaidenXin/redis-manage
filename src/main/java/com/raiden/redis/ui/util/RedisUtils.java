@@ -2,6 +2,7 @@ package com.raiden.redis.ui.util;
 
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisClusterClient;
+import com.raiden.redis.net.client.RedisSentinelClient;
 import com.raiden.redis.net.client.RedisSingleClient;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +17,7 @@ public final class RedisUtils {
 
     private static final ConcurrentHashMap<String, RedisClusterClient> CLIENT_CACHE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, RedisSingleClient> SINGLE_CLIENT_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, RedisSentinelClient> SENTINE_CLIENT_CACHE = new ConcurrentHashMap<>();
 
     private static final String COLON = ":";
 
@@ -25,6 +27,10 @@ public final class RedisUtils {
 
     public static final RedisSingleClient getRedisSingleClient(String host,int port){
         return SINGLE_CLIENT_CACHE.computeIfAbsent(host + COLON + port, (key) -> new RedisSingleClient(host, port));
+    }
+
+    public static final RedisSentinelClient getRedisSentinelClient(String host,int port){
+        return SENTINE_CLIENT_CACHE.computeIfAbsent(host + COLON + port, (key) -> new RedisSentinelClient(host, port));
     }
 
     public static synchronized void shutDown(){

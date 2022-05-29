@@ -56,9 +56,6 @@ public class RedisKeyspace {
 
         public void setName(String name) {
             this.name = name;
-            if (StringUtils.isNotBlank(name)){
-                this.index = name.substring(2);
-            }
         }
 
         public long getKeys() {
@@ -86,6 +83,12 @@ public class RedisKeyspace {
         }
 
         public String getIndex() {
+            if (index != null){
+                return index;
+            }
+            if (StringUtils.isNotBlank(name)){
+                this.index = name.substring(2);
+            }
             return index;
         }
 

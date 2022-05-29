@@ -1,7 +1,6 @@
 package com.raiden.redis.ui.controller.data;
 
 import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.exception.MovedException;
 import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.model.ScanResult;
@@ -151,7 +150,7 @@ public class RedisSetDataViewController implements Controller, Initializable {
     }
 
     private void refreshTableData(){
-        RedisClusterClient client = (RedisClusterClient) redisNode.getRedisClient();
+        RedisClient client = redisNode.getRedisClient();
         ScanResult<String> scan = client.sScan(this.key, START_INDEX, STEP_LENGTH);
         ObservableList<String> items = dataList.getItems();
         items.clear();

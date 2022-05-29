@@ -1,24 +1,29 @@
 package com.raiden.redis.ui.mode;
 
 import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.util.RedisUtils;
 
 /**
  * @创建人:Raiden
  * @Descriotion:
- * @Date:Created in 20:57 2022/5/9
+ * @Date:Created in 22:56 2022/5/28
  * @Modified By:
  */
-public class RedisSingleNode implements RedisNode{
+public class RedisSentinelNode implements RedisNode{
 
     private String hostAndPort;
     private String host;
     private int port;
     private boolean myself;
 
+    @Override
     public String getHostAndPort() {
         return hostAndPort;
+    }
+
+    @Override
+    public RedisClient getRedisClient() {
+        return RedisUtils.getRedisSentinelClient(host, port);
     }
 
     @Override
@@ -26,25 +31,19 @@ public class RedisSingleNode implements RedisNode{
         return myself;
     }
 
-    public static RedisSingleNode build(String host,int port){
-        RedisSingleNode redisNode = new RedisSingleNode();
+    public static RedisSentinelNode build(String host,int port){
+        RedisSentinelNode redisNode = new RedisSentinelNode();
         redisNode.host = host;
         StringBuilder hostAndPort = new StringBuilder();
         hostAndPort.append(host + ":" + port);
         redisNode.hostAndPort = hostAndPort.toString();
         redisNode.port = port;
-        redisNode.myself = true;
         return redisNode;
     }
 
     @Override
-    public RedisClient getRedisClient() {
-        return RedisUtils.getRedisSingleClient(host, port);
-    }
-
-    @Override
     public String toString() {
-        return "RedisSingleNode{" +
+        return "RedisSentinelNode{" +
                 "hostAndPort='" + hostAndPort + '\'' +
                 ", host='" + host + '\'' +
                 ", port=" + port +

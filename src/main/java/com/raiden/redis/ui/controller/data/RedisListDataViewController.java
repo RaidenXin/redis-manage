@@ -1,13 +1,7 @@
 package com.raiden.redis.ui.controller.data;
 
 import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.net.client.RedisClusterClient;
-import com.raiden.redis.net.common.DataType;
-import com.raiden.redis.net.exception.MovedException;
-import com.raiden.redis.net.exception.RedisException;
-import com.raiden.redis.net.model.ScanResult;
 import com.raiden.redis.ui.controller.Controller;
-import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.controller.add.AddValueController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -17,7 +11,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -33,10 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
-
 import static com.raiden.redis.net.common.ScanCommonParams.*;
 
 /**
@@ -107,7 +96,7 @@ public class RedisListDataViewController implements Controller, Initializable {
 
 
     private void refreshTableData(){
-        RedisClusterClient client = (RedisClusterClient) redisNode.getRedisClient();
+        RedisClient client = redisNode.getRedisClient();
         int len = client.lLen(key);
         String[] values = client.lrAnge(this.key, START_INDEX, String.valueOf(PAGE_SIZE - 1));
         ObservableList<Pair<String, String>> items = tableView.getItems();

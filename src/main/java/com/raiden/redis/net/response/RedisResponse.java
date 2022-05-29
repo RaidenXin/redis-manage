@@ -1,4 +1,4 @@
-package com.raiden.redis.net.model;
+package com.raiden.redis.net.response;
 
 /**
  * @创建人:Raiden
