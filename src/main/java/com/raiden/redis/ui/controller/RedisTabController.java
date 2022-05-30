@@ -74,6 +74,7 @@ public class RedisTabController {
                 children.add(dataView);
             }
         }catch (Exception e){
+            LOGGER.error(e);
             LOGGER.error(e.getMessage(), e);
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.showAndWait();
@@ -92,6 +93,7 @@ public class RedisTabController {
                 RedisMonitoringInfoController controller = loader.getController();
                 controller.init(redisNode);
             }catch (Exception e){
+                LOGGER.error(e);
                 LOGGER.error(e.getMessage(), e);
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
@@ -129,7 +131,7 @@ public class RedisTabController {
                             });
                 }
             }catch (Exception e){
-                LOGGER.error("初始化数据页面失败！", e);
+                LOGGER.error("初始化数据页面失败！{}", e.getMessage());
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
             }

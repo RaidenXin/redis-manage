@@ -28,7 +28,8 @@ public final class FXMLLoaderUtils {
             return loader.load();
         } catch (IOException e) {
             String errorMessage = "加载节点失败！Fxml文件名称:" + fxmlName;
-            LOGGER.error(errorMessage, e);
+            LOGGER.error(errorMessage);
+            LOGGER.error(e.getMessage(), e);
             Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage);
             alert.showAndWait();
             return null;

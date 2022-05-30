@@ -117,6 +117,7 @@ public class RedisMonitoringInfoController implements Initializable {
             }, 60, TimeUnit.SECONDS));
         }catch (Exception e){
             String error = e.getMessage();
+            LOGGER.error(e);
             LOGGER.error(error, e);
             Alert alert = new Alert(Alert.AlertType.ERROR, "加载Redis服务信息错误:" + error);
             alert.showAndWait();
@@ -135,6 +136,9 @@ public class RedisMonitoringInfoController implements Initializable {
         if (tabs != null){
             RedisClient client = redisNode.getRedisClient();
             RedisNodeInfo info = client.info();
+            if (info == null){
+                return;
+            }
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
             String time = dtf.format(LocalTime.now());
             queue.add(new Pair<>(time, info));
@@ -199,6 +203,9 @@ public class RedisMonitoringInfoController implements Initializable {
             RedisNodeInfo info = redisNodeInfo.getValue();
             String time = redisNodeInfo.getKey();
             RedisStats stats = info.getStats();
+            if (stats == null){
+                return;
+            }
             instantaneousOpsPerSecSeriesData.add(new XYChart.Data<>(time, stats.getInstantaneousOpsPerSec()));
         }
         NumberAxis numberAxis = new NumberAxis();
@@ -260,6 +267,9 @@ public class RedisMonitoringInfoController implements Initializable {
             long nowTimeStamp = redisNodeInfo.getTimeStamp();
             RedisCpuInfo beforeCpu = beforeRedisNodeInfo.getCpu();
             RedisCpuInfo cpu = redisNodeInfo.getCpu();
+            if (beforeCpu == null || cpu == null){
+                return;
+            }
             double usedCpuSys = usageRate(cpu.getUsedCpuSys(), beforeCpu.getUsedCpuSys(), nowTimeStamp, beforeTimeStamp);
             double usedCpuUser = usageRate(cpu.getUsedCpuUser(), beforeCpu.getUsedCpuUser(), nowTimeStamp, beforeTimeStamp);
             usedCpuSysSeriesData.add(new XYChart.Data<>(time, usedCpuSys));
@@ -328,6 +338,9 @@ public class RedisMonitoringInfoController implements Initializable {
             RedisNodeInfo redisNodeInfo = info.getValue();
             String time = info.getKey();
             RedisStats redisStats = redisNodeInfo.getStats();
+            if (redisStats == null){
+                return;
+            }
             instantaneousOutputKbpsSeriesData.add(new XYChart.Data<>(time, redisStats.getInstantaneousOutputKbps()));
             instantaneousInputKbpsSeriesData.add(new XYChart.Data<>(time, redisStats.getInstantaneousInputKbps()));
         }

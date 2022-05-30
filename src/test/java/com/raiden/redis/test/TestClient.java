@@ -328,8 +328,6 @@ public class TestClient {
     @Test
     public void testSentinelClient()  {
         RedisSentinelClient client = new RedisSentinelClient("redis1.test.yiyaowang.com", 26379);
-        client.getSlaves("imaster");
-
-
+        LOGGER.info(client.info());
     }
 }

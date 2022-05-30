@@ -71,7 +71,7 @@ public class RedisSlave {
     /**
      * 从节点读取到的Offset
      */
-    private int slaveReplOffset;
+    private long slaveReplOffset;
 
     public String getName() {
         return name;
@@ -225,11 +225,11 @@ public class RedisSlave {
         this.slavePriority = slavePriority;
     }
 
-    public int getSlaveReplOffset() {
+    public long getSlaveReplOffset() {
         return slaveReplOffset;
     }
 
-    public void setSlaveReplOffset(int slaveReplOffset) {
+    public void setSlaveReplOffset(long slaveReplOffset) {
         this.slaveReplOffset = slaveReplOffset;
     }
 }

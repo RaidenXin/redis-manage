@@ -1,9 +1,12 @@
 package com.raiden.redis.net.client;
 
+import com.raiden.redis.net.cluster.RedisDecoder;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.RedisCommand;
+import com.raiden.redis.net.decoder.RedisSentinelDecoder;
 import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.handle.RedisClientHandler;
+import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.net.model.ScanResult;
 import com.raiden.redis.net.model.sentinel.RedisMaster;
 import com.raiden.redis.net.model.sentinel.RedisSlave;
@@ -14,7 +17,6 @@ import io.netty.channel.Channel;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -189,21 +191,20 @@ public class RedisSentinelClient extends AbstractRedisClient{
     }
 
     public List<RedisMaster> getMasters(){
-        String[] masters = sendCommands(RedisCommand.SENTINEL, RedisCommand.Sentinel.MASTERS);
-        System.err.println(Arrays.toString(masters));
-        List<RedisMaster> redisNodes = new ArrayList<>(masters.length >> 1);
-        for (int i = 0; i < masters.length; i+=2){
-            RedisSingleNode redisNode = RedisSingleNode.build(masters[0], Integer.parseInt(masters[1]));
-//            redisNodes.add(redisNode);
+        String[][] masters = sendCommands(RedisCommand.SENTINEL, RedisCommand.Sentinel.MASTERS);
+        List<RedisMaster> redisNodes = new ArrayList<>(masters.length);
+        for (String[] master: masters){
+            RedisMaster redisMaster = RedisSentinelDecoder.decoder(RedisMaster.class, master);
+            redisNodes.add(redisMaster);
         }
         return redisNodes;
     }
     public List<RedisSlave> getSlaves(String masterName){
-        String[] hostAndPort = sendCommands(RedisCommand.SENTINEL, RedisCommand.Sentinel.SLAVES, masterName);
-        List<RedisSlave> redisNodes = new ArrayList<>(hostAndPort.length >> 1);
-        for (int i = 0; i < hostAndPort.length; i+=2){
-            RedisSingleNode redisNode = RedisSingleNode.build(hostAndPort[0], Integer.parseInt(hostAndPort[1]));
-//            redisNodes.add(redisNode);
+        String[][] slaves = sendCommands(RedisCommand.SENTINEL, RedisCommand.Sentinel.SLAVES, masterName);
+        List<RedisSlave> redisNodes = new ArrayList<>(slaves.length);
+        for (String[] master: slaves){
+            RedisSlave redisSlave = RedisSentinelDecoder.decoder(RedisSlave.class, master);
+            redisNodes.add(redisSlave);
         }
         return redisNodes;
     }
@@ -211,7 +212,7 @@ public class RedisSentinelClient extends AbstractRedisClient{
     public List<RedisNode> getMasterAddrByName(String masterName){
         String[] hostAndPort = sendCommands(RedisCommand.SENTINEL, RedisCommand.Sentinel.SENTINEL_GET_MASTER_ADDR_BY_NAME, masterName);
         List<RedisNode> redisNodes = new ArrayList<>(hostAndPort.length >> 1);
-        for (int i = 0; i < hostAndPort.length; i+=2){
+        for (int i = 0; i < hostAndPort.length; i += 2){
             RedisSingleNode redisNode = RedisSingleNode.build(hostAndPort[0], Integer.parseInt(hostAndPort[1]));
             redisNodes.add(redisNode);
         }

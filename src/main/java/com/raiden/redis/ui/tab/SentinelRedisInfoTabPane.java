@@ -66,6 +66,7 @@ public class SentinelRedisInfoTabPane {
                     controller.initTable();
                     return tab;
                 } catch (IOException e) {
+                    LOGGER.error(e);
                     LOGGER.error(e.getMessage(), e);
                     return null;
                 }

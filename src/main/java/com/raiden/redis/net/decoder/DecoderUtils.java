@@ -61,8 +61,8 @@ public final class DecoderUtils {
                 String name = field.getName();
                 Object value = data.get(name);
                 Class<?> curFieldType = field.getType();
-                if (value != null && curFieldType.isInstance(value)){
-                    if (value instanceof Collection || curFieldType.isArray()){
+                if (value != null){
+                    if (curFieldType.isInstance(value) && (value instanceof Collection || curFieldType.isArray())){
                         //获取字段的泛型没有获取到则放弃赋值
                         Type genericType = field.getGenericType();
                         if (genericType == null){
