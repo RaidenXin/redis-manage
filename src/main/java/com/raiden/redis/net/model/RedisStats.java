@@ -48,7 +48,7 @@ public class RedisStats {
      */
     private double expiredStalePerc;
     /**
-     *  由于maxmemory限制而导致被驱逐的key的数量
+     *  由于最大内存限制被淘汰的key的数量
      */
     private long evictedKeys;
     /**
@@ -80,19 +80,27 @@ public class RedisStats {
      */
     private long totalWritesProcessed;
     /**
-     * 主线程和I / O线程处理的读取事件数
+     * IO线程处理的读取事件数
      */
     private long ioThreadedReadsProcessed;
     /**
-     * 主线程和I / O线程处理的写事件数
+     * IO线程处理的写事件数
      */
     private long ioThreadedWritesProcessed;
+    /**
+     * 处理Key过期事件所花费的时间
+     */
+    private long expireCycleCpuMilliseconds;
+    /**
+     * 处理Key过期事件超时的次数
+     */
+    private int expiredTimeCapReachedCount;
     /**
      * 主从完全同步成功次数
      */
     private long syncFull;
     /**
-     * 从部分同步成功次数
+     * 主从部分同步成功次数
      */
     private long syncPartialOk;
     /**
@@ -262,6 +270,22 @@ public class RedisStats {
         this.ioThreadedWritesProcessed = ioThreadedWritesProcessed;
     }
 
+    public long getExpireCycleCpuMilliseconds() {
+        return expireCycleCpuMilliseconds;
+    }
+
+    public void setExpireCycleCpuMilliseconds(long expireCycleCpuMilliseconds) {
+        this.expireCycleCpuMilliseconds = expireCycleCpuMilliseconds;
+    }
+
+    public int getExpiredTimeCapReachedCount() {
+        return expiredTimeCapReachedCount;
+    }
+
+    public void setExpiredTimeCapReachedCount(int expiredTimeCapReachedCount) {
+        this.expiredTimeCapReachedCount = expiredTimeCapReachedCount;
+    }
+
     public long getSyncFull() {
         return syncFull;
     }
@@ -309,9 +333,11 @@ public class RedisStats {
                 ", totalWritesProcessed=" + totalWritesProcessed +
                 ", ioThreadedReadsProcessed=" + ioThreadedReadsProcessed +
                 ", ioThreadedWritesProcessed=" + ioThreadedWritesProcessed +
-                ", sync_full=" + syncFull +
-                ", sync_partial_ok=" + syncPartialOk +
-                ", sync_partial_err=" + syncPartialErr +
+                ", expireCycleCpuMilliseconds=" + expireCycleCpuMilliseconds +
+                ", expiredTimeCapReachedCount=" + expiredTimeCapReachedCount +
+                ", syncFull=" + syncFull +
+                ", syncPartialOk=" + syncPartialOk +
+                ", syncPartialErr=" + syncPartialErr +
                 '}';
     }
 }

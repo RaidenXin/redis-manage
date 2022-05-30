@@ -119,7 +119,7 @@ public class RedisTabController {
                 if (keyspace != null && (dbs = keyspace.getDb()) != null){
                     dbs.stream().sorted(Comparator.comparing(RedisKeyspace.RedisDB::getName))
                             .forEach(db -> {
-                                ObservableList items = sidebar.getItems();
+                                ObservableList<Button> items = sidebar.getItems();
                                 Button button = new Button(db.getName());
                                 button.setPrefWidth(133.0);
                                 button.setGraphic(new ImageView("/icon/db.jpg"));

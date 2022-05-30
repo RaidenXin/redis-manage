@@ -25,8 +25,14 @@
                         </TableView>
                     </content>
                 </TitledPane>
-                <TitledPane fx:id="redisCPUTitledPane" animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="CPU" GridPane.columnIndex="1">
+                <TitledPane fx:id="redisStatsTitledPane" animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="统计信息" GridPane.columnIndex="1">
                     <content>
+                        <TableView fx:id="redisStatsTable" layoutX="0.0" layoutY="0.0" prefHeight="461.0" prefWidth="467.0">
+                            <columns>
+                                <TableColumn fx:id="redisStatsTableKey" prefWidth="267.0" style="-fx-font: 14 arial;" text="介绍" />
+                                <TableColumn fx:id="redisStatsTableValue" prefWidth="200.0" style="-fx-font: 14 arial; -fx-font-weight: bold;" />
+                            </columns>
+                        </TableView>
                     </content>
                 </TitledPane>
                 <TitledPane animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="客户端信息" GridPane.rowIndex="1">
@@ -41,7 +47,7 @@
                 </TitledPane>
                 <TitledPane animated="false" collapsible="false" prefHeight="517.0" prefWidth="467.0" text="数据仓库信息" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <content>
-                  <TreeTableView fx:id="redisStatsTable" prefHeight="517.0" prefWidth="467.0">
+                  <TreeTableView fx:id="redisKeyspaceTable" prefHeight="517.0" prefWidth="467.0">
                     <columns>
                       <TreeTableColumn fx:id="redisStatsTableTableKey" prefWidth="330.0" style="-fx-font: 14 arial;" text="介绍" />
                       <TreeTableColumn fx:id="redisStatsTableTableValue" prefWidth="135.33339436848956" style="-fx-font: 14 arial; -fx-font-weight: bold;" />

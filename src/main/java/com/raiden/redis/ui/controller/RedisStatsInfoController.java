@@ -11,10 +11,13 @@ import javafx.scene.chart.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 /**
  * @创建人:Raiden
@@ -23,7 +26,10 @@ import java.util.ResourceBundle;
  * @Modified By:
  */
 public class RedisStatsInfoController implements Initializable {
-    
+
+    private static final Logger LOGGER = LogManager.getLogger(RedisStatsInfoController.class);
+
+
     @FXML
     private GridPane gridPane;
     @FXML
@@ -38,6 +44,14 @@ public class RedisStatsInfoController implements Initializable {
     private AnchorPane totalNetworkTrafficViews;
     @FXML
     private AnchorPane expiredStalePercView;
+    @FXML
+    private AnchorPane expiredKeysView;
+    @FXML
+    private AnchorPane expiredTimeCapReachedCountView;
+    @FXML
+    private AnchorPane ioThreadedProcessedView;
+    @FXML
+    private AnchorPane expireCycleCpuMillisecondsView;
 
     private CircularFifoQueue<Pair<String, RedisStats>> queue;
     private double prefHeight;
@@ -60,16 +74,26 @@ public class RedisStatsInfoController implements Initializable {
         if (stats == null){
             return;
         }
-        String time = info.getKey();
+        //除去秒
+        String time = info.getKey().substring(0, 5);
         Pair<String, RedisStats> pair = new Pair<>(time, stats);
         queue.add(pair);
         List<Pair<String, RedisStats>> all = queue.getAll();
-        totalConnectionsReceivedRefresh(all);
-        totalCommandsProcessedRefresh(all);
-        totalNumberProcessedEventsRefresh(all);
-        keyspaceRefresh(all);
-        totalNetworkTrafficViewsRefresh(all);
-        expiredStalePercView(all);
+        try {
+            totalConnectionsReceivedRefresh(all);
+            totalCommandsProcessedRefresh(all);
+            totalNumberProcessedEventsRefresh(all);
+            keyspaceRefresh(all);
+            totalNetworkTrafficViewsRefresh(all);
+            expiredStalePercView(all);
+            expiredKeysView(all);
+            expiredTimeCapReachedCountView(all);
+            expireCycleCpuMillisecondsView(all);
+            ioThreadedProcessedView(all);
+        }catch (Exception e){
+            LOGGER.error(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     /**
@@ -236,24 +260,82 @@ public class RedisStatsInfoController implements Initializable {
      * @param all
      */
     private void expiredStalePercView(List<Pair<String, RedisStats>> all){
+        view(all, RedisStats::getExpiredStalePerc, this.expiredStalePercView,"百分比", "Key过期比例");
+    }
+
+    /**
+     * Key过期事件总数
+     * @param all
+     */
+    private void expiredKeysView(List<Pair<String, RedisStats>> all){
+        view(all, RedisStats::getExpiredKeys,  this.expiredKeysView,"总数/个", "Key过期事件总数");
+    }
+
+    /**
+     * Key过期事件总数
+     * @param all
+     */
+    private void expiredTimeCapReachedCountView(List<Pair<String, RedisStats>> all){
+        view(all, RedisStats::getExpiredTimeCapReachedCount,  this.expiredTimeCapReachedCountView,"次", "处理Key过期事件超时的次数");
+    }
+
+    /**
+     * Key过期事件总数
+     * @param all
+     */
+    private void expireCycleCpuMillisecondsView(List<Pair<String, RedisStats>> all){
+        view(all, RedisStats::getExpireCycleCpuMilliseconds,  this.expireCycleCpuMillisecondsView,"毫秒", "处理Key过期事件所花费的时间");
+    }
+
+    private <T> void view(List<Pair<String, RedisStats>> all, Function<RedisStats, T> function,AnchorPane anchorPane,String label,String name){
         NumberAxis numberAxis = new NumberAxis();
-        numberAxis.setLabel("百分比");
+        numberAxis.setLabel(label);
         //服务器查找Key 相关
-        LineChart<String, Number> lineChart = new LineChart(new CategoryAxis(), numberAxis);
+        LineChart<String, T> lineChart = new LineChart(new CategoryAxis(), numberAxis);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         //在主字典中成功查找到key的次数
-        final XYChart.Series<String, Number> expiredStalePercSeries = new XYChart.Series<>();
-        expiredStalePercSeries.setName("Key过期比例");
-        ObservableList<XYChart.Data<String, Number>> instantaneousInputKbpsSeriesData = expiredStalePercSeries.getData();
+        final XYChart.Series<String, T> expiredStalePercSeries = new XYChart.Series<>();
+        expiredStalePercSeries.setName(name);
+        ObservableList<XYChart.Data<String, T>> instantaneousInputKbpsSeriesData = expiredStalePercSeries.getData();
         for (Pair<String, RedisStats> p : all) {
             String key = p.getKey();
             RedisStats redisStats = p.getValue();
-            instantaneousInputKbpsSeriesData.add(new XYChart.Data<>(key, redisStats.getExpiredStalePerc() ));
+            instantaneousInputKbpsSeriesData.add(new XYChart.Data<>(key, function.apply(redisStats)));
         }
-        ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();
+        ObservableList<XYChart.Series<String, T>> data = lineChart.getData();
         data.addAll(expiredStalePercSeries);
-        ObservableList<Node> children = this.expiredStalePercView.getChildren();
+        ObservableList<Node> children = anchorPane.getChildren();
+        children.clear();
+        children.add(lineChart);
+    }
+
+    /**
+     * IO线程处理事件数
+     * @param all
+     */
+    private void ioThreadedProcessedView(List<Pair<String, RedisStats>> all){
+        //服务器接受的连接总数
+        final XYChart.Series<String, Number> ioThreadedReadsProcessedSeries = new XYChart.Series<>();
+        ioThreadedReadsProcessedSeries.setName("IO线程处理的读取事件数");
+        final XYChart.Series<String, Number> ioThreadedWritesProcessedSeries = new XYChart.Series<>();
+        ioThreadedWritesProcessedSeries.setName("IO线程处理的写事件数");
+        ObservableList<XYChart.Data<String, Number>> ioThreadedReadsProcessedSeriesSeriesData = ioThreadedReadsProcessedSeries.getData();
+        ObservableList<XYChart.Data<String, Number>> ioThreadedWritesProcessedSeriesData = ioThreadedWritesProcessedSeries.getData();
+        for (Pair<String, RedisStats> p : all) {
+            String key = p.getKey();
+            RedisStats redisStats = p.getValue();
+            ioThreadedReadsProcessedSeriesSeriesData.add(new XYChart.Data<>(key, redisStats.getIoThreadedReadsProcessed()));
+            ioThreadedWritesProcessedSeriesData.add(new XYChart.Data<>(key, redisStats.getIoThreadedWritesProcessed()));
+        }
+        NumberAxis numberAxis = new NumberAxis();
+        numberAxis.setLabel("事件数/个");
+        LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setPrefHeight(prefHeight);
+        lineChart.setPrefWidth(prefWidth);
+        ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();
+        data.addAll(ioThreadedReadsProcessedSeries, ioThreadedWritesProcessedSeries);
+        ObservableList<Node> children = this.ioThreadedProcessedView.getChildren();
         children.clear();
         children.add(lineChart);
     }

@@ -27,7 +27,11 @@ public class RedisServerInfoController {
     @FXML
     private TableColumn<Pair<String, String>, String> redisServerTableValue;
     @FXML
-    private TitledPane redisCPUTitledPane;
+    private TableView redisStatsTable;
+    @FXML
+    private TableColumn<Pair<String, String>, String> redisStatsTableKey;
+    @FXML
+    private TableColumn<Pair<String, String>, String> redisStatsTableValue;
     @FXML
     private TableView redisClientTable;
     @FXML
@@ -35,7 +39,7 @@ public class RedisServerInfoController {
     @FXML
     private TableColumn<Pair<String, String>, String> redisClientTableTableValue;
     @FXML
-    private TreeTableView redisStatsTable;
+    private TreeTableView redisKeyspaceTable;
     @FXML
     private TreeTableColumn<Object, String> redisStatsTableTableKey;
     @FXML
@@ -59,6 +63,25 @@ public class RedisServerInfoController {
                 items.add(new Pair<>("TCP/IP 监听端口", server.getTcpPort()));
                 items.add(new Pair<>("运行时间(单位秒)", server.getUptimeInSeconds()));
                 items.add(new Pair<>("运行时间(单位天)", server.getUptimeInDays()));
+            }
+        }
+        //stats: 一般统计
+        {
+            RedisStats stats = info.getStats();
+            if (stats != null){
+                ObservableList<TableColumn> columns = redisStatsTable.getColumns();
+                columns.stream().forEach(c -> c.setCellFactory(TextFieldTableCell.forTableColumn()));
+                redisStatsTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
+                redisStatsTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+                ObservableList<Pair<String, Number>> items = redisStatsTable.getItems();
+                items.clear();
+                items.add(new Pair<>("由于最大内存限制被淘汰的key的数量", stats.getEvictedKeys()));
+                items.add(new Pair<>("拥有客户端订阅的全局pub/sub通道数", stats.getPubsubChannels()));
+                items.add(new Pair<>("拥有客户端订阅的全局pub/sub模式数", stats.getPubsubPatterns()));
+                items.add(new Pair<>("上一次fork操作的持续时间(微秒)", stats.getLatestForkUsec()));
+                items.add(new Pair<>("主从完全同步成功次数", stats.getSyncFull()));
+                items.add(new Pair<>("主从部分同步成功次数", stats.getSyncPartialOk()));
+                items.add(new Pair<>("主从部分同步失败次数", stats.getSyncPartialErr()));
             }
         }
         //客户端信息
@@ -102,7 +125,7 @@ public class RedisServerInfoController {
                     return  new ReadOnlyStringWrapper(null);
                 });
                 final TreeItem root = new TreeItem<>("Keyspace");//创建树形结构根节点选项
-                redisStatsTable.setRoot(root);
+                redisKeyspaceTable.setRoot(root);
                 root.setExpanded(true);
                 ObservableList<TreeItem<Pair<String, String>>> children = root.getChildren();
                 children.clear();

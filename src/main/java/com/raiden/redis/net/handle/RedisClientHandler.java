@@ -10,7 +10,6 @@ import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.redis.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
-import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
