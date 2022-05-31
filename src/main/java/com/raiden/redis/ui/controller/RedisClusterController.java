@@ -3,6 +3,7 @@ package com.raiden.redis.ui.controller;
 import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.common.Path;
+import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.dao.RecordDao;
 import com.raiden.redis.ui.mode.RedisClusterNode;
 import com.raiden.redis.ui.mode.RedisNode;

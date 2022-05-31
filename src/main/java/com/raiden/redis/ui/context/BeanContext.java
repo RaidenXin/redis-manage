@@ -1,4 +1,4 @@
-package com.raiden.redis.ui.controller;
+package com.raiden.redis.ui.context;
 
 import java.util.concurrent.ConcurrentHashMap;
 

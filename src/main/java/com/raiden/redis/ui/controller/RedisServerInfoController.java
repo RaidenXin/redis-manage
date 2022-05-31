@@ -29,9 +29,9 @@ public class RedisServerInfoController {
     @FXML
     private TableView redisStatsTable;
     @FXML
-    private TableColumn<Pair<String, String>, String> redisStatsTableKey;
+    private TableColumn<Pair<String, Number>, String> redisStatsTableKey;
     @FXML
-    private TableColumn<Pair<String, String>, String> redisStatsTableValue;
+    private TableColumn<Pair<String, Number>, String> redisStatsTableValue;
     @FXML
     private TableView redisClientTable;
     @FXML
@@ -69,8 +69,6 @@ public class RedisServerInfoController {
         {
             RedisStats stats = info.getStats();
             if (stats != null){
-                ObservableList<TableColumn> columns = redisStatsTable.getColumns();
-                columns.stream().forEach(c -> c.setCellFactory(TextFieldTableCell.forTableColumn()));
                 redisStatsTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
                 redisStatsTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
                 ObservableList<Pair<String, Number>> items = redisStatsTable.getItems();
@@ -88,8 +86,6 @@ public class RedisServerInfoController {
         {
             RedisClientInfo clients = info.getClients();
             if (clients != null){
-                ObservableList<TableColumn> columns = redisClientTable.getColumns();
-                columns.stream().forEach(c -> c.setCellFactory(TextFieldTableCell.forTableColumn()));
                 redisClientTableTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
                 redisClientTableTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
                 ObservableList items = redisClientTable.getItems();

@@ -2,6 +2,7 @@ package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.net.client.RedisSingleClient;
 import com.raiden.redis.ui.common.Path;
+import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.dao.RecordDao;
 import com.raiden.redis.ui.mode.RedisSingleNode;
 import com.raiden.redis.ui.tab.SingleRedisInfoTabPane;

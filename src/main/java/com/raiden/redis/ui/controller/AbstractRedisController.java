@@ -2,6 +2,7 @@ package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.ui.common.AlertText;
+import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.dao.RecordDao;
 import com.raiden.redis.ui.mode.Record;
 import javafx.beans.value.ObservableValue;

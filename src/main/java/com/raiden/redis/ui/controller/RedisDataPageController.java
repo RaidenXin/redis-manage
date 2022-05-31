@@ -1,8 +1,8 @@
 package com.raiden.redis.ui.controller;
 
+import com.raiden.redis.ui.context.BeanContext;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
