@@ -2,6 +2,7 @@ package com.raiden.redis.net.handle;
 
 import com.raiden.redis.net.exception.MovedException;
 import com.raiden.redis.net.exception.RedisException;
+import com.raiden.redis.net.exception.UnknownCommandException;
 import com.raiden.redis.net.response.RedisDataResponse;
 import com.raiden.redis.net.response.RedisResponse;
 import io.netty.buffer.ByteBufUtil;
@@ -25,6 +26,8 @@ import java.util.stream.Stream;
 public class RedisClientHandler extends ChannelDuplexHandler {
 
     private static final String MOVED = "MOVED";
+
+    private static final String UNKNOWN_COMMAND = "ERR unknown command";
 
     private Lock lock;
     private Map<Channel, RedisResponse> response;
@@ -169,11 +172,8 @@ public class RedisClientHandler extends ChannelDuplexHandler {
         if (msg instanceof SimpleStringRedisMessage) {
             return ((SimpleStringRedisMessage) msg).content();
         } else if (msg instanceof ErrorRedisMessage) {
-            String errorMsg = ((ErrorRedisMessage) msg).content();
-            if (StringUtils.isNotBlank(errorMsg) && errorMsg.startsWith(MOVED)){
-                throw new MovedException(errorMsg);
-            }
-            throw new RedisException(errorMsg);
+            handlErrorMessages((ErrorRedisMessage) msg);
+            return StringUtils.EMPTY;
         } else if (msg instanceof IntegerRedisMessage) {
             return String.valueOf(((IntegerRedisMessage) msg).value());
         } else if (msg instanceof FullBulkStringRedisMessage) {
@@ -181,6 +181,19 @@ public class RedisClientHandler extends ChannelDuplexHandler {
         } else {
             throw new CodecException("unknown message type: " + msg);
         }
+    }
+
+    private static void handlErrorMessages(ErrorRedisMessage message){
+        String errorMsg = message.content();
+        if (StringUtils.isNotBlank(errorMsg)){
+            if (errorMsg.startsWith(MOVED)){
+                throw new MovedException(errorMsg);
+            }
+            if (errorMsg.startsWith(UNKNOWN_COMMAND)){
+                throw new UnknownCommandException(errorMsg);
+            }
+        }
+        throw new RedisException(errorMsg);
     }
 
     private static String getString(FullBulkStringRedisMessage msg) {

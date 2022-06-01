@@ -13,6 +13,7 @@ import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.mode.Record;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.queue.CircularFifoQueue;
+import com.raiden.redis.ui.util.MemoryComputingUtil;
 import com.raiden.redis.ui.util.PathUtils;
 import com.raiden.redis.ui.util.RecordStorageUtils;
 import com.raiden.redis.net.utils.RedisClusterSlotUtil;
@@ -328,6 +329,24 @@ public class TestClient {
     @Test
     public void testSentinelClient()  {
         RedisSentinelClient client = new RedisSentinelClient("redis1.test.yiyaowang.com", 26379);
-        LOGGER.info(client.info());
+        LOGGER.info(client.memoryUsage("180175"));
+    }
+
+    @Test
+    public void testMemoryComputingUtil()  {
+        long size = 1024 * 1024;
+        LOGGER.info(MemoryComputingUtil.byteToKB(size));
+        LOGGER.info(MemoryComputingUtil.byteToMB(size));
+    }
+
+
+    @Test
+    public void testReconnection() throws InterruptedException {
+        RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
+        ScanResult<String> stringScanResult = redisClient.sScan("{aaa}Set", "0", "5");
+        LOGGER.info(stringScanResult);
+        TimeUnit.SECONDS.sleep(60);
+        stringScanResult = redisClient.sScan("{aaa}Set", "0", "5");
+        LOGGER.info(stringScanResult);
     }
 }

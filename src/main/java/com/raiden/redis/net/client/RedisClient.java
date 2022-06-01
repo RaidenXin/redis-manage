@@ -79,6 +79,8 @@ public interface RedisClient {
 
     RedisNodeInfo info();
 
+    long memoryUsage(String key);
+
     void close();
 
     boolean isActive();

@@ -32,21 +32,26 @@ public abstract class AbstractRedisClient implements RedisClient{
     private Channel channel;
     private RedisClientHandler handler;
     private EventLoopGroup group;
+    private Bootstrap bootstrap;
     private RedisClientPool pool;
+    private String host;
+    private int port;
     //是否池化对象
     private boolean isObjectPooling;
 
     public AbstractRedisClient(String host, int port){
+        this.host = host;
+        this.port = port;
         this.group = new NioEventLoopGroup();
         this.handler = new RedisClientHandler();
-        Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(group)
+        this.bootstrap = new Bootstrap();
+        this.bootstrap.group(group)
                 .channel(NioSocketChannel.class)
                 .handler(new RedisClientInitializer(handler));
-
         try {
             this.channel = bootstrap.connect(host, port).sync().channel();
         } catch (InterruptedException e) {
+            LOGGER.error(e.getMessage());
             group.shutdownGracefully();
         }
     }
@@ -305,9 +310,9 @@ public abstract class AbstractRedisClient implements RedisClient{
         return SUCCESS.equalsIgnoreCase(response);
     }
 
-    public String memoryUsage(String key){
+    public long memoryUsage(String key){
         String response = sendCommands(RedisCommand.MEMORY, RedisCommand.Memory.USAGE, key);
-        return response;
+        return Long.parseLong(response);
     }
 
 
@@ -321,6 +326,9 @@ public abstract class AbstractRedisClient implements RedisClient{
 
     protected <T> T sendCommands(String... commands){
         if (channel != null){
+            if (!channel.isActive()){
+                reconnection();
+            }
             //发送命令
             ChannelFuture channelFuture = channel.writeAndFlush(commands);
             //设置错误监听
@@ -333,6 +341,27 @@ public abstract class AbstractRedisClient implements RedisClient{
             });
         }
         return handler.getResponse(channel);
+    }
+
+    public void reconnection(){
+        //如果渠道为空 直接去重连
+        if (this.channel != null){
+            //如果去到活跃就不用重新连接了
+            if (this.channel.isActive()){
+                return;
+            }
+            //关闭旧的渠道
+            this.channel.close();
+        }
+        if (this.bootstrap != null){
+            try {
+                LOGGER.warn("Start reconnecting to the Redis server!host:{}");
+                //重新连接
+                this.channel = this.bootstrap.connect(this.host, this.port).sync().channel();
+            } catch (InterruptedException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
     }
 
     public void close(){

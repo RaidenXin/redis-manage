@@ -3,11 +3,13 @@ package com.raiden.redis.ui.controller;
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.Separator;
+import com.raiden.redis.net.exception.UnknownCommandException;
 import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.controller.add.AddHashElementsController;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
+import com.raiden.redis.ui.util.MemoryComputingUtil;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,6 +21,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +73,8 @@ public class RedisDataTableController implements Initializable {
     private TextField key;
     @FXML
     private AnchorPane dataView;
+    @FXML
+    private Text memoryUsage;
 
     private RedisNode redisNode;
     private AtomicReference<String> currentIndex;
@@ -101,6 +106,13 @@ public class RedisDataTableController implements Initializable {
                         Node load = fxmlLoader.load();
                         Controller controller = fxmlLoader.getController();
                         controller.init(redisNode, newValue);
+                        try {
+                            //这里要捕获一个没有找到命令的异常 因为可能没有开启这个命令
+                            long memoryUsage = redisClient.memoryUsage(newValue);
+                            this.memoryUsage.setText(MemoryComputingUtil.getReadableMemory(memoryUsage));
+                        }catch (UnknownCommandException e){
+                            LOGGER.warn(e.getMessage());
+                        }
                         dataView.getChildren().add(load);
                     } catch (Exception e) {
                         String message = e.getMessage();

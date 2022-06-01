@@ -1,5 +1,6 @@
 package com.raiden.redis.net.response;
 
+import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.exception.RedisReadException;
 import com.raiden.redis.net.exception.RedisWriteException;
 
