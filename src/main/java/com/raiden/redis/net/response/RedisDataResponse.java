@@ -52,10 +52,14 @@ public class RedisDataResponse implements RedisResponse{
 
     public static final RedisDataResponse build(Throwable error, boolean isRead){
         RedisDataResponse redisResponse = new RedisDataResponse();
-        if (isRead){
-            redisResponse.error = new RedisReadException(error.getMessage(), error);
+        if (error instanceof RedisException){
+            redisResponse.error = (RedisException) error;
         }else {
-            redisResponse.error = new RedisWriteException(error.getMessage(), error);
+            if (isRead){
+                redisResponse.error = new RedisReadException(error.getMessage(), error);
+            }else {
+                redisResponse.error = new RedisWriteException(error.getMessage(), error);
+            }
         }
         redisResponse.success = false;
         return redisResponse;

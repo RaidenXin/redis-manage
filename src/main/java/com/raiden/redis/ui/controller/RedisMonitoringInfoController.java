@@ -4,11 +4,14 @@ import com.raiden.redis.core.common.TaskProcessingCenter;
 import com.raiden.redis.core.task.Task;
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.model.RedisCpuInfo;
+import com.raiden.redis.net.model.RedisMemoryInfo;
 import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.net.model.RedisStats;
 import com.raiden.redis.ui.Window;
+import com.raiden.redis.ui.controller.memory.MemoryDataViewController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.queue.CircularFifoQueue;
+import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,10 +26,12 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -62,6 +67,7 @@ public class RedisMonitoringInfoController implements Initializable {
 
     private RedisServerInfoController redisServerInfoController;
     private RedisStatsInfoController redisStatsInfoController;
+    private MemoryDataViewController memoryDataViewController;
 
     private AtomicBoolean isInit;
 
@@ -154,6 +160,9 @@ public class RedisMonitoringInfoController implements Initializable {
                     case TIME_SHARING_TRAFFIC://服务
                         refreshRedisTimeSharingTraffic(tab, desc);
                         break;
+                    case MEMORY://内存折线图
+                        refreshRedisMemoryLineChart(tab, desc);
+                        break;
                 }
             }
         }
@@ -175,7 +184,7 @@ public class RedisMonitoringInfoController implements Initializable {
                         refreshRedisStatsInfo(tab, last);
                         break;
                     case MEMORY://内存
-//                        refreshRedisMemoryInfo(tab, info);
+                        refreshRedisMemoryInfo(tab, last);
                         break;
                     case PERSISTENCE://持久化
 //                        refreshRedisPersistenceInfo(tab, info);
@@ -255,7 +264,7 @@ public class RedisMonitoringInfoController implements Initializable {
         XYChart.Series<String,Number> usedCpuUserChildrenSeries = new XYChart.Series<>();
         ObservableList<XYChart.Data<String, Number>> usedCpuUserChildrenSeriesData = usedCpuUserChildrenSeries.getData();
         usedCpuUserChildrenSeries.setName("后台进程用户CPU使用率");
-        //因为是倒序 所以要从后面开始遍历 第一个前面没有了无法比较 所以直接从第二个开始
+        //第一个前面没有了无法比较 所以直接从第二个开始
         int size = redisNodeInfos.size();
         for (int i = 1; i < size; i++){
             Pair<String, RedisNodeInfo> info = redisNodeInfos.get(i);
@@ -289,9 +298,10 @@ public class RedisMonitoringInfoController implements Initializable {
         }
         double prefWidth = this.prefWidth * ((size >> 4) + 1);
         double prefHeight = this.prefHeight / 3;
-        LineChart usedCpu = createLineChart(prefHeight, prefWidth, usedCpuSysSeries, usedCpuUserSeries);
-        LineChart mainThread = createLineChart(prefHeight, prefWidth, usedCpuSysMainThreadSeries, usedCpuUserMainThreadSeries);
-        LineChart backgroundProcess = createLineChart(prefHeight, prefWidth, usedCpuSysChildrenSeries, usedCpuUserChildrenSeries);
+        String lebel = "CPU占用率(%)";
+        LineChart usedCpu = createLineChart(lebel, prefHeight, prefWidth, usedCpuSysSeries, usedCpuUserSeries);
+        LineChart mainThread = createLineChart(lebel, prefHeight, prefWidth, usedCpuSysMainThreadSeries, usedCpuUserMainThreadSeries);
+        LineChart backgroundProcess = createLineChart(lebel, prefHeight, prefWidth, usedCpuSysChildrenSeries, usedCpuUserChildrenSeries);
         VBox vBox = new VBox();
         vBox.setPrefHeight(tabPane.getPrefHeight());
         vBox.setPrefWidth(prefWidth);
@@ -301,12 +311,73 @@ public class RedisMonitoringInfoController implements Initializable {
         content.setContent(vBox);
     }
 
-    private LineChart createLineChart(double prefHeight,double prefWidth,XYChart.Series<String,Number>... series){
+    private void refreshRedisMemoryLineChart(Tab tab, List<Pair<String, RedisNodeInfo>> redisNodeInfos) throws IOException {
+        XYChart.Series<String,Number> usedMemoryPeakPercSeries = new XYChart.Series<>();
+        ObservableList<XYChart.Data<String, Number>> usedMemoryPeakPercSeriesData = usedMemoryPeakPercSeries.getData();
+        usedMemoryPeakPercSeries.setName("使用内存达到峰值内存的百分比");
+
+
+        XYChart.Series<String,Number> usedMemoryDatasetPercSeries = new XYChart.Series<>();
+        ObservableList<XYChart.Data<String, Number>> usedMemoryDatasetPercSeriesData = usedMemoryDatasetPercSeries.getData();
+        usedMemoryDatasetPercSeries.setName("数据占用内存的百分比");
+
+
+        XYChart.Series<String,Number> memFragmentationRatioSeries = new XYChart.Series<>();
+        ObservableList<XYChart.Data<String, Number>> memFragmentationRatioSeriesData = memFragmentationRatioSeries.getData();
+        memFragmentationRatioSeries.setName("内存碎片率");
+
+        int size = redisNodeInfos.size();
+        for (Pair<String, RedisNodeInfo> info : redisNodeInfos){
+            String time = info.getKey();
+            RedisNodeInfo redisNodeInfo = info.getValue();
+            RedisMemoryInfo memory = redisNodeInfo.getMemory();
+            if (memory == null){
+                return;
+            }
+            //使用内存与峰值内存的百分比(used_memory / used_memory_peak) *100%
+            String usedMemoryPeakPerc = memory.getUsedMemoryPeakPerc();
+            if (StringUtils.isNotBlank(usedMemoryPeakPerc)) {
+                double value = Double.valueOf(usedMemoryPeakPerc.substring(0, usedMemoryPeakPerc.length() - 1));
+                usedMemoryPeakPercSeriesData.add(new XYChart.Data<>(time, value));
+            }
+
+            //数据占用的内存大小百分比,(used_memory_dataset / (used_memory - used_memory_startup))*100%
+            String usedMemoryDatasetPerc = memory.getUsedMemoryDatasetPerc();
+            if (StringUtils.isNotBlank(usedMemoryDatasetPerc)) {
+                double value = Double.valueOf(usedMemoryDatasetPerc.substring(0, usedMemoryDatasetPerc.length() - 1));
+                usedMemoryDatasetPercSeriesData.add(new XYChart.Data<>(time, value));
+            }
+
+            memFragmentationRatioSeriesData.add(new XYChart.Data<>(time, memory.getMemFragmentationRatio()));
+
+        }
+        double prefWidth = this.prefWidth * ((size >> 4) + 1);
+        double prefHeight = 0;
+        String label = "占用率(%)";
+        LineChart usedMemoryPeakPerc = createLineChart(label, prefHeight, prefWidth, usedMemoryPeakPercSeries);
+        LineChart usedMemoryDatasetPerc = createLineChart(label, prefHeight, prefWidth, usedMemoryDatasetPercSeries);
+        LineChart memFragmentationRatio = createLineChart(label, prefHeight, prefWidth, memFragmentationRatioSeries);
+        if (!isInit.get() && memoryDataViewController == null){
+            FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("memory/redis_memory_data_view.fxml");
+            AnchorPane view = loader.load();
+            this.memoryDataViewController = loader.getController();
+            tab.setContent(view);
+        }
+        if ( this.memoryDataViewController != null){
+            this.memoryDataViewController.refreshMemoryLineChart(usedMemoryPeakPerc, usedMemoryDatasetPerc, memFragmentationRatio, prefWidth);
+        }
+    }
+
+    private LineChart createLineChart(String label, double prefHeight, double prefWidth, XYChart.Series<String, Number>... series) {
         NumberAxis numberAxis = new NumberAxis();
-        numberAxis.setLabel("CPU占用率(%)");
+        numberAxis.setLabel(label);
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
-        lineChart.setPrefHeight(prefHeight);
-        lineChart.setPrefWidth(prefWidth);
+        if (prefHeight != 0){
+            lineChart.setPrefHeight(prefHeight);
+        }
+        if (prefWidth != 0){
+            lineChart.setPrefWidth(prefWidth);
+        }
         ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();
         data.addAll(series);
         return lineChart;
@@ -357,34 +428,36 @@ public class RedisMonitoringInfoController implements Initializable {
 
     public void refreshRedisServerInfo(Tab server,Pair<String, RedisNodeInfo> info) throws IOException {
         if (!isInit.get()){
-            FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_server_info_view.fxml"));
+            FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("redis_server_info_view.fxml");
             AnchorPane redisServerInfoView = loader.load();
             server.setContent(redisServerInfoView);
             this.redisServerInfoController = loader.getController();
         }
-        if (redisServerInfoController != null && info != null){
-            redisServerInfoController.refresh(info.getValue());
+        if (this.redisServerInfoController != null && info != null){
+            this.redisServerInfoController.refresh(info.getValue());
         }
     }
 
     public void refreshRedisStatsInfo(Tab stats, Pair<String, RedisNodeInfo> info)throws IOException{
         if (!isInit.get()){
-            FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_stats_info_view.fxml"));
+            FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("redis_stats_info_view.fxml");
             AnchorPane redisStatsInfoView = loader.load();
             this.redisStatsInfoController = loader.getController();
             ScrollPane scrollPane = (ScrollPane) stats.getContent();
             scrollPane.setContent(redisStatsInfoView);
         }
-        if (redisStatsInfoController != null && info != null){
-            redisStatsInfoController.refresh(info);
+        if ( this.redisStatsInfoController != null && info != null){
+            this.redisStatsInfoController.refresh(info);
         }
     }
-    public void refreshRedisMemoryInfo(Tab memory,RedisNodeInfo info){
-        if (redisNode == null || redisServerInfoController == null){
-            return;
+
+    public void refreshRedisMemoryInfo(Tab memory,Pair<String, RedisNodeInfo> info)throws IOException{
+        if ( this.memoryDataViewController != null && info != null){
+            this.memoryDataViewController.refresh(info);
         }
-        redisServerInfoController.refresh(info);
     }
+
+
     public void refreshRedisPersistenceInfo(Tab persistence,RedisNodeInfo info){
         if (redisNode == null || redisServerInfoController == null){
             return;

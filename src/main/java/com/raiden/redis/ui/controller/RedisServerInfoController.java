@@ -4,6 +4,7 @@ import com.raiden.redis.net.model.*;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -11,7 +12,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @创建人:Raiden
@@ -19,7 +22,7 @@ import java.util.List;
  * @Date:Created in 19:29 2022/5/18
  * @Modified By:
  */
-public class RedisServerInfoController {
+public class RedisServerInfoController implements Initializable {
     @FXML
     private TableView redisServerTable;
     @FXML
@@ -46,15 +49,44 @@ public class RedisServerInfoController {
     private TreeTableColumn<Object, String> redisStatsTableTableValue;
 
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<TableColumn> columns = redisServerTable.getColumns();
+        columns.stream().forEach(c -> c.setCellFactory(TextFieldTableCell.forTableColumn()));
+        //server
+        redisServerTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
+        redisServerTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        //stats: 一般统计
+        redisStatsTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
+        redisStatsTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        //客户端信息
+        redisClientTableTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
+        redisClientTableTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        //server
+        redisStatsTableTableKey.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, String> param) -> {
+            Object value = param.getValue().getValue();
+            if (value instanceof Pair){
+                Pair<String, String> pair = (Pair<String, String>) value;
+                return new ReadOnlyStringWrapper(pair.getKey());
+            }
+            return new ReadOnlyStringWrapper(param.getValue().getValue().toString());
+        });
+        redisStatsTableTableValue.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, String> param) ->{
+            Object value = param.getValue().getValue();
+            if (value instanceof Pair){
+                Pair<String, String> pair = (Pair<String, String>) value;
+                return new ReadOnlyStringWrapper(pair.getValue());
+            }
+            return  new ReadOnlyStringWrapper(null);
+        });
+    }
+
+
     public void refresh(RedisNodeInfo info){
         //server
         {
             RedisServerInfo server = info.getServer();
             if (server != null){
-                ObservableList<TableColumn> columns = redisServerTable.getColumns();
-                columns.stream().forEach(c -> c.setCellFactory(TextFieldTableCell.forTableColumn()));
-                redisServerTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
-                redisServerTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
                 ObservableList items = redisServerTable.getItems();
                 items.clear();
                 items.add(new Pair<>("Redis服务版本", server.getRedisVersion()));
@@ -69,8 +101,6 @@ public class RedisServerInfoController {
         {
             RedisStats stats = info.getStats();
             if (stats != null){
-                redisStatsTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
-                redisStatsTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
                 ObservableList<Pair<String, Number>> items = redisStatsTable.getItems();
                 items.clear();
                 items.add(new Pair<>("由于最大内存限制被淘汰的key的数量", stats.getEvictedKeys()));
@@ -86,8 +116,6 @@ public class RedisServerInfoController {
         {
             RedisClientInfo clients = info.getClients();
             if (clients != null){
-                redisClientTableTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
-                redisClientTableTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
                 ObservableList items = redisClientTable.getItems();
                 items.clear();
                 items.add(new Pair<>("客户端连接数", clients.getConnectedClients()));
@@ -104,22 +132,6 @@ public class RedisServerInfoController {
         {
             RedisKeyspace keyspace = info.getKeyspace();
             if (keyspace != null){
-                redisStatsTableTableKey.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, String> param) -> {
-                    Object value = param.getValue().getValue();
-                    if (value instanceof Pair){
-                        Pair<String, String> pair = (Pair<String, String>) value;
-                        return new ReadOnlyStringWrapper(pair.getKey());
-                    }
-                    return new ReadOnlyStringWrapper(param.getValue().getValue().toString());
-                });
-                redisStatsTableTableValue.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, String> param) ->{
-                    Object value = param.getValue().getValue();
-                    if (value instanceof Pair){
-                        Pair<String, String> pair = (Pair<String, String>) value;
-                        return new ReadOnlyStringWrapper(pair.getValue());
-                    }
-                    return  new ReadOnlyStringWrapper(null);
-                });
                 final TreeItem root = new TreeItem<>("Keyspace");//创建树形结构根节点选项
                 redisKeyspaceTable.setRoot(root);
                 root.setExpanded(true);

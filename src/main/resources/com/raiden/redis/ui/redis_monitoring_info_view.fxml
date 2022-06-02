@@ -38,7 +38,7 @@
             </Tab>
             <Tab fx:id="stats" text="Redis统计信息">
                 <content>
-                    <ScrollPane prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER">
+                    <ScrollPane prefHeight="967.0" prefWidth="936.0" vbarPolicy="NEVER">
                         <content>
                         </content>
                     </ScrollPane>
@@ -50,6 +50,10 @@
             </Tab>
             <Tab fx:id="persistence" text="Redis持久化信息">
                 <content>
+                    <ScrollPane prefHeight="967.0" prefWidth="936.0" vbarPolicy="NEVER">
+                        <content>
+                        </content>
+                    </ScrollPane>
                 </content>
             </Tab>
         </tabs>

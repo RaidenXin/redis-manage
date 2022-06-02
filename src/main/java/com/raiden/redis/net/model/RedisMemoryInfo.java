@@ -35,6 +35,10 @@ public class RedisMemoryInfo {
      */
     private long usedMemoryRss;
     /**
+     * 向操作系统申请的内存大小(mb)
+     */
+    private String usedMemoryRssHuman;
+    /**
      * Redis 的内存消耗峰值
      */
     private long usedMemoryPeak;
@@ -71,9 +75,37 @@ public class RedisMemoryInfo {
      */
     private String usedMemoryDatasetPerc;
     /**
-     * 以人类可读的格式返回 Redis主机具有的内存总量
+     * 分配器分配的内存
+     */
+    private long allocatorAllocated;
+    /**
+     * 分配器活跃的内存
+     */
+    private long allocatorActive;
+    /**
+     * 分配器常驻的内存
+     */
+    private long allocatorResident;
+    /**
+     * 主机内存总量(byte)
+     */
+    private long totalSystemMemory;
+    /**
+     * 主机内存总量(mb)
      */
     private String totalSystemMemoryHuman;
+    /**
+     * Lua引擎存储占用的内存(byte)
+     */
+    private long usedMemoryScripts;
+    /**
+     * Lua引擎存储占用的内存(mb)
+     */
+    private String usedMemoryScriptsHuman;
+    /**
+     * 缓存的Lua脚本数
+     */
+    private long numberOfCachedScripts;
     /**
      * maxmemory配置指令的值
      */
@@ -83,9 +115,61 @@ public class RedisMemoryInfo {
      */
     private String maxmemoryHuman;
     /**
-     * used_memory_rss 和 used_memory 之间的比率
+     * 内存淘汰策略
+     */
+    private String maxmemoryPolicy;
+    /**
+     *分配器的碎片率
+     */
+    private double allocatorFragRatio;
+    /**
+     *分配器的碎片率
+     */
+    private long allocatorFragBytes;
+    /**
+     *分配器常驻内存比例
+     */
+    private double allocatorRssRatio;
+    /**
+     *分配器的常驻内存大小
+     */
+    private long allocatorRssBytes;
+    /**
+     *常驻内存开销比例
+     */
+    private double rssOverheadRatio;
+    /**
+     *常驻内存开销大小
+     */
+    private long rssOverheadBytes;
+    /**
+     * 内存碎片率 used_memory_rss 和 used_memory 之间的比率
      */
     private double memFragmentationRatio;
+    /**
+     *内存碎片大小
+     */
+    private long memFragmentationBytes;
+    /**
+     *被驱逐的内存
+     */
+    private long memNotCountedForEvict;
+    /**
+     *Redis复制积压缓冲区内存
+     */
+    private long memReplicationBacklog;
+    /**
+     *Redis节点客户端消耗内存
+     */
+    private long memClientsSlaves;
+    /**
+     *Redis所有常规客户端消耗内存
+     */
+    private long memClientsNormal;
+    /**
+     *AOF使用内存
+     */
+    private long memAofBuffer;
     /**
      * 指示活动碎片整理是否处于活动状态的标志
      */
@@ -117,6 +201,14 @@ public class RedisMemoryInfo {
 
     public void setUsedMemoryRss(long usedMemoryRss) {
         this.usedMemoryRss = usedMemoryRss;
+    }
+
+    public String getUsedMemoryRssHuman() {
+        return usedMemoryRssHuman;
+    }
+
+    public void setUsedMemoryRssHuman(String usedMemoryRssHuman) {
+        this.usedMemoryRssHuman = usedMemoryRssHuman;
     }
 
     public long getUsedMemoryPeak() {
@@ -191,12 +283,68 @@ public class RedisMemoryInfo {
         this.usedMemoryDatasetPerc = usedMemoryDatasetPerc;
     }
 
+    public long getAllocatorAllocated() {
+        return allocatorAllocated;
+    }
+
+    public void setAllocatorAllocated(long allocatorAllocated) {
+        this.allocatorAllocated = allocatorAllocated;
+    }
+
+    public long getAllocatorActive() {
+        return allocatorActive;
+    }
+
+    public void setAllocatorActive(long allocatorActive) {
+        this.allocatorActive = allocatorActive;
+    }
+
+    public long getAllocatorResident() {
+        return allocatorResident;
+    }
+
+    public void setAllocatorResident(long allocatorResident) {
+        this.allocatorResident = allocatorResident;
+    }
+
+    public long getTotalSystemMemory() {
+        return totalSystemMemory;
+    }
+
+    public void setTotalSystemMemory(long totalSystemMemory) {
+        this.totalSystemMemory = totalSystemMemory;
+    }
+
     public String getTotalSystemMemoryHuman() {
         return totalSystemMemoryHuman;
     }
 
     public void setTotalSystemMemoryHuman(String totalSystemMemoryHuman) {
         this.totalSystemMemoryHuman = totalSystemMemoryHuman;
+    }
+
+    public long getUsedMemoryScripts() {
+        return usedMemoryScripts;
+    }
+
+    public void setUsedMemoryScripts(long usedMemoryScripts) {
+        this.usedMemoryScripts = usedMemoryScripts;
+    }
+
+    public String getUsedMemoryScriptsHuman() {
+        return usedMemoryScriptsHuman;
+    }
+
+    public void setUsedMemoryScriptsHuman(String usedMemoryScriptsHuman) {
+        this.usedMemoryScriptsHuman = usedMemoryScriptsHuman;
+    }
+
+    public long getNumberOfCachedScripts() {
+        return numberOfCachedScripts;
+    }
+
+    public void setNumberOfCachedScripts(long numberOfCachedScripts) {
+        this.numberOfCachedScripts = numberOfCachedScripts;
     }
 
     public long getMaxmemory() {
@@ -215,12 +363,116 @@ public class RedisMemoryInfo {
         this.maxmemoryHuman = maxmemoryHuman;
     }
 
+    public String getMaxmemoryPolicy() {
+        return maxmemoryPolicy;
+    }
+
+    public void setMaxmemoryPolicy(String maxmemoryPolicy) {
+        this.maxmemoryPolicy = maxmemoryPolicy;
+    }
+
+    public double getAllocatorFragRatio() {
+        return allocatorFragRatio;
+    }
+
+    public void setAllocatorFragRatio(double allocatorFragRatio) {
+        this.allocatorFragRatio = allocatorFragRatio;
+    }
+
+    public long getAllocatorFragBytes() {
+        return allocatorFragBytes;
+    }
+
+    public void setAllocatorFragBytes(long allocatorFragBytes) {
+        this.allocatorFragBytes = allocatorFragBytes;
+    }
+
+    public double getAllocatorRssRatio() {
+        return allocatorRssRatio;
+    }
+
+    public void setAllocatorRssRatio(double allocatorRssRatio) {
+        this.allocatorRssRatio = allocatorRssRatio;
+    }
+
+    public long getAllocatorRssBytes() {
+        return allocatorRssBytes;
+    }
+
+    public void setAllocatorRssBytes(long allocatorRssBytes) {
+        this.allocatorRssBytes = allocatorRssBytes;
+    }
+
+    public double getRssOverheadRatio() {
+        return rssOverheadRatio;
+    }
+
+    public void setRssOverheadRatio(double rssOverheadRatio) {
+        this.rssOverheadRatio = rssOverheadRatio;
+    }
+
+    public long getRssOverheadBytes() {
+        return rssOverheadBytes;
+    }
+
+    public void setRssOverheadBytes(long rssOverheadBytes) {
+        this.rssOverheadBytes = rssOverheadBytes;
+    }
+
     public double getMemFragmentationRatio() {
         return memFragmentationRatio;
     }
 
     public void setMemFragmentationRatio(double memFragmentationRatio) {
         this.memFragmentationRatio = memFragmentationRatio;
+    }
+
+    public long getMemFragmentationBytes() {
+        return memFragmentationBytes;
+    }
+
+    public void setMemFragmentationBytes(long memFragmentationBytes) {
+        this.memFragmentationBytes = memFragmentationBytes;
+    }
+
+    public long getMemNotCountedForEvict() {
+        return memNotCountedForEvict;
+    }
+
+    public void setMemNotCountedForEvict(long memNotCountedForEvict) {
+        this.memNotCountedForEvict = memNotCountedForEvict;
+    }
+
+    public long getMemReplicationBacklog() {
+        return memReplicationBacklog;
+    }
+
+    public void setMemReplicationBacklog(long memReplicationBacklog) {
+        this.memReplicationBacklog = memReplicationBacklog;
+    }
+
+    public long getMemClientsSlaves() {
+        return memClientsSlaves;
+    }
+
+    public void setMemClientsSlaves(long memClientsSlaves) {
+        this.memClientsSlaves = memClientsSlaves;
+    }
+
+    public long getMemClientsNormal() {
+        return memClientsNormal;
+    }
+
+    public void setMemClientsNormal(long memClientsNormal) {
+        this.memClientsNormal = memClientsNormal;
+    }
+
+    public long getMemAofBuffer() {
+        return memAofBuffer;
+    }
+
+    public void setMemAofBuffer(long memAofBuffer) {
+        this.memAofBuffer = memAofBuffer;
     }
 
     public int getActiveDefragRunning() {
@@ -245,19 +497,40 @@ public class RedisMemoryInfo {
                 "usedMemory=" + usedMemory +
                 ", usedMemoryHuman='" + usedMemoryHuman + '\'' +
                 ", usedMemoryRss=" + usedMemoryRss +
+                ", usedMemoryRssHuman='" + usedMemoryRssHuman + '\'' +
                 ", usedMemoryPeak=" + usedMemoryPeak +
                 ", usedMemoryPeakHuman='" + usedMemoryPeakHuman + '\'' +
                 ", usedMemoryLua=" + usedMemoryLua +
                 ", usedMemoryLuaHuman='" + usedMemoryLuaHuman + '\'' +
-                ", usedMemoryPeakPerc=" + usedMemoryPeakPerc +
+                ", usedMemoryPeakPerc='" + usedMemoryPeakPerc + '\'' +
                 ", usedMemoryOverhead=" + usedMemoryOverhead +
                 ", usedMemoryStartup=" + usedMemoryStartup +
                 ", usedMemoryDataset=" + usedMemoryDataset +
                 ", usedMemoryDatasetPerc='" + usedMemoryDatasetPerc + '\'' +
+                ", allocatorAllocated=" + allocatorAllocated +
+                ", allocatorActive=" + allocatorActive +
+                ", allocatorResident=" + allocatorResident +
+                ", totalSystemMemory=" + totalSystemMemory +
                 ", totalSystemMemoryHuman='" + totalSystemMemoryHuman + '\'' +
+                ", usedMemoryScripts=" + usedMemoryScripts +
+                ", usedMemoryScriptsHuman='" + usedMemoryScriptsHuman + '\'' +
+                ", numberOfCachedScripts=" + numberOfCachedScripts +
                 ", maxmemory=" + maxmemory +
                 ", maxmemoryHuman='" + maxmemoryHuman + '\'' +
+                ", maxmemoryPolicy='" + maxmemoryPolicy + '\'' +
+                ", allocatorFragRatio=" + allocatorFragRatio +
+                ", allocatorFragBytes=" + allocatorFragBytes +
+                ", allocatorRssRatio=" + allocatorRssRatio +
+                ", allocatorRssBytes=" + allocatorRssBytes +
+                ", rssOverheadRatio=" + rssOverheadRatio +
+                ", rssOverheadBytes=" + rssOverheadBytes +
                 ", memFragmentationRatio=" + memFragmentationRatio +
+                ", memFragmentationBytes=" + memFragmentationBytes +
+                ", memNotCountedForEvict=" + memNotCountedForEvict +
+                ", memReplicationBacklog=" + memReplicationBacklog +
+                ", memClientsSlaves=" + memClientsSlaves +
+                ", memClientsNormal=" + memClientsNormal +
+                ", memAofBuffer=" + memAofBuffer +
                 ", activeDefragRunning=" + activeDefragRunning +
                 ", lazyfreePendingObjects=" + lazyfreePendingObjects +
                 '}';

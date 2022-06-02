@@ -111,7 +111,6 @@ public class RedisDataTableController implements Initializable {
                             long memoryUsage = redisClient.memoryUsage(newValue);
                             this.memoryUsage.setText(MemoryComputingUtil.getReadableMemory(memoryUsage));
                         }catch (UnknownCommandException e){
-                            LOGGER.warn(e.getMessage());
                         }
                         dataView.getChildren().add(load);
                     } catch (Exception e) {
