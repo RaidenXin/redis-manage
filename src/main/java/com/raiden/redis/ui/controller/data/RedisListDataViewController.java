@@ -5,6 +5,7 @@ import com.raiden.redis.ui.controller.Controller;
 import com.raiden.redis.ui.controller.add.AddValueController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
+import com.raiden.redis.ui.util.PropertyValueUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -79,8 +80,8 @@ public class RedisListDataViewController implements Controller, Initializable {
         );
         index.setCellFactory(TextFieldTableCell.forTableColumn());
         value.setCellFactory(TextFieldTableCell.forTableColumn());
-        index.setCellValueFactory(new PropertyValueFactory<>("key"));
-        value.setCellValueFactory(new PropertyValueFactory<>("value"));
+        index.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
+        value.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
         addButton.setGraphic(new ImageView("/icon/add.png"));
         editorButton.setGraphic(new ImageView("/icon/editor.png"));
     }

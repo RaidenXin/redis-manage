@@ -23,7 +23,6 @@ public class RedisClusterNode implements RedisNode{
     }
 
 
-
     public String getHostAndPort() {
         return hostAndPort;
     }

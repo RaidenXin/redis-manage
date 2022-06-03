@@ -8,6 +8,7 @@ import com.raiden.redis.ui.controller.Controller;
 import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
+import com.raiden.redis.ui.util.PropertyValueUtil;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -111,8 +112,8 @@ public class RedisSortedSetDataViewController implements Controller, Initializab
         );
         score.setCellFactory(TextFieldTableCell.forTableColumn());
         value.setCellFactory(TextFieldTableCell.forTableColumn());
-        score.setCellValueFactory(new PropertyValueFactory<>("key"));
-        value.setCellValueFactory(new PropertyValueFactory<>("value"));
+        score.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
+        value.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
         addButton.setGraphic(new ImageView("/icon/add.png"));
         deleteButton.setGraphic(new ImageView("icon/delete.png"));
         ToggleGroup group = new ToggleGroup();

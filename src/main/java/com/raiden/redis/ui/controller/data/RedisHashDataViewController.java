@@ -8,6 +8,7 @@ import com.raiden.redis.ui.controller.Controller;
 import com.raiden.redis.ui.controller.add.AddElementsController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
+import com.raiden.redis.ui.util.PropertyValueUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -92,8 +93,8 @@ public class RedisHashDataViewController implements Controller, Initializable {
         );
         field.setCellFactory(TextFieldTableCell.forTableColumn());
         value.setCellFactory(TextFieldTableCell.forTableColumn());
-        field.setCellValueFactory(new PropertyValueFactory<>("key"));
-        value.setCellValueFactory(new PropertyValueFactory<>("value"));
+        field.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
+        value.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
         addButton.setGraphic(new ImageView("/icon/add.png"));
         deleteButton.setGraphic(new ImageView("icon/delete.png"));
     }

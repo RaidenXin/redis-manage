@@ -5,6 +5,7 @@ import com.raiden.redis.net.model.RedisKeyspace;
 import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.ui.Window;
 import com.raiden.redis.ui.mode.RedisNode;
+import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,13 +62,14 @@ public class RedisTabController {
             RedisClient redisClient = redisNode.getRedisClient();
             redisClient.select(dbIndex);
             //初始化数据视图
-            FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_data_table_view.fxml"));
+            FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("redis_data_table_view.fxml");
             dataView = loader.load();
             RedisDataTableController dataTableController = loader.getController();
             dataTableController.setRedisNode(redisNode);
             dataTableController.initTable();
             //设置数据视图
             ObservableList<Node> children = hBox.getChildren();
+            //监控视图永远在首位
             if (children.size() > 1){
                 children.set(1, dataView);
             }else {

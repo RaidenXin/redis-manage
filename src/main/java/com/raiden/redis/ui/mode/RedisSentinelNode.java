@@ -31,6 +31,7 @@ public class RedisSentinelNode implements RedisNode{
         return myself;
     }
 
+
     public static RedisSentinelNode build(String host,int port){
         RedisSentinelNode redisNode = new RedisSentinelNode();
         redisNode.host = host;

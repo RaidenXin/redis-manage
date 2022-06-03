@@ -2,6 +2,7 @@ package com.raiden.redis.ui.controller.memory;
 
 import com.raiden.redis.net.model.RedisMemoryInfo;
 import com.raiden.redis.net.model.RedisNodeInfo;
+import com.raiden.redis.ui.util.PropertyValueUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,8 +41,8 @@ public class RedisMemoryDataViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //memory
-        memoryTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
-        memoryTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        memoryTableKey.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
+        memoryTableValue.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
     }
 
 

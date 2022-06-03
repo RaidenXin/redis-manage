@@ -3,6 +3,7 @@ package com.raiden.redis.ui.page.impl;
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.page.IPageService;
+import com.raiden.redis.ui.util.PropertyValueUtil;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
@@ -28,11 +29,11 @@ public class TablePage implements IPageService {
         TableView tableView = new TableView();
         tableView.setPrefHeight(root.getPrefHeight());
         TableColumn<Pair<String, String>, String> column1 = new TableColumn<>("Key");
-        column1.setCellValueFactory(new PropertyValueFactory<>("key"));
+        column1.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
         column1.setPrefWidth(width / 3.0D);
 
         TableColumn<Pair<String, String>, String> column2 = new TableColumn<>("Value");
-        column2.setCellValueFactory(new PropertyValueFactory<>("value"));
+        column2.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
         column2.setPrefWidth(width * 2.0D / 3.0D);
 
         tableView.getColumns().add(column1);
