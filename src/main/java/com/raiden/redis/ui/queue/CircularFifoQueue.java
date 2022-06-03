@@ -37,6 +37,10 @@ public class CircularFifoQueue<T> {
         }
     }
 
+    public void clear(){
+        this.arr = new Object[size];
+    }
+
     public List<T> getAll(){
         List<T> result;
         synchronized (this){

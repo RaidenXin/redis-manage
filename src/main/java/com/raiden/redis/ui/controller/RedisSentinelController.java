@@ -73,27 +73,29 @@ public class RedisSentinelController extends AbstractRedisController {
                     List<RedisNode> masterAddrByName = redisClient.getMasterAddrByName(newValue);
                     List<RedisNode> masters =  new ArrayList<>(masterAddrByName.size() + 1);
                     masters.add(sentinelNode);
-                    for (RedisNode redisNode : masterAddrByName){
+                    for (RedisNode master : masterAddrByName){
                         if (isVerification.isSelected()){
                             //如果选了校验 就留下校验成功的
-                            RedisClient client = redisNode.getRedisClient();
+                            RedisClient client = master.getRedisClient();
                             if (!verification(client)){
                                 continue;
                             }
+                            master.setPassword(getPassword());
                         }
-                        masters.add(redisNode);
+                        masters.add(master);
                     }
                     List<RedisSlave> slaves = redisClient.getSlaves(newValue);
                     for (RedisSlave slave : slaves){
-                        RedisSingleNode node = RedisSingleNode.build(slave.getIp(), slave.getPort());
+                        RedisSingleNode slaveNode = RedisSingleNode.build(slave.getIp(), slave.getPort());
                         if (isVerification.isSelected()){
                             //如果选了校验 就留下校验成功的
-                            RedisClient client = node.getRedisClient();
+                            RedisClient client = slaveNode.getRedisClient();
                             if (!verification(client)){
                                 continue;
                             }
+                            slaveNode.setPassword(getPassword());
                         }
-                        masters.add(node);
+                        masters.add(slaveNode);
                     }
                     //关闭弹窗
                     SentinelRedisInfoTabPane redisInfoTabPane = new SentinelRedisInfoTabPane();

@@ -40,7 +40,9 @@ public class RedisClusterController extends AbstractRedisController {
         if (StringUtils.isNoneBlank(host, port)){
             try {
                 RedisClusterClient redisClient = RedisUtils.getRedisClusterClient(host.trim(), Integer.parseInt(port.trim()));
-                if (isVerification.isSelected()){
+                boolean isAuth;
+                final String password = getPassword();
+                if ((isAuth = isVerification.isSelected())){
                     //验证不成功停止执行
                     if (!verification(redisClient)){
                         return;
@@ -50,7 +52,13 @@ public class RedisClusterController extends AbstractRedisController {
                 ClusterRedisInfoTabPane redisInfoTabPane = new ClusterRedisInfoTabPane();
                 List<RedisNode> hosts = redisClusterNodes.stream()
                         .sorted()
-                        .map(RedisClusterNode::build)
+                        .map(cluster -> {
+                            RedisClusterNode clusterNode = RedisClusterNode.build(cluster);
+                            if (isAuth){
+                                clusterNode.setPassword(password);
+                            }
+                            return clusterNode;
+                        })
                         .collect(Collectors.toList());
                 redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), hosts);
             }catch (Exception e){

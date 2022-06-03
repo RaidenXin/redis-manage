@@ -1,6 +1,7 @@
 package com.raiden.redis.ui.mode;
 
 import com.raiden.redis.net.client.RedisClient;
+import com.raiden.redis.net.client.RedisSingleClient;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.util.RedisUtils;
 
@@ -14,6 +15,8 @@ public class RedisSingleNode implements RedisNode{
 
     private String hostAndPort;
     private String host;
+    private String password;
+    private boolean isAuth;
     private int port;
     private boolean myself;
 
@@ -24,6 +27,36 @@ public class RedisSingleNode implements RedisNode{
     @Override
     public boolean isMyself() {
         return myself;
+    }
+
+    @Override
+    public void clear() {
+        RedisUtils.delRedisSingleClient(host, port);
+    }
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+        this.isAuth = true;
+    }
+
+    @Override
+    public RedisClient getRedisClient() {
+        RedisSingleClient redisSingleClient = RedisUtils.getRedisSingleClient(host, port);
+        if (isAuth){
+            redisSingleClient.auth(password);
+        }
+        return redisSingleClient;
+    }
+
+    @Override
+    public String toString() {
+        return "RedisSingleNode{" +
+                "hostAndPort='" + hostAndPort + '\'' +
+                ", host='" + host + '\'' +
+                ", port=" + port +
+                ", myself=" + myself +
+                '}';
     }
 
     public static RedisSingleNode build(String host,int port){
@@ -37,18 +70,4 @@ public class RedisSingleNode implements RedisNode{
         return redisNode;
     }
 
-    @Override
-    public RedisClient getRedisClient() {
-        return RedisUtils.getRedisSingleClient(host, port);
-    }
-
-    @Override
-    public String toString() {
-        return "RedisSingleNode{" +
-                "hostAndPort='" + hostAndPort + '\'' +
-                ", host='" + host + '\'' +
-                ", port=" + port +
-                ", myself=" + myself +
-                '}';
-    }
 }

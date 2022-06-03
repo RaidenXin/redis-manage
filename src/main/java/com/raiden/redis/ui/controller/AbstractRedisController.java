@@ -81,6 +81,10 @@ public abstract class AbstractRedisController implements Initializable {
 
     protected abstract void setPort(String port);
 
+    protected final String getPassword(){
+        return password.getText();
+    }
+
     public void addRecord(){
         String nameText = name.getText();
         String host = getHost();

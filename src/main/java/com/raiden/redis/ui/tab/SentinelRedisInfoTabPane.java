@@ -63,7 +63,9 @@ public class SentinelRedisInfoTabPane {
                     RedisTabController controller = fxmlLoader.getController();
                     controller.setRedisNode(host);
                     initCache.put(hostAndPort, controller);
-                    controller.initTable();
+                    if (host.isMyself()){
+                        controller.initTable();
+                    }
                     return tab;
                 } catch (IOException e) {
                     LOGGER.error(e);
@@ -74,10 +76,15 @@ public class SentinelRedisInfoTabPane {
             tabPane.getTabs().addAll(tabs);
             //设置点击监听事件 切换新页面在刷新新页面的数据
             tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
+                String oldOstAndPort = oldValue.getText();
+                RedisTabController oldController = initCache.get(oldOstAndPort);
+                //关闭之前的控制器
+                oldController.shutDown();
                 String hostAndPort = newValue.getText();
-                RedisTabController controller = initCache.get(hostAndPort);
-                if (controller != null && !controller.isInitTab()){
-                    controller.initTable();
+                RedisTabController newController = initCache.get(hostAndPort);
+                //初始化新的控制器
+                if (newController != null && !newController.isInitTab()){
+                    newController.initTable();
                 }
             });
         }

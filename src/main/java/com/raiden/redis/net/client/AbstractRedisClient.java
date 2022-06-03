@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractRedisClient implements RedisClient{
 
@@ -36,12 +37,16 @@ public abstract class AbstractRedisClient implements RedisClient{
     private RedisClientPool pool;
     private String host;
     private int port;
+    private String password;
     //是否池化对象
     private boolean isObjectPooling;
+    private AtomicBoolean isAuth;
+
 
     public AbstractRedisClient(String host, int port){
         this.host = host;
         this.port = port;
+        this.isAuth = new AtomicBoolean(false);
         this.group = new NioEventLoopGroup();
         this.handler = new RedisClientHandler();
         this.bootstrap = new Bootstrap();
@@ -306,8 +311,12 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     public boolean auth(String password){
-        String response = sendCommands(RedisCommand.AUTH, password);
-        return SUCCESS.equalsIgnoreCase(response);
+        if (isAuth.compareAndSet(false, true)) {
+            this.password = password;
+            String response = sendCommands(RedisCommand.AUTH, password);
+            return SUCCESS.equalsIgnoreCase(response);
+        }
+        return true;
     }
 
     public long memoryUsage(String key){
@@ -358,6 +367,10 @@ public abstract class AbstractRedisClient implements RedisClient{
                 LOGGER.warn("Start reconnecting to the Redis server!host:{}");
                 //重新连接
                 this.channel = this.bootstrap.connect(this.host, this.port).sync().channel();
+                //如果是要验证的,重新验证
+                if (this.isAuth.get()){
+                    auth(this.password);
+                }
             } catch (InterruptedException e) {
                 LOGGER.error(e.getMessage());
             }

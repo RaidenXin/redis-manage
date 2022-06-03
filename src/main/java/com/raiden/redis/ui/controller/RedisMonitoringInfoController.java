@@ -71,6 +71,7 @@ public class RedisMonitoringInfoController implements Initializable {
     private RedisPersistenceDataViewController redisPersistenceDataViewController;
 
     private AtomicBoolean isInit;
+    private AtomicBoolean isShutDown;
 
     private CircularFifoQueue<Pair<String, RedisNodeInfo>> queue;
 
@@ -80,6 +81,7 @@ public class RedisMonitoringInfoController implements Initializable {
 
     public RedisMonitoringInfoController(){
         this.isInit = new AtomicBoolean(false);
+        this.isShutDown = new AtomicBoolean(false);
         this.queue = new CircularFifoQueue<>(600);
     }
 
@@ -100,6 +102,7 @@ public class RedisMonitoringInfoController implements Initializable {
             refreshQpsAndCpu();
             refreshTabPane();
             isInit.compareAndSet(false, true);
+            isShutDown.set(false);
             //设置一个一秒刷新的任务
             TaskProcessingCenter.submit(new RedisMonitoringInfoController.RefreshTask(() -> {
                 try {
@@ -478,6 +481,22 @@ public class RedisMonitoringInfoController implements Initializable {
         }
     }
 
+    public boolean isShutDown(){
+        return isShutDown.get();
+    }
+
+    /**
+     * 关闭方法
+     */
+    public void shutDown(){
+        if (isInit.compareAndSet(true, false)){
+            //清理掉旧的数据
+            this.queue.clear();
+            //将控制器设置为已关闭
+            isShutDown.set(true);
+        }
+    }
+
 
     public class RefreshTask implements Task {
 
@@ -493,6 +512,10 @@ public class RedisMonitoringInfoController implements Initializable {
 
         @Override
         public void run() {
+            //如果控制器已经停止 就停止数据刷新任务
+            if (isShutDown.get()){
+                return;
+            }
             Platform.runLater(() -> {
                 task.run();
             });

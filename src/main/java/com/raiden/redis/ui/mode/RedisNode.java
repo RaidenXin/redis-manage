@@ -15,4 +15,8 @@ public interface RedisNode {
     RedisClient getRedisClient();
 
     boolean isMyself();
+
+    void clear();
+
+    void setPassword(String password);
 }

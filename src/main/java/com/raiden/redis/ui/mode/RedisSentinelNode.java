@@ -1,6 +1,7 @@
 package com.raiden.redis.ui.mode;
 
 import com.raiden.redis.net.client.RedisClient;
+import com.raiden.redis.net.client.RedisSentinelClient;
 import com.raiden.redis.ui.util.RedisUtils;
 
 /**
@@ -13,6 +14,8 @@ public class RedisSentinelNode implements RedisNode{
 
     private String hostAndPort;
     private String host;
+    private String password;
+    private boolean isAuth;
     private int port;
     private boolean myself;
 
@@ -23,7 +26,11 @@ public class RedisSentinelNode implements RedisNode{
 
     @Override
     public RedisClient getRedisClient() {
-        return RedisUtils.getRedisSentinelClient(host, port);
+        RedisSentinelClient redisSentinelClient = RedisUtils.getRedisSentinelClient(host, port);
+        if (isAuth){
+            redisSentinelClient.auth(password);
+        }
+        return redisSentinelClient;
     }
 
     @Override
@@ -31,6 +38,17 @@ public class RedisSentinelNode implements RedisNode{
         return myself;
     }
 
+    @Override
+    public void clear() {
+        RedisUtils.delRedisSentinelClient(host, port);
+    }
+
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+        this.isAuth = true;
+    }
 
     public static RedisSentinelNode build(String host,int port){
         RedisSentinelNode redisNode = new RedisSentinelNode();

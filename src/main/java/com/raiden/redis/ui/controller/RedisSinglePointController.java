@@ -1,5 +1,6 @@
 package com.raiden.redis.ui.controller;
 
+import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisSingleClient;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.context.BeanContext;
@@ -34,15 +35,17 @@ public class RedisSinglePointController extends AbstractRedisController {
         RedisDataPageController redisController = BeanContext.getBean(RedisDataPageController.class.getName());
         if (StringUtils.isNoneBlank(host, port)){
             try {
-                RedisSingleClient redisClient = RedisUtils.getRedisSingleClient(host.trim(), Integer.parseInt(port.trim()));
+                RedisSingleNode redisSingleNode = RedisSingleNode.build(host, Integer.parseInt(port));
+                RedisClient redisClient = redisSingleNode.getRedisClient();
                 if (isVerification.isSelected()){
                     //验证不成功停止执行
                     if (!verification(redisClient)){
                         return;
                     }
+                    redisSingleNode.setPassword(getPassword());
                 }
                 SingleRedisInfoTabPane redisInfoTabPane = new SingleRedisInfoTabPane();
-                redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), RedisSingleNode.build(host, Integer.parseInt(port)));
+                redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), redisSingleNode);
             }catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();

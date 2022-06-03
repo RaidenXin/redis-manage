@@ -1,6 +1,7 @@
 package com.raiden.redis.ui.mode;
 
 import com.raiden.redis.net.client.RedisClient;
+import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.util.RedisUtils;
 
@@ -14,6 +15,8 @@ public class RedisClusterNode implements RedisNode{
 
     private String hostAndPort;
     private String host;
+    private String password;
+    private boolean isAuth;
     private int port;
     private boolean myself;
 
@@ -22,9 +25,39 @@ public class RedisClusterNode implements RedisNode{
         return myself;
     }
 
+    @Override
+    public void clear() {
+        RedisUtils.getRedisClusterClient(host, port);
+    }
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+        this.isAuth = true;
+    }
+
 
     public String getHostAndPort() {
         return hostAndPort;
+    }
+
+    @Override
+    public RedisClient getRedisClient() {
+        RedisClusterClient redisClusterClient = RedisUtils.getRedisClusterClient(host, port);
+        if (isAuth){
+            redisClusterClient.auth(password);
+        }
+        return redisClusterClient;
+    }
+
+    @Override
+    public String toString() {
+        return "RedisClusterNode{" +
+                "hostAndPort='" + hostAndPort + '\'' +
+                ", host='" + host + '\'' +
+                ", port=" + port +
+                ", myself=" + myself +
+                '}';
     }
 
     public static RedisClusterNode build(RedisClusterNodeInfo node){
@@ -36,10 +69,5 @@ public class RedisClusterNode implements RedisNode{
         redisNode.port = node.getPort();
         redisNode.myself = node.isMyself();
         return redisNode;
-    }
-
-    @Override
-    public RedisClient getRedisClient() {
-        return RedisUtils.getRedisClusterClient(host, port);
     }
 }

@@ -41,6 +41,7 @@ public class RedisTabController {
     private AtomicBoolean isInitTab;
     private AnchorPane dataView;
     private AnchorPane monitoringView;
+    private RedisMonitoringInfoController monitoringInfoController;
 
     public RedisTabController(){
         this.isInitTab = new AtomicBoolean(false);
@@ -69,7 +70,7 @@ public class RedisTabController {
             dataTableController.initTable();
             //设置数据视图
             ObservableList<Node> children = hBox.getChildren();
-            //监控视图永远在首位
+            //如果存在视图就覆盖 注意0号位置是列表框
             if (children.size() > 1){
                 children.set(1, dataView);
             }else {
@@ -90,10 +91,11 @@ public class RedisTabController {
         if (monitoringView == null){
             try {
                 //初始化监控视图
-                FXMLLoader loader = new FXMLLoader(Window.class.getResource("redis_monitoring_info_view.fxml"));
+                FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("redis_monitoring_info_view.fxml");
                 monitoringView = loader.load();
                 RedisMonitoringInfoController controller = loader.getController();
                 controller.init(redisNode);
+                this.monitoringInfoController = controller;
             }catch (Exception e){
                 LOGGER.error(e);
                 LOGGER.error(e.getMessage(), e);
@@ -103,6 +105,7 @@ public class RedisTabController {
         }
         //设置监控视图
         ObservableList<Node> children = hBox.getChildren();
+        //如果存在视图就覆盖 注意0号位置是列表框
         if (children.size() > 1){
             children.set(1, monitoringView);
         }else {
@@ -136,6 +139,32 @@ public class RedisTabController {
                 LOGGER.error("初始化数据页面失败！{}", e.getMessage());
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
+            }
+        }
+    }
+
+    /**
+     * 关闭方法
+     */
+    public void shutDown(){
+        try {
+            //清理 节点信息 目的是为了关闭Redis连接 节省资源
+            if (this.redisNode != null){
+                this.redisNode.clear();
+            }
+            if (this.monitoringInfoController != null){
+                this.monitoringInfoController.shutDown();
+            }
+        }finally {
+            //清理监控页面
+            this.monitoringView = null;
+            if (hBox != null){
+                //清理正在展示的页面
+                ObservableList<Node> children = hBox.getChildren();
+                //如果存在视图就覆盖 注意0号位置是列表框
+                if (children.size() > 1){
+                    children.remove(1);
+                }
             }
         }
     }
