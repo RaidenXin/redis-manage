@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  * @Date:Created in 11:14 2022/6/2
  * @Modified By:
  */
-public class MemoryDataViewController implements Initializable {
+public class RedisMemoryDataViewController implements Initializable {
 
 
     //标准高度间隔

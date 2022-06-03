@@ -1,13 +1,12 @@
 package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.net.model.*;
+import com.raiden.redis.ui.util.PropertyValueUtil;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Pair;
@@ -51,17 +50,15 @@ public class RedisServerInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ObservableList<TableColumn> columns = redisServerTable.getColumns();
-        columns.stream().forEach(c -> c.setCellFactory(TextFieldTableCell.forTableColumn()));
         //server
-        redisServerTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
-        redisServerTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        redisServerTableKey.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
+        redisServerTableValue.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
         //stats: 一般统计
-        redisStatsTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
-        redisStatsTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        redisStatsTableKey.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
+        redisStatsTableValue.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
         //客户端信息
-        redisClientTableTableKey.setCellValueFactory(new PropertyValueFactory<>("key"));
-        redisClientTableTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        redisClientTableTableKey.setCellValueFactory(PropertyValueUtil.getPairKeyPropertyValueFactory());
+        redisClientTableTableValue.setCellValueFactory(PropertyValueUtil.getPairValuePropertyValueFactory());
         //server
         redisStatsTableTableKey.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, String> param) -> {
             Object value = param.getValue().getValue();

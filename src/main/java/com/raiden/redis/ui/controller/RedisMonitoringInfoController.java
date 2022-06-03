@@ -7,8 +7,8 @@ import com.raiden.redis.net.model.RedisCpuInfo;
 import com.raiden.redis.net.model.RedisMemoryInfo;
 import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.net.model.RedisStats;
-import com.raiden.redis.ui.Window;
-import com.raiden.redis.ui.controller.memory.MemoryDataViewController;
+import com.raiden.redis.ui.controller.memory.RedisMemoryDataViewController;
+import com.raiden.redis.ui.controller.persistence.RedisPersistenceDataViewController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.queue.CircularFifoQueue;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -31,11 +31,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -69,7 +67,8 @@ public class RedisMonitoringInfoController implements Initializable {
 
     private RedisServerInfoController redisServerInfoController;
     private RedisStatsInfoController redisStatsInfoController;
-    private MemoryDataViewController memoryDataViewController;
+    private RedisMemoryDataViewController redisMemoryDataViewController;
+    private RedisPersistenceDataViewController redisPersistenceDataViewController;
 
     private AtomicBoolean isInit;
 
@@ -165,6 +164,9 @@ public class RedisMonitoringInfoController implements Initializable {
                     case MEMORY_USAGE://内存占用率折线图
                         refreshRedisMemoryLineChart(tab, desc);
                         break;
+                    case PERSISTENCE://持久化
+                        refreshRedisPersistenceInfo(tab, desc);
+                        break;
                 }
             }
         }
@@ -187,9 +189,6 @@ public class RedisMonitoringInfoController implements Initializable {
                         break;
                     case MEMORY://内存
                         refreshRedisMemoryInfo(tab, last);
-                        break;
-                    case PERSISTENCE://持久化
-//                        refreshRedisPersistenceInfo(tab, info);
                         break;
                 }
             }
@@ -455,23 +454,28 @@ public class RedisMonitoringInfoController implements Initializable {
     }
 
     public void refreshRedisMemoryInfo(Tab memory,Pair<String, RedisNodeInfo> info)throws IOException{
-        if (!isInit.get() && memoryDataViewController == null){
+        if (!isInit.get() && redisMemoryDataViewController == null){
             FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("memory/redis_memory_data_view.fxml");
             AnchorPane view = loader.load();
-            this.memoryDataViewController = loader.getController();
+            this.redisMemoryDataViewController = loader.getController();
             memory.setContent(view);
         }
-        if ( this.memoryDataViewController != null && info != null){
-            this.memoryDataViewController.refresh(info);
+        if ( this.redisMemoryDataViewController != null && info != null){
+            this.redisMemoryDataViewController.refresh(info);
         }
     }
 
 
-    public void refreshRedisPersistenceInfo(Tab persistence,RedisNodeInfo info){
-        if (redisNode == null || redisServerInfoController == null){
-            return;
+    public void refreshRedisPersistenceInfo(Tab persistence, List<Pair<String, RedisNodeInfo>> redisNodeInfos) throws IOException {
+        if (!isInit.get() && redisPersistenceDataViewController == null){
+            FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("persistence/redis_persistence_data_view.fxml");
+            AnchorPane view = loader.load();
+            this.redisPersistenceDataViewController = loader.getController();
+            persistence.setContent(view);
         }
-        redisServerInfoController.refresh(info);
+        if (redisPersistenceDataViewController != null && redisNodeInfos != null && !redisNodeInfos.isEmpty()){
+            redisPersistenceDataViewController.refresh(redisNodeInfos.get(0));
+        }
     }
 
 

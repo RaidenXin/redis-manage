@@ -12,13 +12,29 @@ public class RedisPersistence {
      */
     private int loading;
     /**
+     * Fork时写拷贝的复制内存的大小/byte
+     */
+    private long currentCowSize;
+    /**
+     * 当前Fork进度百分比
+     */
+    private double currentForkPerc;
+    /**
+     * 当前保存操作处理的键数
+     */
+    private long currentSaveKeysProcessed;
+    /**
+     * 当前保存操作开始时的键数
+     */
+    private long currentSaveKeysTotal;
+    /**
      * 自上次转储以来的更改次数
      */
     private long rdbChangesSinceLastSave;
     /**
      * 指示RDB文件是否正在保存的标志
      */
-    private int rdb_bgsave_in_progress;
+    private int rdbBgsaveInProgress;
     /**
      * 上次成功保存RDB的基于纪年的时间戳
      */
@@ -35,7 +51,10 @@ public class RedisPersistence {
      * 正在进行的RDB保存操作的持续时间（如果有） 没有就是 -1
      */
     private int rdbCurrentBgsaveTimeSec;
-
+    /**
+     * 正在进行的RDB保存操作的持续时间（如果有） 没有就是 -1
+     */
+    private long rdbLastCowSize;
     /**
      *  表示AOF记录已激活的标志
      */
@@ -134,6 +153,38 @@ public class RedisPersistence {
         this.loading = loading;
     }
 
+    public long getCurrentCowSize() {
+        return currentCowSize;
+    }
+
+    public void setCurrentCowSize(long currentCowSize) {
+        this.currentCowSize = currentCowSize;
+    }
+
+    public double getCurrentForkPerc() {
+        return currentForkPerc;
+    }
+
+    public void setCurrentForkPerc(double currentForkPerc) {
+        this.currentForkPerc = currentForkPerc;
+    }
+
+    public long getCurrentSaveKeysProcessed() {
+        return currentSaveKeysProcessed;
+    }
+
+    public void setCurrentSaveKeysProcessed(long currentSaveKeysProcessed) {
+        this.currentSaveKeysProcessed = currentSaveKeysProcessed;
+    }
+
+    public long getCurrentSaveKeysTotal() {
+        return currentSaveKeysTotal;
+    }
+
+    public void setCurrentSaveKeysTotal(long currentSaveKeysTotal) {
+        this.currentSaveKeysTotal = currentSaveKeysTotal;
+    }
+
     public long getRdbChangesSinceLastSave() {
         return rdbChangesSinceLastSave;
     }
@@ -142,12 +193,12 @@ public class RedisPersistence {
         this.rdbChangesSinceLastSave = rdbChangesSinceLastSave;
     }
 
-    public int getRdb_bgsave_in_progress() {
-        return rdb_bgsave_in_progress;
+    public int getRdbBgsaveInProgress() {
+        return rdbBgsaveInProgress;
     }
 
-    public void setRdb_bgsave_in_progress(int rdb_bgsave_in_progress) {
-        this.rdb_bgsave_in_progress = rdb_bgsave_in_progress;
+    public void setRdbBgsaveInProgress(int rdbBgsaveInProgress) {
+        this.rdbBgsaveInProgress = rdbBgsaveInProgress;
     }
 
     public long getRdbLastSaveTime() {
@@ -180,6 +231,14 @@ public class RedisPersistence {
 
     public void setRdbCurrentBgsaveTimeSec(int rdbCurrentBgsaveTimeSec) {
         this.rdbCurrentBgsaveTimeSec = rdbCurrentBgsaveTimeSec;
+    }
+
+    public long getRdbLastCowSize() {
+        return rdbLastCowSize;
+    }
+
+    public void setRdbLastCowSize(long rdbLastCowSize) {
+        this.rdbLastCowSize = rdbLastCowSize;
     }
 
     public int getAofEnabled() {
@@ -362,8 +421,12 @@ public class RedisPersistence {
     public String toString() {
         return "RedisPersistence{" +
                 "loading=" + loading +
+                ", currentCowSize=" + currentCowSize +
+                ", currentForkPerc=" + currentForkPerc +
+                ", currentSaveKeysProcessed=" + currentSaveKeysProcessed +
+                ", currentSaveKeysTotal=" + currentSaveKeysTotal +
                 ", rdbChangesSinceLastSave=" + rdbChangesSinceLastSave +
-                ", rdb_bgsave_in_progress=" + rdb_bgsave_in_progress +
+                ", rdbBgsaveInProgress=" + rdbBgsaveInProgress +
                 ", rdbLastSaveTime=" + rdbLastSaveTime +
                 ", rdbLastBgsaveStatus='" + rdbLastBgsaveStatus + '\'' +
                 ", rdbLastBgsaveTimeSec=" + rdbLastBgsaveTimeSec +
