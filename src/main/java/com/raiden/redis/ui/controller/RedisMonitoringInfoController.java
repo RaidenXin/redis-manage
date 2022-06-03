@@ -222,6 +222,7 @@ public class RedisMonitoringInfoController implements Initializable {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel("处理命令数(个/秒)");
         LineChart lineChart = new LineChart(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(this.prefHeight);
         lineChart.setPrefWidth(this.prefWidth * ((size >> 4) + 1));
         ObservableList<XYChart.Series<String, Integer>> data = lineChart.getData();
@@ -372,6 +373,7 @@ public class RedisMonitoringInfoController implements Initializable {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel(label);
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         if (prefHeight != 0){
             lineChart.setPrefHeight(prefHeight);
         }
@@ -418,6 +420,7 @@ public class RedisMonitoringInfoController implements Initializable {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel("IO流量(kb/s)");
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(this.prefHeight);
         lineChart.setPrefWidth(this.prefWidth * ((size >> 4) + 1));
         ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();

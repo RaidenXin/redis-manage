@@ -118,6 +118,7 @@ public class RedisStatsInfoController implements Initializable {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel("连接数/个");
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();
@@ -137,6 +138,7 @@ public class RedisStatsInfoController implements Initializable {
         numberAxis.setLabel("命令数/个");
         //服务器处理的命令总数
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         //服务器处理的命令总数
@@ -165,6 +167,7 @@ public class RedisStatsInfoController implements Initializable {
         numberAxis.setLabel("处理事件数/个");
         //服务器处理的事件总数
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         //服务器处理的读取事件总数
@@ -198,6 +201,7 @@ public class RedisStatsInfoController implements Initializable {
         numberAxis.setLabel("查找Key的次数/次");
         //服务器查找Key 相关
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         //在主字典中成功查找到key的次数
@@ -231,6 +235,7 @@ public class RedisStatsInfoController implements Initializable {
         numberAxis.setLabel("网络总流量/MB");
         //服务器查找Key 相关
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         //在主字典中成功查找到key的次数
@@ -331,6 +336,7 @@ public class RedisStatsInfoController implements Initializable {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel("事件数/个");
         LineChart<String, Number> lineChart = new LineChart<>(new CategoryAxis(), numberAxis);
+        lineChart.setAnimated(false);
         lineChart.setPrefHeight(prefHeight);
         lineChart.setPrefWidth(prefWidth);
         ObservableList<XYChart.Series<String, Number>> data = lineChart.getData();
