@@ -3,22 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="967.0" prefWidth="934.0"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.memory.MemoryDataViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="967.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.memory.MemoryDataViewController">
    <children>
-      <HBox prefHeight="967.0" prefWidth="934.0">
-         <children>
-            <TableView fx:id="memoryTable" prefHeight="967.0" prefWidth="400.0">
-              <columns>
-                <TableColumn fx:id="memoryTableKey" prefWidth="300.0" text="介绍" />
-                <TableColumn fx:id="memoryTableValue" prefWidth="162.0" text="数据" />
-              </columns>
-            </TableView>
-             <ScrollPane fx:id="scrollPane" layoutX="463.0" prefHeight="967.0" prefWidth="534.0" vbarPolicy="NEVER">
-                 <content>
-                 </content>
-             </ScrollPane>
-         </children>
-      </HBox>
+       <TableView fx:id="memoryTable" prefHeight="967.0" prefWidth="934.0">
+           <columns>
+               <TableColumn fx:id="memoryTableKey" prefWidth="634.0" style="-fx-font: 14 arial;" text="介绍" />
+               <TableColumn fx:id="memoryTableValue" prefWidth="300.0" style="-fx-font: 14 arial;" text="数据" />
+           </columns>
+       </TableView>
    </children>
 </AnchorPane>

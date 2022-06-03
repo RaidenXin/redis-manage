@@ -36,8 +36,6 @@ public class MemoryDataViewController implements Initializable {
     private TableColumn memoryTableKey;
     @FXML
     private TableColumn memoryTableValue;
-    @FXML
-    private ScrollPane scrollPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -99,42 +97,41 @@ public class MemoryDataViewController implements Initializable {
 
 
     public void refreshMemoryLineChart(LineChart usedMemoryPeakPerc, LineChart usedMemoryDatasetPerc, LineChart memFragmentationRatio,double prefWidth) {
-        double prefHeight = scrollPane.getPrefHeight();
-        VBox vBox = new VBox();
-        vBox.setPrefHeight(prefHeight- STANDARD_HEIGHT_INTERVAL);
-        vBox.setPrefWidth(prefWidth);
-        ObservableList<Node> children = vBox.getChildren();
-        double lineChartPrefHeight = (prefHeight - STANDARD_HEIGHT_INTERVAL) / 3;
-        if (usedMemoryPeakPerc != null){
-            TitledPane usedMemoryPeakPercTitledPane = new TitledPane();
-            usedMemoryPeakPercTitledPane.setPrefWidth(prefWidth);
-            usedMemoryPeakPercTitledPane.setPrefHeight(lineChartPrefHeight);
-            usedMemoryPeakPercTitledPane.setCollapsible(false);
-            //设置高度
-            usedMemoryPeakPerc.setPrefHeight(lineChartPrefHeight);
-            usedMemoryPeakPercTitledPane.setContent(usedMemoryPeakPerc);
-            children.add(usedMemoryPeakPercTitledPane);
-        }
-        if (usedMemoryDatasetPerc != null){
-            TitledPane usedMemoryDatasetPercTitledPane = new TitledPane();
-            usedMemoryDatasetPercTitledPane.setPrefWidth(prefWidth);
-            usedMemoryDatasetPercTitledPane.setPrefHeight(lineChartPrefHeight);
-            usedMemoryDatasetPercTitledPane.setCollapsible(false);
-
-            usedMemoryDatasetPerc.setPrefHeight(lineChartPrefHeight);
-            usedMemoryDatasetPercTitledPane.setContent(usedMemoryDatasetPerc);
-            children.add(usedMemoryDatasetPerc);
-        }
-        if (memFragmentationRatio != null){
-            TitledPane memFragmentationRatioTitledPane = new TitledPane();
-            memFragmentationRatioTitledPane.setPrefWidth(prefWidth);
-            memFragmentationRatioTitledPane.setPrefHeight(lineChartPrefHeight);
-            memFragmentationRatioTitledPane.setCollapsible(false);
-
-            memFragmentationRatio.setPrefHeight(lineChartPrefHeight);
-            memFragmentationRatioTitledPane.setContent(memFragmentationRatio);
-            children.add(memFragmentationRatioTitledPane);
-        }
-        scrollPane.setContent(vBox);
+//        double prefHeight = scrollPane.getPrefHeight();
+//        VBox vBox = new VBox();
+//        vBox.setPrefHeight(prefHeight- STANDARD_HEIGHT_INTERVAL);
+//        vBox.setPrefWidth(prefWidth);
+//        ObservableList<Node> children = vBox.getChildren();
+//        double lineChartPrefHeight = (prefHeight - STANDARD_HEIGHT_INTERVAL) / 3;
+//        if (usedMemoryPeakPerc != null){
+//            TitledPane usedMemoryPeakPercTitledPane = new TitledPane();
+//            usedMemoryPeakPercTitledPane.setPrefWidth(prefWidth);
+//            usedMemoryPeakPercTitledPane.setPrefHeight(lineChartPrefHeight);
+//            usedMemoryPeakPercTitledPane.setCollapsible(false);
+//            //设置高度
+//            usedMemoryPeakPerc.setPrefHeight(lineChartPrefHeight);
+//            usedMemoryPeakPercTitledPane.setContent(usedMemoryPeakPerc);
+//            children.add(usedMemoryPeakPercTitledPane);
+//        }
+//        if (usedMemoryDatasetPerc != null){
+//            TitledPane usedMemoryDatasetPercTitledPane = new TitledPane();
+//            usedMemoryDatasetPercTitledPane.setPrefWidth(prefWidth);
+//            usedMemoryDatasetPercTitledPane.setPrefHeight(lineChartPrefHeight);
+//            usedMemoryDatasetPercTitledPane.setCollapsible(false);
+//
+//            usedMemoryDatasetPerc.setPrefHeight(lineChartPrefHeight);
+//            usedMemoryDatasetPercTitledPane.setContent(usedMemoryDatasetPerc);
+//            children.add(usedMemoryDatasetPerc);
+//        }
+//        if (memFragmentationRatio != null){
+//            TitledPane memFragmentationRatioTitledPane = new TitledPane();
+//            memFragmentationRatioTitledPane.setPrefWidth(prefWidth);
+//            memFragmentationRatioTitledPane.setPrefHeight(lineChartPrefHeight);
+//            memFragmentationRatioTitledPane.setCollapsible(false);
+//
+//            memFragmentationRatio.setPrefHeight(lineChartPrefHeight);
+//            memFragmentationRatioTitledPane.setContent(memFragmentationRatio);
+//            children.add(memFragmentationRatioTitledPane);
+//        }
     }
 }

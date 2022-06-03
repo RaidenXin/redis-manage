@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +59,7 @@ public class RedisMonitoringInfoController implements Initializable {
     private static final String SERVER = "server";
     private static final String STATS = "stats";
     private static final String MEMORY = "memory";
+    private static final String MEMORY_USAGE = "memoryUsage";
     private static final String PERSISTENCE = "persistence";
 
     @FXML
@@ -151,16 +153,16 @@ public class RedisMonitoringInfoController implements Initializable {
             List<Pair<String, RedisNodeInfo>> desc = queue.getDesc(90);
             for (Tab tab : tabs){
                 switch (tab.getId()){
-                    case QPS://服务
+                    case QPS://QPS折线图
                         refreshRedisQPS(tab, desc);
                         break;
-                    case CPU://服务
+                    case CPU://CPU占用率折线图
                         refreshRedisCpuUsage(tab, desc);
                         break;
-                    case TIME_SHARING_TRAFFIC://服务
+                    case TIME_SHARING_TRAFFIC://瞬时网络流量折线图
                         refreshRedisTimeSharingTraffic(tab, desc);
                         break;
-                    case MEMORY://内存折线图
+                    case MEMORY_USAGE://内存占用率折线图
                         refreshRedisMemoryLineChart(tab, desc);
                         break;
                 }
@@ -352,20 +354,18 @@ public class RedisMonitoringInfoController implements Initializable {
 
         }
         double prefWidth = this.prefWidth * ((size >> 4) + 1);
-        double prefHeight = 0;
+        double prefHeight = this.prefHeight / 3;
         String label = "占用率(%)";
         LineChart usedMemoryPeakPerc = createLineChart(label, prefHeight, prefWidth, usedMemoryPeakPercSeries);
         LineChart usedMemoryDatasetPerc = createLineChart(label, prefHeight, prefWidth, usedMemoryDatasetPercSeries);
         LineChart memFragmentationRatio = createLineChart(label, prefHeight, prefWidth, memFragmentationRatioSeries);
-        if (!isInit.get() && memoryDataViewController == null){
-            FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("memory/redis_memory_data_view.fxml");
-            AnchorPane view = loader.load();
-            this.memoryDataViewController = loader.getController();
-            tab.setContent(view);
-        }
-        if ( this.memoryDataViewController != null){
-            this.memoryDataViewController.refreshMemoryLineChart(usedMemoryPeakPerc, usedMemoryDatasetPerc, memFragmentationRatio, prefWidth);
-        }
+        VBox vBox = new VBox();
+        vBox.setPrefHeight(tabPane.getPrefHeight());
+        vBox.setPrefWidth(prefWidth);
+        ObservableList<Node> children = vBox.getChildren();
+        children.addAll(usedMemoryPeakPerc, usedMemoryDatasetPerc, memFragmentationRatio);
+        ScrollPane content = (ScrollPane) tab.getContent();
+        content.setContent(vBox);
     }
 
     private LineChart createLineChart(String label, double prefHeight, double prefWidth, XYChart.Series<String, Number>... series) {
@@ -452,6 +452,12 @@ public class RedisMonitoringInfoController implements Initializable {
     }
 
     public void refreshRedisMemoryInfo(Tab memory,Pair<String, RedisNodeInfo> info)throws IOException{
+        if (!isInit.get() && memoryDataViewController == null){
+            FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("memory/redis_memory_data_view.fxml");
+            AnchorPane view = loader.load();
+            this.memoryDataViewController = loader.getController();
+            memory.setContent(view);
+        }
         if ( this.memoryDataViewController != null && info != null){
             this.memoryDataViewController.refresh(info);
         }

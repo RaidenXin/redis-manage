@@ -32,6 +32,14 @@
                     </ScrollPane>
                 </content>
             </Tab>
+            <Tab fx:id="memoryUsage" text="Redis内存使用率">
+                <content>
+                    <ScrollPane prefHeight="967.0" prefWidth="936.0" vbarPolicy="NEVER">
+                        <content>
+                        </content>
+                    </ScrollPane>
+                </content>
+            </Tab>
             <Tab fx:id="server" text="Redis服务信息">
                 <content>
                 </content>
