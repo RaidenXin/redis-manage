@@ -148,10 +148,6 @@ public class RedisTabController {
      */
     public void shutDown(){
         try {
-            //清理 节点信息 目的是为了关闭Redis连接 节省资源
-            if (this.redisNode != null){
-                this.redisNode.clear();
-            }
             if (this.monitoringInfoController != null){
                 this.monitoringInfoController.shutDown();
             }

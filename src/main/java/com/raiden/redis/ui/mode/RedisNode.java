@@ -16,7 +16,5 @@ public interface RedisNode {
 
     boolean isMyself();
 
-    void clear();
-
     void setPassword(String password);
 }

@@ -38,11 +38,6 @@ public class RedisSentinelNode implements RedisNode{
         return myself;
     }
 
-    @Override
-    public void clear() {
-        RedisUtils.delRedisSentinelClient(host, port);
-    }
-
 
     @Override
     public void setPassword(String password) {

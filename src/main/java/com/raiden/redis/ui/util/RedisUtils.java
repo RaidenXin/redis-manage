@@ -33,27 +33,6 @@ public final class RedisUtils {
         return SENTINE_CLIENT_CACHE.computeIfAbsent(host + COLON + port, (key) -> new RedisSentinelClient(host, port));
     }
 
-    public static final void delRedisClusterClient(String host,int port){
-        RedisClusterClient client = CLIENT_CACHE.remove(host + COLON + port);
-        if (client != null){
-            client.close();
-        }
-    }
-
-    public static final void delRedisSingleClient(String host,int port){
-        RedisSingleClient client = SINGLE_CLIENT_CACHE.remove(host + COLON + port);
-        if (client != null){
-            client.close();
-        }
-    }
-
-    public static final void delRedisSentinelClient(String host,int port){
-        RedisSentinelClient client = SENTINE_CLIENT_CACHE.remove(host + COLON + port);
-        if (client != null){
-            client.close();
-        }
-    }
-
     public static synchronized void shutDown(){
         CLIENT_CACHE.values().stream().forEach(RedisClient::close);
         SINGLE_CLIENT_CACHE.values().stream().forEach(RedisClient::close);

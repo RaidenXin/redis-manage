@@ -26,11 +26,6 @@ public class RedisClusterNode implements RedisNode{
     }
 
     @Override
-    public void clear() {
-        RedisUtils.getRedisClusterClient(host, port);
-    }
-
-    @Override
     public void setPassword(String password) {
         this.password = password;
         this.isAuth = true;

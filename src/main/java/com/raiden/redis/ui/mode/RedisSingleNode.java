@@ -30,11 +30,6 @@ public class RedisSingleNode implements RedisNode{
     }
 
     @Override
-    public void clear() {
-        RedisUtils.delRedisSingleClient(host, port);
-    }
-
-    @Override
     public void setPassword(String password) {
         this.password = password;
         this.isAuth = true;
