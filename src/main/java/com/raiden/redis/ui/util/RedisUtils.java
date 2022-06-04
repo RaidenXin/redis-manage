@@ -17,7 +17,7 @@ public final class RedisUtils {
 
     private static final ConcurrentHashMap<String, RedisClusterClient> CLIENT_CACHE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, RedisSingleClient> SINGLE_CLIENT_CACHE = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, RedisSentinelClient> SENTINE_CLIENT_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, RedisSentinelClient> SENTINEL_CLIENT_CACHE = new ConcurrentHashMap<>();
 
     private static final String COLON = ":";
 
@@ -30,7 +30,7 @@ public final class RedisUtils {
     }
 
     public static final RedisSentinelClient getRedisSentinelClient(String host,int port){
-        return SENTINE_CLIENT_CACHE.computeIfAbsent(host + COLON + port, (key) -> new RedisSentinelClient(host, port));
+        return SENTINEL_CLIENT_CACHE.computeIfAbsent(host + COLON + port, (key) -> new RedisSentinelClient(host, port));
     }
 
     public static synchronized void shutDown(){
