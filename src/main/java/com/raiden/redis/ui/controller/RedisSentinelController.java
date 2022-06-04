@@ -104,7 +104,7 @@ public class RedisSentinelController extends AbstractRedisController {
                 });
                 selectionList.showAndWait();
             }catch (Exception e){
-                LOGGER.error(e);
+                LOGGER.error(e.getMessage(), e);
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
             }
