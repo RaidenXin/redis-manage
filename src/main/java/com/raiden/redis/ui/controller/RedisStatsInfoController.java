@@ -91,7 +91,6 @@ public class RedisStatsInfoController implements Initializable {
             expireCycleCpuMillisecondsView(all);
             ioThreadedProcessedView(all);
         }catch (Exception e){
-            LOGGER.error(e.getMessage());
             LOGGER.error(e.getMessage(), e);
         }
     }

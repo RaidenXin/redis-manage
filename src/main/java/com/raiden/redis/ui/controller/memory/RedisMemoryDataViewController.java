@@ -6,14 +6,8 @@ import com.raiden.redis.ui.util.PropertyValueUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.chart.LineChart;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 import java.net.URL;
@@ -26,10 +20,6 @@ import java.util.ResourceBundle;
  * @Modified By:
  */
 public class RedisMemoryDataViewController implements Initializable {
-
-
-    //标准高度间隔
-    private static final double STANDARD_HEIGHT_INTERVAL = 30D;
 
     @FXML
     private TableView memoryTable;
@@ -94,45 +84,5 @@ public class RedisMemoryDataViewController implements Initializable {
                 items.add(new Pair<>("lazyfree_pending_objects(迟释放的挂起对象:0不存在延迟释放的挂起对象)", String.valueOf(memory.getLazyfreePendingObjects())));
             }
         }
-    }
-
-
-    public void refreshMemoryLineChart(LineChart usedMemoryPeakPerc, LineChart usedMemoryDatasetPerc, LineChart memFragmentationRatio,double prefWidth) {
-//        double prefHeight = scrollPane.getPrefHeight();
-//        VBox vBox = new VBox();
-//        vBox.setPrefHeight(prefHeight- STANDARD_HEIGHT_INTERVAL);
-//        vBox.setPrefWidth(prefWidth);
-//        ObservableList<Node> children = vBox.getChildren();
-//        double lineChartPrefHeight = (prefHeight - STANDARD_HEIGHT_INTERVAL) / 3;
-//        if (usedMemoryPeakPerc != null){
-//            TitledPane usedMemoryPeakPercTitledPane = new TitledPane();
-//            usedMemoryPeakPercTitledPane.setPrefWidth(prefWidth);
-//            usedMemoryPeakPercTitledPane.setPrefHeight(lineChartPrefHeight);
-//            usedMemoryPeakPercTitledPane.setCollapsible(false);
-//            //设置高度
-//            usedMemoryPeakPerc.setPrefHeight(lineChartPrefHeight);
-//            usedMemoryPeakPercTitledPane.setContent(usedMemoryPeakPerc);
-//            children.add(usedMemoryPeakPercTitledPane);
-//        }
-//        if (usedMemoryDatasetPerc != null){
-//            TitledPane usedMemoryDatasetPercTitledPane = new TitledPane();
-//            usedMemoryDatasetPercTitledPane.setPrefWidth(prefWidth);
-//            usedMemoryDatasetPercTitledPane.setPrefHeight(lineChartPrefHeight);
-//            usedMemoryDatasetPercTitledPane.setCollapsible(false);
-//
-//            usedMemoryDatasetPerc.setPrefHeight(lineChartPrefHeight);
-//            usedMemoryDatasetPercTitledPane.setContent(usedMemoryDatasetPerc);
-//            children.add(usedMemoryDatasetPerc);
-//        }
-//        if (memFragmentationRatio != null){
-//            TitledPane memFragmentationRatioTitledPane = new TitledPane();
-//            memFragmentationRatioTitledPane.setPrefWidth(prefWidth);
-//            memFragmentationRatioTitledPane.setPrefHeight(lineChartPrefHeight);
-//            memFragmentationRatioTitledPane.setCollapsible(false);
-//
-//            memFragmentationRatio.setPrefHeight(lineChartPrefHeight);
-//            memFragmentationRatioTitledPane.setContent(memFragmentationRatio);
-//            children.add(memFragmentationRatioTitledPane);
-//        }
     }
 }

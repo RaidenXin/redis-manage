@@ -8,7 +8,6 @@ package com.raiden.redis.ui;/**
 import com.raiden.redis.core.common.TaskProcessingCenter;
 import com.raiden.redis.ui.util.RedisUtils;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

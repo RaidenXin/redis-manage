@@ -12,6 +12,8 @@ import com.raiden.redis.ui.util.RedisUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  */
 public class RedisClusterController extends AbstractRedisController {
 
+    private static final Logger LOGGER = LogManager.getLogger(RedisClusterController.class);
     @FXML
     private TextField clusterHost;
     @FXML
@@ -62,6 +65,7 @@ public class RedisClusterController extends AbstractRedisController {
                         .collect(Collectors.toList());
                 redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), hosts);
             }catch (Exception e){
+                LOGGER.error(e.getMessage(), e);
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
             }
