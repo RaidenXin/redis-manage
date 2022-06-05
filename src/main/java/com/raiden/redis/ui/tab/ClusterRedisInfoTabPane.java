@@ -71,6 +71,10 @@ public class ClusterRedisInfoTabPane {
             tabPane.getTabs().addAll(tabs);
             //设置点击监听事件 切换新页面在刷新新页面的数据
             tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
+                String oldOstAndPort = oldValue.getText();
+                RedisTabController oldController = initCache.get(oldOstAndPort);
+                //关闭之前的控制器
+                oldController.shutDown();
                 String hostAndPort = newValue.getText();
                 RedisTabController controller = initCache.get(hostAndPort);
                 if (controller != null && !controller.isInitTab()){

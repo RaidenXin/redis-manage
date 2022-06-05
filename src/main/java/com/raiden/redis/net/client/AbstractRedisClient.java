@@ -47,7 +47,7 @@ public abstract class AbstractRedisClient implements RedisClient{
         this.host = host;
         this.port = port;
         this.isAuth = new AtomicBoolean(false);
-        this.group = new NioEventLoopGroup();
+        this.group = new NioEventLoopGroup(1);
         this.handler = new RedisClientHandler();
         this.bootstrap = new Bootstrap();
         this.bootstrap.group(group)
