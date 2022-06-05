@@ -35,6 +35,7 @@ public final class RedisUtils {
 
     public static synchronized void shutDown(){
         CLIENT_CACHE.values().stream().forEach(RedisClient::close);
+        SENTINEL_CLIENT_CACHE.values().stream().forEach(RedisClient::close);
         SINGLE_CLIENT_CACHE.values().stream().forEach(RedisClient::close);
     }
 }

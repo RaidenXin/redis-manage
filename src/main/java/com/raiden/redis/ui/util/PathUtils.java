@@ -44,7 +44,7 @@ public final class PathUtils {
             if (lastIndex == 0){
                 lastIndex = path.indexOf(TARGET + "test-classes");
             }
-            if (lastIndex != 0){
+            if (lastIndex > 0){
                 path = path.substring(firstIndex, lastIndex);
             }else {
                 path = path.substring(firstIndex);
