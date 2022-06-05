@@ -104,7 +104,7 @@ public class RedisDataTableController implements Initializable {
                     FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(type.getShowView());
                     try {
                         Node load = fxmlLoader.load();
-                        Controller controller = fxmlLoader.getController();
+                        DataViewController controller = fxmlLoader.getController();
                         controller.init(redisNode, newValue);
                         try {
                             //这里要捕获一个没有找到命令的异常 因为可能没有开启这个命令

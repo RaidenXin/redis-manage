@@ -1,4 +1,4 @@
-package com.raiden.redis.ui.controller;
+package com.raiden.redis.ui.controller.server;
 
 import com.raiden.redis.net.model.*;
 import com.raiden.redis.ui.util.PropertyValueUtil;

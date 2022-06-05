@@ -1,7 +1,7 @@
 package com.raiden.redis.ui.controller.data;
 
 import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.ui.controller.Controller;
+import com.raiden.redis.ui.controller.DataViewController;
 import com.raiden.redis.ui.controller.add.AddValueController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -14,7 +14,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
@@ -35,7 +34,7 @@ import static com.raiden.redis.net.common.ScanCommonParams.*;
  * @Date:Created in 20:04 2022/5/22
  * @Modified By:
  */
-public class RedisListDataViewController implements Controller, Initializable {
+public class RedisListDataViewController implements DataViewController, Initializable {
 
 
     private static final int PAGE_SIZE = 20;

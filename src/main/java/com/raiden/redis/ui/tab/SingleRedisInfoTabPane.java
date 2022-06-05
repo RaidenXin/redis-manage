@@ -21,9 +21,11 @@ import java.io.IOException;
  * @Date:Created in 21:52 2022/5/7
  * @Modified By:
  */
-public class SingleRedisInfoTabPane {
+public class SingleRedisInfoTabPane implements RedisInfoTabPane{
 
     private static final Logger LOGGER = LogManager.getLogger(SingleRedisInfoTabPane.class);
+
+    private RedisTabController redisTabController;
 
     public void setRedisInfoTabPane(Pane root, RedisNode redisNode) {
         double prefHeight = root.getPrefHeight();
@@ -43,6 +45,7 @@ public class SingleRedisInfoTabPane {
                 AnchorPane anchorPane = fxmlLoader.load();
                 tab.setContent(anchorPane);
                 RedisTabController controller = fxmlLoader.getController();
+                this.redisTabController = controller;
                 controller.setRedisNode(redisNode);
                 tab.setContent(anchorPane);
                 controller.initTable();
@@ -52,5 +55,14 @@ public class SingleRedisInfoTabPane {
             }
         }
         children.add(tabPane);
+    }
+
+    @Override
+    public void shutDown() {
+        //关闭tab控制器
+        if (redisTabController != null){
+            redisTabController.shutDown();
+            redisTabController = null;
+        }
     }
 }

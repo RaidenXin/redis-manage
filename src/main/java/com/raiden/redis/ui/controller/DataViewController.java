@@ -8,7 +8,7 @@ import com.raiden.redis.ui.mode.RedisNode;
  * @Date:Created in 20:05 2022/5/22
  * @Modified By:
  */
-public interface Controller {
+public interface DataViewController {
 
     void init(RedisNode redisNode, String key);
 }

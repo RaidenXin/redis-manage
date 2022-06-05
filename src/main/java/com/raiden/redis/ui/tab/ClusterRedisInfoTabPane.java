@@ -24,15 +24,15 @@ import java.util.stream.Collectors;
  * @Date:Created in 21:04 2022/5/11
  * @Modified By:
  */
-public class ClusterRedisInfoTabPane {
+public class ClusterRedisInfoTabPane implements RedisInfoTabPane{
 
     private static final Logger LOGGER = LogManager.getLogger(ClusterRedisInfoTabPane.class);
 
     //初始化缓存 用来记录 已经初始化的 Tab
-    private volatile Map<String, RedisTabController> initCache;
+    private volatile Map<String, RedisTabController> tabControllerCache;
 
     public ClusterRedisInfoTabPane(){
-        this.initCache = new ConcurrentHashMap<>();
+        this.tabControllerCache = new ConcurrentHashMap<>();
     }
 
     public void setRedisInfoTabPane(Pane root, List<RedisNode> hosts) {
@@ -58,7 +58,7 @@ public class ClusterRedisInfoTabPane {
                     tab.setContent(anchorPane);
                     RedisTabController controller = fxmlLoader.getController();
                     controller.setRedisNode(host);
-                    initCache.put(hostAndPort, controller);
+                    tabControllerCache.put(hostAndPort, controller);
                     if (host.isMyself()){
                         controller.initTable();
                     }
@@ -72,16 +72,24 @@ public class ClusterRedisInfoTabPane {
             //设置点击监听事件 切换新页面在刷新新页面的数据
             tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
                 String oldOstAndPort = oldValue.getText();
-                RedisTabController oldController = initCache.get(oldOstAndPort);
+                RedisTabController oldController = tabControllerCache.get(oldOstAndPort);
                 //关闭之前的控制器
                 oldController.shutDown();
                 String hostAndPort = newValue.getText();
-                RedisTabController controller = initCache.get(hostAndPort);
+                RedisTabController controller = tabControllerCache.get(hostAndPort);
                 if (controller != null && !controller.isInitTab()){
                     controller.initTable();
                 }
             });
         }
         children.add(tabPane);
+    }
+
+    @Override
+    public void shutDown() {
+        //关闭全部的tab控制器
+        tabControllerCache.values().stream().forEach(RedisTabController::shutDown);
+        //清空缓存
+        tabControllerCache.clear();
     }
 }

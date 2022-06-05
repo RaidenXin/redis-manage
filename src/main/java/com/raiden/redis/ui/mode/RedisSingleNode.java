@@ -2,7 +2,6 @@ package com.raiden.redis.ui.mode;
 
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisSingleClient;
-import com.raiden.redis.net.model.RedisClusterNodeInfo;
 import com.raiden.redis.ui.util.RedisUtils;
 
 /**

@@ -9,6 +9,8 @@ import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.net.model.RedisStats;
 import com.raiden.redis.ui.controller.memory.RedisMemoryDataViewController;
 import com.raiden.redis.ui.controller.persistence.RedisPersistenceDataViewController;
+import com.raiden.redis.ui.controller.server.RedisServerInfoController;
+import com.raiden.redis.ui.controller.stats.RedisStatsInfoController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.queue.CircularFifoQueue;
 import com.raiden.redis.ui.util.AlertUtil;
@@ -101,6 +103,7 @@ public class RedisMonitoringInfoController implements Initializable {
             return;
         }
         this.redisNode = redisNode;
+        String hostAndPort = redisNode.getHostAndPort();
         try {
             //这个接口要获取数据要先执行
             refreshQpsAndCpu();
@@ -108,7 +111,7 @@ public class RedisMonitoringInfoController implements Initializable {
             isInit.compareAndSet(false, true);
             isShutDown.set(false);
             //设置一个一秒刷新的任务
-            TaskProcessingCenter.submit(new RedisMonitoringInfoController.RefreshTask(() -> refreshQpsAndCpu(), 1, TimeUnit.SECONDS));
+            TaskProcessingCenter.submit(new RedisMonitoringInfoController.RefreshTask(() -> refreshQpsAndCpu(), hostAndPort, 1, TimeUnit.SECONDS));
             //设置一个60秒刷新的任务
             TaskProcessingCenter.submit(new RedisMonitoringInfoController.RefreshTask(() -> {
                 try {
@@ -119,7 +122,7 @@ public class RedisMonitoringInfoController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "加载Redis服务信息错误:" + error);
                     alert.showAndWait();
                 }
-            }, 60, TimeUnit.SECONDS));
+            }, hostAndPort, 60, TimeUnit.SECONDS));
         }catch (Exception e){
             String error = e.getMessage();
             LOGGER.error(e);
@@ -514,14 +517,16 @@ public class RedisMonitoringInfoController implements Initializable {
 
     public class RefreshTask implements Task {
 
+        private String hostAndPort;
         private int delayTime;
         private TimeUnit unit;
         private Runnable task;
 
-        public RefreshTask(Runnable task,int delayTime,TimeUnit unit){
+        public RefreshTask(Runnable task,String hostAndPort,int delayTime,TimeUnit unit){
             this.delayTime = delayTime;
             this.unit = unit;
             this.task = task;
+            this.hostAndPort = hostAndPort;
         }
 
         @Override
@@ -533,7 +538,7 @@ public class RedisMonitoringInfoController implements Initializable {
             Platform.runLater(() -> {
                 task.run();
             });
-            TaskProcessingCenter.submit(new RefreshTask(task, delayTime, unit));
+            TaskProcessingCenter.submit(new RefreshTask(task, hostAndPort, delayTime, unit));
         }
 
         @Override

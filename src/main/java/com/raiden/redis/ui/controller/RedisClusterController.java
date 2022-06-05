@@ -34,6 +34,7 @@ public class RedisClusterController extends AbstractRedisController {
 
     public RedisClusterController(){
         super(new RecordDao(Path.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH));
+
     }
 
     public void connectionRedisCluster(){
@@ -51,6 +52,8 @@ public class RedisClusterController extends AbstractRedisController {
                         return;
                     }
                 }
+                //清理旧的数据
+                redisController.clear();
                 List<RedisClusterNodeInfo> redisClusterNodes = redisClient.clusterNodes();
                 ClusterRedisInfoTabPane redisInfoTabPane = new ClusterRedisInfoTabPane();
                 List<RedisNode> hosts = redisClusterNodes.stream()
@@ -64,6 +67,8 @@ public class RedisClusterController extends AbstractRedisController {
                         })
                         .collect(Collectors.toList());
                 redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), hosts);
+                //设置关闭回调
+                redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
             }catch (Exception e){
                 LOGGER.error(e.getMessage(), e);
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());

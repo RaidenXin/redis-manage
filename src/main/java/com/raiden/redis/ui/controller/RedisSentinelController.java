@@ -70,6 +70,8 @@ public class RedisSentinelController extends AbstractRedisController {
                     if (StringUtils.isBlank(newValue)) {
                         return;
                     }
+                    //清理旧的数据
+                    redisController.clear();
                     List<RedisNode> masterAddrByName = redisClient.getMasterAddrByName(newValue);
                     List<RedisNode> masters =  new ArrayList<>(masterAddrByName.size() + 1);
                     masters.add(sentinelNode);
@@ -100,6 +102,8 @@ public class RedisSentinelController extends AbstractRedisController {
                     //关闭弹窗
                     SentinelRedisInfoTabPane redisInfoTabPane = new SentinelRedisInfoTabPane();
                     redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), masters);
+                    //设置关闭回调
+                    redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
                     selectionList.close();
                 });
                 selectionList.showAndWait();

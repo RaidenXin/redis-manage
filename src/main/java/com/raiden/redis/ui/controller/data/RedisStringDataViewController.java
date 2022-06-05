@@ -1,7 +1,7 @@
 package com.raiden.redis.ui.controller.data;
 
 import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.ui.controller.Controller;
+import com.raiden.redis.ui.controller.DataViewController;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * @Date:Created in 16:48 2022/5/26
  * @Modified By:
  */
-public class RedisStringDataViewController implements Controller, Initializable {
+public class RedisStringDataViewController implements DataViewController, Initializable {
 
     @FXML
     private Button editorButton;

@@ -4,7 +4,7 @@ import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.exception.MovedException;
 import com.raiden.redis.net.exception.RedisException;
 import com.raiden.redis.net.model.ScanResult;
-import com.raiden.redis.ui.controller.Controller;
+import com.raiden.redis.ui.controller.DataViewController;
 import com.raiden.redis.ui.controller.add.AddValueController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -34,7 +34,7 @@ import static com.raiden.redis.net.common.ScanCommonParams.*;
  * @Date:Created in 20:04 2022/5/22
  * @Modified By:
  */
-public class RedisSetDataViewController implements Controller, Initializable {
+public class RedisSetDataViewController implements DataViewController, Initializable {
 
     @FXML
     private ListView<String> dataList;

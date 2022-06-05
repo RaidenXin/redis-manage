@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="964.0" prefWidth="2380.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisStatsInfoController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.stats.RedisStatsInfoController">
    <children>
       <GridPane fx:id="gridPane" prefHeight="924.0" prefWidth="2380.0">
         <columnConstraints>

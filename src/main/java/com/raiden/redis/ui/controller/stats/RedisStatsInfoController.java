@@ -1,4 +1,4 @@
-package com.raiden.redis.ui.controller;
+package com.raiden.redis.ui.controller.stats;
 
 import com.raiden.redis.net.model.RedisNodeInfo;
 import com.raiden.redis.net.model.RedisStats;

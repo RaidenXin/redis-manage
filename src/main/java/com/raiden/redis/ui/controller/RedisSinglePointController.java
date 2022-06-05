@@ -1,13 +1,11 @@
 package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.net.client.RedisClient;
-import com.raiden.redis.net.client.RedisSingleClient;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.dao.RecordDao;
 import com.raiden.redis.ui.mode.RedisSingleNode;
 import com.raiden.redis.ui.tab.SingleRedisInfoTabPane;
-import com.raiden.redis.ui.util.RedisUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.apache.commons.lang3.StringUtils;
@@ -44,8 +42,12 @@ public class RedisSinglePointController extends AbstractRedisController {
                     }
                     redisSingleNode.setPassword(getPassword());
                 }
+                //清理旧的数据
+                redisController.clear();
                 SingleRedisInfoTabPane redisInfoTabPane = new SingleRedisInfoTabPane();
                 redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), redisSingleNode);
+                //设置关闭回调
+                redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
             }catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
