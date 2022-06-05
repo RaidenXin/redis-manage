@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * @创建人:Raiden
@@ -122,7 +123,7 @@ public class RedisTabController {
                 RedisKeyspace keyspace = info.getKeyspace();
                 List<RedisKeyspace.RedisDB> dbs;
                 if (keyspace != null && (dbs = keyspace.getDb()) != null){
-                    dbs.stream().sorted(Comparator.comparing(RedisKeyspace.RedisDB::getName))
+                    dbs.stream().sorted(Comparator.comparing(db -> Integer.parseInt(db.getIndex())))
                             .forEach(db -> {
                                 ObservableList<Button> items = sidebar.getItems();
                                 Button button = new Button(db.getName());

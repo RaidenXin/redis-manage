@@ -139,6 +139,8 @@ public class RedisDataTableController implements Initializable {
             if (isFuzzySearch.isSelected()) {
                 RedisDatas datas = scanRedisDatas(client, START_INDEX, key);
                 if (datas == null){
+                    ObservableList items = keyList.getItems();
+                    items.clear();
                     return;
                 }
                 stack.clear();
