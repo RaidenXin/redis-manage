@@ -53,6 +53,8 @@ public abstract class AbstractRedisController implements Initializable {
 
     private RecordDao recordDao;
 
+    private RedisLoginController loginController;
+
     public AbstractRedisController(RecordDao recordDao){
         this.recordDao = recordDao;
     }
@@ -83,6 +85,22 @@ public abstract class AbstractRedisController implements Initializable {
 
     protected final String getPassword(){
         return password.getText();
+    }
+
+    public void setLoginController(RedisLoginController loginController){
+        this.loginController = loginController;
+    }
+
+    protected void showLoginView(){
+        if (loginController != null){
+            loginController.show();
+        }
+    }
+
+    protected void closeLoginView(){
+        if (loginController != null){
+            loginController.close();
+        }
     }
 
     public void addRecord(){

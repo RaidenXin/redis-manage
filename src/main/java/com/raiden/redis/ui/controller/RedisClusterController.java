@@ -2,6 +2,7 @@ package com.raiden.redis.ui.controller;
 
 import com.raiden.redis.net.client.RedisClusterClient;
 import com.raiden.redis.net.model.RedisClusterNodeInfo;
+import com.raiden.redis.ui.DataPageView;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.dao.RecordDao;
@@ -11,6 +12,8 @@ import com.raiden.redis.ui.tab.ClusterRedisInfoTabPane;
 import com.raiden.redis.ui.util.RedisUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,13 +37,12 @@ public class RedisClusterController extends AbstractRedisController {
 
     public RedisClusterController(){
         super(new RecordDao(Path.REDIS_CLUSTER_HISTORICAL_RECORD_DATA_PATH));
-
     }
 
     public void connectionRedisCluster(){
         String host = clusterHost.getText();
         String port = clusterPort.getText();
-        RedisDataPageController redisController = BeanContext.getBean(RedisDataPageController.class.getName());
+        RedisLoginController redisController = BeanContext.getBean(RedisLoginController.class.getName());
         if (StringUtils.isNoneBlank(host, port)){
             try {
                 RedisClusterClient redisClient = RedisUtils.getRedisClusterClient(host.trim(), Integer.parseInt(port.trim()));
@@ -66,9 +68,13 @@ public class RedisClusterController extends AbstractRedisController {
                             return clusterNode;
                         })
                         .collect(Collectors.toList());
-                redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), hosts);
+                Pane pane = redisInfoTabPane.setRedisInfoTabPane(hosts);
                 //设置关闭回调
                 redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
+                DataPageView dataPageView = new DataPageView(pane, () -> showLoginView());
+                dataPageView.start();
+                //关闭登录界面
+                closeLoginView();
             }catch (Exception e){
                 LOGGER.error(e.getMessage(), e);
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());

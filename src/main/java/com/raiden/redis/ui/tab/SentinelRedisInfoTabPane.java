@@ -1,6 +1,5 @@
 package com.raiden.redis.ui.tab;
 
-import com.raiden.redis.ui.Window;
 import com.raiden.redis.ui.controller.RedisTabController;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -40,7 +39,8 @@ public class SentinelRedisInfoTabPane implements RedisInfoTabPane{
         this.tabControllerCache = new ConcurrentHashMap<>();
     }
 
-    public void setRedisInfoTabPane(Pane root, List<RedisNode> hosts) {
+    public Pane setRedisInfoTabPane(List<RedisNode> hosts) {
+        Pane root = getRoot();
         ObservableList<Node> children = root.getChildren();
         //清理过去的东西
         children.clear();
@@ -89,6 +89,7 @@ public class SentinelRedisInfoTabPane implements RedisInfoTabPane{
             });
         }
         children.add(tabPane);
+        return root;
     }
 
     @Override

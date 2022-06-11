@@ -378,23 +378,27 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     public void close(){
-        //是否是池化对象
-        if (isObjectPooling && pool != null){
-            //如果是池化对象 用池化对象回收方式
-            pool.recycleObject(this);
-        }else {
-            //如果不是池化对象 关闭时关闭连接
-            if (channel != null && channel.isActive()){
-                try {
-                    sendCommands(RedisCommand.QUIT);
-                    channel.close();
-                }catch (Exception e){
+        try {
+            //是否是池化对象
+            if (isObjectPooling && pool != null){
+                //如果是池化对象 用池化对象回收方式
+                pool.recycleObject(this);
+            }else {
+                //如果不是池化对象 关闭时关闭连接
+                if (channel != null && channel.isActive()){
+                    try {
+                        sendCommands(RedisCommand.QUIT);
+                        channel.close();
+                    }catch (Exception e){
+                    }
+                }
+                //关闭 netty 客户端线程池
+                if (group != null){
+                    group.shutdownGracefully();
                 }
             }
-            //关闭 netty 客户端线程池
-            if (group != null){
-                group.shutdownGracefully();
-            }
+        }catch (Exception e){
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

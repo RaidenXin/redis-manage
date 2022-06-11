@@ -1,5 +1,7 @@
 package com.raiden.redis.ui.tab;
 
+import javafx.scene.layout.Pane;
+
 /**
  * @创建人:Raiden
  * @Descriotion:
@@ -11,5 +13,12 @@ public interface RedisInfoTabPane {
      * 关闭方法
      */
     void shutDown();
+
+    default Pane getRoot(){
+        Pane pane = new Pane();
+        pane.setPrefHeight(1000.0D);
+        pane.setPrefWidth(1083.0D);
+        return pane;
+    }
 }
 

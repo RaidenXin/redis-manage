@@ -6,7 +6,7 @@ package com.raiden.redis.ui;/**
  */
 
 import com.raiden.redis.core.common.TaskProcessingCenter;
-import com.raiden.redis.ui.util.RedisUtils;
+import com.raiden.redis.ui.controller.RedisLoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,9 +18,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
-public class Window extends Application {
+public class RedisLoginView extends Application {
 
-    private static final Logger LOGGER = LogManager.getLogger(Window.class);
+    private static final Logger LOGGER = LogManager.getLogger(RedisLoginView.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -30,13 +30,16 @@ public class Window extends Application {
     public void start(Stage stage) throws IOException {
         LOGGER.info("启动窗口！");
         //初始化FXML布局文件内容
-        FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("window.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(RedisLoginView.class.getResource("window.fxml"));
         //父级
         Parent root = fxmlLoader.load();
 
+        RedisLoginController controller = fxmlLoader.getController();
+        controller.setLoginView(stage);
+
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(root);
-        Scene scene = new Scene(stackPane, 1500, 1000);
+        Scene scene = new Scene(stackPane, 415.0D, 1000.0D);
         stage.setTitle("Redis");
         stage.getIcons().add(new Image("/icon/redis.jpg"));
         stage.setScene(scene);
@@ -46,7 +49,7 @@ public class Window extends Application {
     }
 
     public void stop() throws Exception {
-        RedisUtils.shutDown();
+        //暂停
         TaskProcessingCenter.shutDown();
         System.err.println("关闭了！！！！！！！！！！！！！！！！！！！！");
     }

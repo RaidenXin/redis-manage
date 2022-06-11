@@ -1,6 +1,6 @@
 package com.raiden.redis.ui.util;
 
-import com.raiden.redis.ui.Window;
+import com.raiden.redis.ui.RedisLoginView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import org.apache.logging.log4j.LogManager;
@@ -19,11 +19,11 @@ public final class FXMLLoaderUtils {
     private static final Logger LOGGER = LogManager.getLogger(FXMLLoaderUtils.class);
 
     public static final FXMLLoader getFXMLLoader(String fxmlName){
-        return new FXMLLoader(Window.class.getResource(fxmlName));
+        return new FXMLLoader(RedisLoginView.class.getResource(fxmlName));
     }
 
     public static final <T> T getNode(String fxmlName){
-        FXMLLoader loader = new FXMLLoader(Window.class.getResource(fxmlName));
+        FXMLLoader loader = new FXMLLoader(RedisLoginView.class.getResource(fxmlName));
         try {
             return loader.load();
         } catch (IOException e) {

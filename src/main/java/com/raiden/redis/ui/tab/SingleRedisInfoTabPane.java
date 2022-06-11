@@ -1,6 +1,6 @@
 package com.raiden.redis.ui.tab;
 
-import com.raiden.redis.ui.Window;
+import com.raiden.redis.ui.RedisLoginView;
 import com.raiden.redis.ui.controller.RedisTabController;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.collections.ObservableList;
@@ -27,7 +27,8 @@ public class SingleRedisInfoTabPane implements RedisInfoTabPane{
 
     private RedisTabController redisTabController;
 
-    public void setRedisInfoTabPane(Pane root, RedisNode redisNode) {
+    public Pane setRedisInfoTabPane(RedisNode redisNode) {
+        Pane root = getRoot();
         double prefHeight = root.getPrefHeight();
         double prefWidth = root.getPrefWidth();
         ObservableList<Node> children = root.getChildren();
@@ -40,7 +41,7 @@ public class SingleRedisInfoTabPane implements RedisInfoTabPane{
             Tab tab = new Tab();
             tab.setText(redisNode.getHostAndPort());
             tab.setGraphic(new ImageView("/icon/redis2.jpg"));
-            FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("redis_tab_view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(RedisLoginView.class.getResource("redis_tab_view.fxml"));
             try {
                 AnchorPane anchorPane = fxmlLoader.load();
                 tab.setContent(anchorPane);
@@ -55,6 +56,7 @@ public class SingleRedisInfoTabPane implements RedisInfoTabPane{
             }
         }
         children.add(tabPane);
+        return root;
     }
 
     @Override
