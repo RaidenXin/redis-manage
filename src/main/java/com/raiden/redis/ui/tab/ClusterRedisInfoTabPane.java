@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @Date:Created in 21:04 2022/5/11
  * @Modified By:
  */
-public class ClusterRedisInfoTabPane implements RedisInfoTabPane{
+public class ClusterRedisInfoTabPane implements RedisTabPane {
 
     private static final Logger LOGGER = LogManager.getLogger(ClusterRedisInfoTabPane.class);
 
@@ -35,7 +35,7 @@ public class ClusterRedisInfoTabPane implements RedisInfoTabPane{
         this.tabControllerCache = new ConcurrentHashMap<>();
     }
 
-    public Pane setRedisInfoTabPane(List<RedisNode> hosts) {
+    public Pane createInstance(List<RedisNode> hosts) {
         Pane root = getRoot();
         ObservableList<Node> children = root.getChildren();
         //清理过去的东西

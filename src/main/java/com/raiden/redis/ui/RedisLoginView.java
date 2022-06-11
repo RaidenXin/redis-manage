@@ -8,7 +8,6 @@ package com.raiden.redis.ui;/**
 import com.raiden.redis.core.common.TaskProcessingCenter;
 import com.raiden.redis.ui.controller.RedisLoginController;
 import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,7 +27,7 @@ public class RedisLoginView extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        LOGGER.info("启动窗口！");
+        LOGGER.info("启动登陆窗口！");
         //初始化FXML布局文件内容
         FXMLLoader fxmlLoader = new FXMLLoader(RedisLoginView.class.getResource("window.fxml"));
         //父级
@@ -37,7 +36,7 @@ public class RedisLoginView extends Application {
         RedisLoginController controller = fxmlLoader.getController();
         controller.setLoginView(stage);
 
-        Scene scene = new Scene(root, 415.0D, 1000.0D);
+        Scene scene = new Scene(root, 415.0D, 1024.0D);
         stage.setTitle("Redis");
         stage.getIcons().add(new Image("/icon/redis.jpg"));
         stage.setScene(scene);
@@ -48,6 +47,6 @@ public class RedisLoginView extends Application {
     public void stop() throws Exception {
         //暂停
         TaskProcessingCenter.shutDown();
-        System.err.println("关闭了！！！！！！！！！！！！！！！！！！！！");
+        LOGGER.info("登陆界面关闭了！！！！！！！！！！！！！！！！！！！！");
     }
 }

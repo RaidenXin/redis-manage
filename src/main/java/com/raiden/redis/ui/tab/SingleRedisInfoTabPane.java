@@ -21,13 +21,13 @@ import java.io.IOException;
  * @Date:Created in 21:52 2022/5/7
  * @Modified By:
  */
-public class SingleRedisInfoTabPane implements RedisInfoTabPane{
+public class SingleRedisInfoTabPane implements RedisTabPane {
 
     private static final Logger LOGGER = LogManager.getLogger(SingleRedisInfoTabPane.class);
 
     private RedisTabController redisTabController;
 
-    public Pane setRedisInfoTabPane(RedisNode redisNode) {
+    public Pane createInstance(RedisNode redisNode) {
         Pane root = getRoot();
         double prefHeight = root.getPrefHeight();
         double prefWidth = root.getPrefWidth();

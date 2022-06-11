@@ -50,8 +50,7 @@ public final class PathUtils {
             }
             LOGGER.info("project path={}", path);
         }catch (Exception e){
-            e.printStackTrace();
-            LOGGER.error("{}",e);
+            LOGGER.error(e.getMessage(), e);
         }
         return path;
     }

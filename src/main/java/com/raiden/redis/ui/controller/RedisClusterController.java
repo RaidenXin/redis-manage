@@ -13,7 +13,6 @@ import com.raiden.redis.ui.util.RedisUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,7 +67,7 @@ public class RedisClusterController extends AbstractRedisController {
                             return clusterNode;
                         })
                         .collect(Collectors.toList());
-                Pane pane = redisInfoTabPane.setRedisInfoTabPane(hosts);
+                Pane pane = redisInfoTabPane.createInstance(hosts);
                 //设置关闭回调
                 redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
                 DataPageView dataPageView = new DataPageView(pane, () -> showLoginView());

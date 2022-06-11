@@ -3,10 +3,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="1000.0" prefWidth="415.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane prefHeight="1024.0" prefWidth="415.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.raiden.redis.ui.controller.RedisLoginController">
    <children>
-      <Accordion fx:id="titles" prefHeight="1000.0" prefWidth="415.0">
+      <MenuBar prefHeight="25.0" prefWidth="415.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="工具">
+            <items>
+              <MenuItem mnemonicParsing="false" text="大Key分析" onAction="#bigKeyAnalysis"/>
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Accordion fx:id="titles" layoutY="24.0" prefHeight="1000.0" prefWidth="415.0">
       </Accordion>
    </children>
 </AnchorPane>

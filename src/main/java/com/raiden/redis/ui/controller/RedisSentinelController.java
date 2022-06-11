@@ -103,7 +103,7 @@ public class RedisSentinelController extends AbstractRedisController {
                     }
                     //关闭弹窗
                     SentinelRedisInfoTabPane redisInfoTabPane = new SentinelRedisInfoTabPane();
-                    Pane pane = redisInfoTabPane.setRedisInfoTabPane(masters);
+                    Pane pane = redisInfoTabPane.createInstance(masters);
                     redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
                     DataPageView dataPageView = new DataPageView(pane, () -> showLoginView());
                     dataPageView.start();

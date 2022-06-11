@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
  * @Date:Created in 15:25 2022/6/5
  * @Modified By:
  */
-public interface RedisInfoTabPane {
+public interface RedisTabPane {
     /**
      * 关闭方法
      */

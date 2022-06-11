@@ -88,7 +88,7 @@ public final class RecordStorageUtils {
                 try {
                     Files.write(file.toPath(), data.toString().getBytes(UTF_8), StandardOpenOption.WRITE);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         }catch (Exception e){

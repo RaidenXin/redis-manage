@@ -1,6 +1,5 @@
 package com.raiden.redis.ui.util;
 
-import com.raiden.redis.net.exception.RedisException;
 import org.apache.commons.lang3.StringUtils;
 
 /**

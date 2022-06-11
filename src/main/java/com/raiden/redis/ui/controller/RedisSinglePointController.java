@@ -47,7 +47,7 @@ public class RedisSinglePointController extends AbstractRedisController {
                 //清理旧的数据
                 redisController.clear();
                 SingleRedisInfoTabPane redisInfoTabPane = new SingleRedisInfoTabPane();
-                Pane pane = redisInfoTabPane.setRedisInfoTabPane(redisSingleNode);
+                Pane pane = redisInfoTabPane.createInstance(redisSingleNode);
                 //设置关闭回调
                 redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
                 DataPageView dataPageView = new DataPageView(pane, () -> showLoginView());

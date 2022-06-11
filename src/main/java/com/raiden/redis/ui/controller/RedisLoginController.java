@@ -1,17 +1,19 @@
 package com.raiden.redis.ui.controller;
 
+import com.raiden.redis.ui.DataPageView;
 import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.shutdown.ShutDownCallback;
+import com.raiden.redis.ui.tab.UtilTabPane;
 import com.raiden.redis.ui.util.AlertUtil;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +32,7 @@ public class RedisLoginController implements Initializable {
 
     private static final Logger LOGGER = LogManager.getLogger(RedisLoginController.class);
 
-    private static final String[] LOGIN_VIEW_PATHS = {"titles/cluster_titled_pane.fxml", "titles/sentinel_titled_pane.fxml", "titles/single_point_titled_pane.fxml"};
+    private static final String[] LOGIN_VIEW_PATHS = { "titles/single_point_titled_pane.fxml",  "titles/sentinel_titled_pane.fxml", "titles/cluster_titled_pane.fxml",};
 
     @FXML
     private Accordion titles;
@@ -61,7 +63,6 @@ public class RedisLoginController implements Initializable {
 
     public void show(){
         if (loginView != null){
-            Scene scene = loginView.getScene();
             loginView.show();
         }
     }
@@ -85,6 +86,15 @@ public class RedisLoginController implements Initializable {
 
     public void setShutDownCallback(ShutDownCallback callback){
         this.callback = callback;
+    }
+
+
+    public void bigKeyAnalysis(){
+        UtilTabPane utilTabPane = new UtilTabPane();
+        Pane instance = utilTabPane.createInstance();
+        close();
+        DataPageView dataPageView = new DataPageView(instance, () -> show());
+        dataPageView.start();
     }
 
 }
