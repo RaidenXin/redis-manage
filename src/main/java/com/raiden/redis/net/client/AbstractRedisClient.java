@@ -58,6 +58,10 @@ public abstract class AbstractRedisClient implements RedisClient{
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage());
             group.shutdownGracefully();
+        }catch (Exception e){
+            LOGGER.error(e.getMessage());
+            group.shutdownGracefully();
+            throw e;
         }
     }
 
