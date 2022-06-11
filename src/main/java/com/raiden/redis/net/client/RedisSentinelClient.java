@@ -91,7 +91,7 @@ public class RedisSentinelClient extends AbstractRedisClient{
     }
 
     @Override
-    public String hDel(String key, String... field) {
+    public int hDel(String key, String... field) {
         throw new RedisException("The method cannot be used!");
     }
 

@@ -90,13 +90,25 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.Hash.H_GET, key, field);
     }
 
+
     @Override
-    public String hDel(String key, String... field) {
+    public int del(String... keys) {
+        if (keys == null){
+            throw new NullPointerException("key is null");
+        }
+        String[] commands = encapsulationCommands(RedisCommand.DEL, keys);
+        return Integer.parseInt(sendCommands(commands));
+    }
+
+
+
+    @Override
+    public int hDel(String key, String... field) {
         if (StringUtils.isBlank(key)){
             throw new NullPointerException("key is null");
         }
         String[] commands = encapsulationCommands(RedisCommand.Hash.H_DEL, key, field);
-        return sendCommands(commands);
+        return Integer.parseInt(sendCommands(commands));
     }
 
     @Override
@@ -322,6 +334,14 @@ public abstract class AbstractRedisClient implements RedisClient{
     public long memoryUsage(String key){
         String response = sendCommands(RedisCommand.MEMORY, RedisCommand.Memory.USAGE, key);
         return Long.parseLong(response);
+    }
+
+
+    private String[] encapsulationCommands(String command,String... values){
+        String[] commands = new String[values.length + 1];
+        commands[0] = command;
+        System.arraycopy(values, 0, commands, 1, values.length);
+        return commands;
     }
 
 
