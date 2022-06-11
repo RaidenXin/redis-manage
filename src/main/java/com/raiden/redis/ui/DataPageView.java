@@ -4,6 +4,7 @@ import com.raiden.redis.core.common.TaskProcessingCenter;
 import com.raiden.redis.ui.shutdown.ShutDownCallback;
 import com.raiden.redis.ui.util.RedisUtils;
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
