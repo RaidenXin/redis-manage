@@ -56,28 +56,28 @@ public class RedisAnalyzingBigKeyController implements Initializable {
 
 
     public void selectFile(){
-        String databaseNumberStr = this.databaseNumber.getText();
-        if (StringUtils.isBlank(databaseNumberStr)){
-            AlertUtil.warn("数据库编号不能为空!");
-            return;
-        }
         FileChooser fileChooser = new FileChooser();
         ObservableList<FileChooser.ExtensionFilter> extensionFilters = fileChooser.getExtensionFilters();
         extensionFilters.add(new FileChooser.ExtensionFilter("RDB Files", "*.rdb"));
         File rdb = fileChooser.showOpenDialog(new Stage());
-        //数据库编号
-        long databaseNumber;
-        try {
-            databaseNumber = Long.valueOf(databaseNumberStr);
-        }catch (Exception e){
-            LOGGER.error("数据库编号不能正确:{}", databaseNumberStr);
-            AlertUtil.warn("数据库编号不能正确,请填写数字!");
-            return;
-        }
-        int maxSize = Integer.parseInt(top.getValue());
         if (rdb != null){
+            int maxSize = Integer.parseInt(top.getValue());
             path.setText(rdb.getPath());
             analyse.setOnAction(event -> {
+                //数据库编号
+                String databaseNumberStr = this.databaseNumber.getText();
+                if (StringUtils.isBlank(databaseNumberStr)){
+                    AlertUtil.warn("数据库编号不能为空!");
+                    return;
+                }
+                long databaseNumber;
+                try {
+                    databaseNumber = Long.valueOf(databaseNumberStr);
+                }catch (Exception e){
+                    LOGGER.error("数据库编号不能正确:{}", databaseNumberStr);
+                    AlertUtil.warn("数据库编号不能正确,请填写数字!");
+                    return;
+                }
                 //创建最小堆
                 PriorityQueue<DataItem> minHeap = new PriorityQueue<>(maxSize);
                 try (RdbParser parser = new RdbParser(rdb)) {
