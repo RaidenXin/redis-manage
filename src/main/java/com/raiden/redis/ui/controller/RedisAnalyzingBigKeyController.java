@@ -10,6 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.whitbeck.rdbparser.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +35,11 @@ public class RedisAnalyzingBigKeyController implements Initializable {
     @FXML
     private TextField path;
     @FXML
+    private TextField databaseNumber;
+    @FXML
     private Button analyse;
+    @FXML
+    private ComboBox<String> top;
     @FXML
     private TableView dataTable;
     @FXML
@@ -51,13 +56,25 @@ public class RedisAnalyzingBigKeyController implements Initializable {
 
 
     public void selectFile(){
+        String databaseNumberStr = this.databaseNumber.getText();
+        if (StringUtils.isBlank(databaseNumberStr)){
+            AlertUtil.warn("数据库编号不能为空!");
+            return;
+        }
         FileChooser fileChooser = new FileChooser();
         ObservableList<FileChooser.ExtensionFilter> extensionFilters = fileChooser.getExtensionFilters();
         extensionFilters.add(new FileChooser.ExtensionFilter("RDB Files", "*.rdb"));
         File rdb = fileChooser.showOpenDialog(new Stage());
         //数据库编号
-        long databaseNumber = 0;
-        int maxSize = 20;
+        long databaseNumber;
+        try {
+            databaseNumber = Long.valueOf(databaseNumberStr);
+        }catch (Exception e){
+            LOGGER.error("数据库编号不能正确:{}", databaseNumberStr);
+            AlertUtil.warn("数据库编号不能正确,请填写数字!");
+            return;
+        }
+        int maxSize = Integer.parseInt(top.getValue());
         if (rdb != null){
             path.setText(rdb.getPath());
             analyse.setOnAction(event -> {
