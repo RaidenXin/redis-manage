@@ -104,8 +104,10 @@ public class RedisAnalyzingBigKeyController implements Initializable {
                             break;
                         }
                     }
-                    DataItem[] items = new DataItem[maxSize];
-                    for (int i = maxSize - 1; i > -1 ; i--) {
+                    int minHeapSize = minHeap.size();
+                    int length = minHeapSize < maxSize ? minHeapSize : maxSize;
+                    DataItem[] items = new DataItem[length];
+                    for (int i = length - 1; i > -1 ; i--) {
                         items[i] = minHeap.poll();
                     }
                     ObservableList dataTableItems = dataTable.getItems();
