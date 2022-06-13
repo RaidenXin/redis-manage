@@ -19,7 +19,7 @@ public class AnalyzingBigKeyTabPane implements RedisTabPane{
 
     public Pane createInstance() {
         Pane root = getRoot();
-        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("util/redis_analyzing_big_key_view.fxml");
+        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("util/redis_analyzing_big_key_table_view.fxml");
         RedisAnalyzingBigKeyController controller = fxmlLoader.getController();
         ObservableList<Node> children = root.getChildren();
         Node load = null;

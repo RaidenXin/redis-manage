@@ -4,9 +4,9 @@ import com.raiden.redis.core.model.DataItem;
 import com.raiden.redis.ui.util.AlertUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.whitbeck.rdbparser.*;
@@ -14,7 +14,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.net.URL;
 import java.util.PriorityQueue;
+import java.util.ResourceBundle;
 
 import static net.whitbeck.rdbparser.EntryType.*;
 
@@ -24,7 +26,7 @@ import static net.whitbeck.rdbparser.EntryType.*;
  * @Date:Created in 16:08 2022/6/11
  * @Modified By:
  */
-public class RedisAnalyzingBigKeyController {
+public class RedisAnalyzingBigKeyController implements Initializable {
 
 
     private static final Logger LOGGER = LogManager.getLogger(RedisAnalyzingBigKeyController.class);
@@ -34,7 +36,18 @@ public class RedisAnalyzingBigKeyController {
     @FXML
     private Button analyse;
     @FXML
-    private TitledPane root;
+    private TableView dataTable;
+    @FXML
+    private TableColumn<DataItem, String> keyTableColumn;
+    @FXML
+    private TableColumn<DataItem, String> sizeTableColumn;
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        keyTableColumn.setCellValueFactory(new PropertyValueFactory<>("key"));
+        sizeTableColumn.setCellValueFactory(new PropertyValueFactory<>("valueSize"));
+    }
 
 
     public void selectFile(){
@@ -78,6 +91,9 @@ public class RedisAnalyzingBigKeyController {
                     for (int i = maxSize - 1; i > -1 ; i--) {
                         items[i] = minHeap.poll();
                     }
+                    ObservableList dataTableItems = dataTable.getItems();
+                    dataTableItems.clear();
+                    dataTableItems.addAll(items);
                 }catch (Exception e){
                     LOGGER.error("解析RDB文件异常", e);
                     AlertUtil.error("解析RDB文件异常", e);
@@ -85,4 +101,5 @@ public class RedisAnalyzingBigKeyController {
             });
         }
     }
+
 }
