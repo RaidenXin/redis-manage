@@ -1,6 +1,6 @@
 package com.raiden.redis.ui.tab;
 
-import com.raiden.redis.ui.controller.RedisUtilController;
+import com.raiden.redis.ui.controller.RedisAnalyzingBigKeyController;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -15,12 +15,12 @@ import java.io.IOException;
  * @Date:Created in 15:40 2022/6/11
  * @Modified By:
  */
-public class UtilTabPane implements RedisTabPane{
+public class AnalyzingBigKeyTabPane implements RedisTabPane{
 
     public Pane createInstance() {
         Pane root = getRoot();
-        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("redis_util_view.fxml");
-        RedisUtilController controller = fxmlLoader.getController();
+        FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader("util/redis_analyzing_big_key_view.fxml");
+        RedisAnalyzingBigKeyController controller = fxmlLoader.getController();
         ObservableList<Node> children = root.getChildren();
         Node load = null;
         try {

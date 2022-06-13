@@ -3,14 +3,13 @@ package com.raiden.redis.ui.controller;
 import com.raiden.redis.ui.DataPageView;
 import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.shutdown.ShutDownCallback;
-import com.raiden.redis.ui.tab.UtilTabPane;
+import com.raiden.redis.ui.tab.AnalyzingBigKeyTabPane;
 import com.raiden.redis.ui.util.AlertUtil;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
@@ -90,7 +89,7 @@ public class RedisLoginController implements Initializable {
 
 
     public void bigKeyAnalysis(){
-        UtilTabPane utilTabPane = new UtilTabPane();
+        AnalyzingBigKeyTabPane utilTabPane = new AnalyzingBigKeyTabPane();
         Pane instance = utilTabPane.createInstance();
         close();
         DataPageView dataPageView = new DataPageView(instance, () -> show());
