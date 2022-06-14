@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="1000.0" prefWidth="1087.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.raiden.redis.ui.controller.RedisAnalyzingBigKeyController">
    <children>
-      <TitledPane animated="false" collapsible="false" prefHeight="1000.0" prefWidth="1087.0">
+      <TitledPane animated="false" collapsible="false" prefHeight="1000.0" prefWidth="1087.0" text="分析大Key">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
