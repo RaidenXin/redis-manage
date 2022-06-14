@@ -15,6 +15,4 @@
 
 #### 数据页面
 
-![image](https://user-images.githubusercontent.com/35070880/173544440-2708490b-3bfd-49ad-b300-71928cc6b7df.png)
-
 #### 监控页面
