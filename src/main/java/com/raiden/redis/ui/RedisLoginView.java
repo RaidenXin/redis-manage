@@ -6,21 +6,20 @@ package com.raiden.redis.ui;/**
  */
 
 import com.raiden.redis.core.common.TaskProcessingCenter;
-import com.raiden.redis.ui.util.RedisUtils;
+import com.raiden.redis.ui.controller.RedisLoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
-public class Window extends Application {
+public class RedisLoginView extends Application {
 
-    private static final Logger LOGGER = LogManager.getLogger(Window.class);
+    private static final Logger LOGGER = LogManager.getLogger(RedisLoginView.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -28,26 +27,26 @@ public class Window extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        LOGGER.info("启动窗口！");
+        LOGGER.info("启动登陆窗口！");
         //初始化FXML布局文件内容
-        FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("window.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(RedisLoginView.class.getResource("window.fxml"));
         //父级
         Parent root = fxmlLoader.load();
 
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().add(root);
-        Scene scene = new Scene(stackPane, 1500, 1000);
+        RedisLoginController controller = fxmlLoader.getController();
+        controller.setLoginView(stage);
+
+        Scene scene = new Scene(root, 415.0D, 1024.0D);
         stage.setTitle("Redis");
         stage.getIcons().add(new Image("/icon/redis.jpg"));
         stage.setScene(scene);
         stage.sizeToScene();
-        stage.setResizable(false);
         stage.show();
     }
 
     public void stop() throws Exception {
-        RedisUtils.shutDown();
+        //暂停
         TaskProcessingCenter.shutDown();
-        System.err.println("关闭了！！！！！！！！！！！！！！！！！！！！");
+        LOGGER.info("登陆界面关闭了！！！！！！！！！！！！！！！！！！！！");
     }
 }

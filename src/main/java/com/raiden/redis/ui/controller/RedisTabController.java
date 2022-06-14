@@ -3,7 +3,6 @@ package com.raiden.redis.ui.controller;
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.model.RedisKeyspace;
 import com.raiden.redis.net.model.RedisNodeInfo;
-import com.raiden.redis.ui.Window;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import javafx.collections.ObservableList;
@@ -20,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 /**
  * @创建人:Raiden

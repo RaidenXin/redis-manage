@@ -1,6 +1,6 @@
 package com.raiden.redis.ui.tab;
 
-import com.raiden.redis.ui.Window;
+import com.raiden.redis.ui.RedisLoginView;
 import com.raiden.redis.ui.controller.RedisTabController;
 import com.raiden.redis.ui.mode.RedisNode;
 import javafx.beans.value.ObservableValue;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @Date:Created in 21:04 2022/5/11
  * @Modified By:
  */
-public class ClusterRedisInfoTabPane implements RedisInfoTabPane{
+public class ClusterRedisInfoTabPane implements RedisTabPane {
 
     private static final Logger LOGGER = LogManager.getLogger(ClusterRedisInfoTabPane.class);
 
@@ -35,7 +35,8 @@ public class ClusterRedisInfoTabPane implements RedisInfoTabPane{
         this.tabControllerCache = new ConcurrentHashMap<>();
     }
 
-    public void setRedisInfoTabPane(Pane root, List<RedisNode> hosts) {
+    public Pane createInstance(List<RedisNode> hosts) {
+        Pane root = getRoot();
         ObservableList<Node> children = root.getChildren();
         //清理过去的东西
         children.clear();
@@ -53,7 +54,7 @@ public class ClusterRedisInfoTabPane implements RedisInfoTabPane{
                     Tab tab = new Tab();
                     tab.setText(host.getHostAndPort());
                     tab.setGraphic(new ImageView("/icon/redis2.jpg"));
-                    FXMLLoader fxmlLoader = new FXMLLoader(Window.class.getResource("redis_tab_view.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(RedisLoginView.class.getResource("redis_tab_view.fxml"));
                     AnchorPane anchorPane = fxmlLoader.load();
                     tab.setContent(anchorPane);
                     RedisTabController controller = fxmlLoader.getController();
@@ -83,6 +84,7 @@ public class ClusterRedisInfoTabPane implements RedisInfoTabPane{
             });
         }
         children.add(tabPane);
+        return root;
     }
 
     @Override

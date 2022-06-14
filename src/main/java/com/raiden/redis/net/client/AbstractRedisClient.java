@@ -58,6 +58,10 @@ public abstract class AbstractRedisClient implements RedisClient{
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage());
             group.shutdownGracefully();
+        }catch (Exception e){
+            LOGGER.error(e.getMessage());
+            group.shutdownGracefully();
+            throw e;
         }
     }
 
@@ -90,13 +94,25 @@ public abstract class AbstractRedisClient implements RedisClient{
         return sendCommands(RedisCommand.Hash.H_GET, key, field);
     }
 
+
     @Override
-    public String hDel(String key, String... field) {
+    public int del(String... keys) {
+        if (keys == null){
+            throw new NullPointerException("key is null");
+        }
+        String[] commands = encapsulationCommands(RedisCommand.DEL, keys);
+        return Integer.parseInt(sendCommands(commands));
+    }
+
+
+
+    @Override
+    public int hDel(String key, String... field) {
         if (StringUtils.isBlank(key)){
             throw new NullPointerException("key is null");
         }
         String[] commands = encapsulationCommands(RedisCommand.Hash.H_DEL, key, field);
-        return sendCommands(commands);
+        return Integer.parseInt(sendCommands(commands));
     }
 
     @Override
@@ -325,6 +341,14 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
 
+    private String[] encapsulationCommands(String command,String... values){
+        String[] commands = new String[values.length + 1];
+        commands[0] = command;
+        System.arraycopy(values, 0, commands, 1, values.length);
+        return commands;
+    }
+
+
     private String[] encapsulationCommands(String command1,String command2,String... values){
         String[] commands = new String[values.length + 2];
         commands[0] = command1;
@@ -378,23 +402,27 @@ public abstract class AbstractRedisClient implements RedisClient{
     }
 
     public void close(){
-        //是否是池化对象
-        if (isObjectPooling && pool != null){
-            //如果是池化对象 用池化对象回收方式
-            pool.recycleObject(this);
-        }else {
-            //如果不是池化对象 关闭时关闭连接
-            if (channel != null && channel.isActive()){
-                try {
-                    sendCommands(RedisCommand.QUIT);
-                    channel.close();
-                }catch (Exception e){
+        try {
+            //是否是池化对象
+            if (isObjectPooling && pool != null){
+                //如果是池化对象 用池化对象回收方式
+                pool.recycleObject(this);
+            }else {
+                //如果不是池化对象 关闭时关闭连接
+                if (channel != null && channel.isActive()){
+                    try {
+                        sendCommands(RedisCommand.QUIT);
+                        channel.close();
+                    }catch (Exception e){
+                    }
+                }
+                //关闭 netty 客户端线程池
+                if (group != null){
+                    group.shutdownGracefully();
                 }
             }
-            //关闭 netty 客户端线程池
-            if (group != null){
-                group.shutdownGracefully();
-            }
+        }catch (Exception e){
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

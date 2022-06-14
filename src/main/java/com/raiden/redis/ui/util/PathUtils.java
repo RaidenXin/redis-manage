@@ -1,6 +1,5 @@
 package com.raiden.redis.ui.util;
 
-import com.raiden.redis.ui.Window;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,8 +50,7 @@ public final class PathUtils {
             }
             LOGGER.info("project path={}", path);
         }catch (Exception e){
-            e.printStackTrace();
-            LOGGER.error("{}",e);
+            LOGGER.error(e.getMessage(), e);
         }
         return path;
     }

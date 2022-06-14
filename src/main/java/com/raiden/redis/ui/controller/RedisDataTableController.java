@@ -337,4 +337,14 @@ public class RedisDataTableController implements Initializable {
             alert.showAndWait();
         }
     }
+
+
+    public void delete(){
+        String key = this.key.getText();
+        if (StringUtils.isNotBlank(key)){
+            RedisClient redisClient = redisNode.getRedisClient();
+            redisClient.del(key);
+            search();
+        }
+    }
 }

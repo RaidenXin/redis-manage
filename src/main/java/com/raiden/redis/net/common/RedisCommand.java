@@ -20,6 +20,8 @@ public class RedisCommand {
         //Debug
         public static final String DEBUG  = "DEBUG";
 
+        public static final String DEL = "DEL";
+
         public static class Memory{
             public static final String USAGE = "USAGE";
         }

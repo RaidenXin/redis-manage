@@ -4,6 +4,7 @@ import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.client.RedisSentinelClient;
 import com.raiden.redis.net.model.sentinel.RedisMaster;
 import com.raiden.redis.net.model.sentinel.RedisSlave;
+import com.raiden.redis.ui.DataPageView;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.context.BeanContext;
 import com.raiden.redis.ui.dao.RecordDao;
@@ -19,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +52,7 @@ public class RedisSentinelController extends AbstractRedisController {
     public void connectionRedisCluster(){
         String host = sentinelHost.getText();
         String port = sentinelPort.getText();
-        RedisDataPageController redisController = BeanContext.getBean(RedisDataPageController.class.getName());
+        RedisLoginController redisController = BeanContext.getBean(RedisLoginController.class.getName());
         if (StringUtils.isNoneBlank(host, port)){
             try {
                 RedisSentinelNode sentinelNode = RedisSentinelNode.build(host, Integer.parseInt(port));
@@ -101,10 +103,14 @@ public class RedisSentinelController extends AbstractRedisController {
                     }
                     //关闭弹窗
                     SentinelRedisInfoTabPane redisInfoTabPane = new SentinelRedisInfoTabPane();
-                    redisInfoTabPane.setRedisInfoTabPane(redisController.getRedisDataPage(), masters);
-                    //设置关闭回调
+                    Pane pane = redisInfoTabPane.createInstance(masters);
                     redisController.setShutDownCallback(() -> redisInfoTabPane.shutDown());
+                    DataPageView dataPageView = new DataPageView(pane, () -> showLoginView());
+                    dataPageView.start();
+                    //设置关闭回调
                     selectionList.close();
+                    //关闭登录界面
+                    closeLoginView();
                 });
                 selectionList.showAndWait();
             }catch (Exception e){

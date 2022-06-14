@@ -35,7 +35,9 @@ public interface RedisClient {
 
     String hGet(String key,String field);
 
-    String hDel(String key,String... field);
+    int del(String... keys);
+
+    int hDel(String key,String... field);
 
     int zRemRangeByScore(String key,String min,String max);
 
