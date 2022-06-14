@@ -5,9 +5,7 @@
 
 ![image](https://user-images.githubusercontent.com/35070880/173521647-4b4861d6-ce21-43da-9ba3-8812ba7d7f5e.png)
 
-#### single point 单机模式  连接页
-#### sentinel 哨兵模式 连接页
-#### cluster cluster集群模式 连接页
+#### single point 单机模式连接页 sentinel 哨兵模式连接页 cluster cluster集群模式连接页
 
 #### 连接页示意图
 
