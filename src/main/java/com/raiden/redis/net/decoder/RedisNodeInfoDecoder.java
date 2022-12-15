@@ -2,6 +2,7 @@ package com.raiden.redis.net.decoder;
 
 import com.raiden.redis.net.common.Separator;
 import com.raiden.redis.net.model.*;
+import com.raiden.redis.net.utils.ArrUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,9 +22,9 @@ public final class RedisNodeInfoDecoder {
 
     private static final Logger LOGGER = LogManager.getLogger(RedisNodeInfoDecoder.class);
 
-    public static final RedisNodeInfo decoder(String[] datum){
+    public static RedisNodeInfo decoder(String[] datum){
         RedisNodeInfo redisNodeInfo = new RedisNodeInfo();
-        if (datum == null || datum.length == 0){
+        if (ArrUtil.isEmpty(datum)){
             return redisNodeInfo;
         }
         Class<RedisNodeInfo> redisNodeInfoClass = RedisNodeInfo.class;
@@ -38,10 +39,9 @@ public final class RedisNodeInfoDecoder {
                     field.set(redisNodeInfo, DecoderUtils.build(field.getType(), dataMap));
                     dataMap = new HashMap<>();
                 }catch (NoSuchFieldException noSuch){
-                    continue;
+                    LOGGER.error(noSuch.getMessage(), noSuch);
                 }catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
-                    continue;
                 }
             }else {
                 String[] split = StringUtils.split(data, Separator.COLON);

@@ -21,6 +21,7 @@ public class RedisSingleClient extends AbstractRedisClient{
         super(channel, pool, handler);
     }
 
+    @Override
     public String[] mGet(String... keys){
         String[] commands = new String[keys.length + 1];
         commands[0] = RedisCommand.M_GET;

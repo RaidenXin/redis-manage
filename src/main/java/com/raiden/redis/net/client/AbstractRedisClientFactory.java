@@ -13,6 +13,10 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 
+/**
+ * Redis client 抽象工厂
+ * @author xinlei
+ */
 public abstract class AbstractRedisClientFactory<T extends AbstractRedisClient> implements PooledObjectFactory<T> {
 
     private RedisClientHandler handler;
@@ -33,7 +37,11 @@ public abstract class AbstractRedisClientFactory<T extends AbstractRedisClient> 
         this.port = port;
     }
 
-    //获取池中对象的时候使用
+    /**
+     * 获取池中对象的时候使用
+     * @param p
+     * @throws Exception
+     */
     @Override
     public void activateObject(PooledObject<T> p) throws Exception {
         T client = p.getObject();
@@ -44,7 +52,11 @@ public abstract class AbstractRedisClientFactory<T extends AbstractRedisClient> 
         }
     }
 
-    //销毁一个连接
+    /**
+     * 销毁一个连接
+     * @param p
+     * @throws Exception
+     */
     @Override
     public void destroyObject(PooledObject<T> p) throws Exception {
         T client = p.getObject();
@@ -69,14 +81,27 @@ public abstract class AbstractRedisClientFactory<T extends AbstractRedisClient> 
         return new DefaultPooledObject<T>(client);
     }
 
+    /**
+     * 获取 redis client
+     * @param channel
+     * @param pool
+     * @param handler
+     * @return
+     */
     protected abstract T getRedisClient(Channel channel, RedisClientPool pool, RedisClientHandler handler);
 
-    //归还连接时候调用
+    /**
+     * 归还连接时候调用
+     * @param p
+     * @throws Exception
+     */
     @Override
     public void passivateObject(PooledObject<T> p) throws Exception {
     }
 
-    //获取 和 归还 以及内置后台线程检查闲置情况时，可以通过验证去除一些对象
+    /**
+     * 获取 和 归还 以及内置后台线程检查闲置情况时，可以通过验证去除一些对象
+     */
     @Override
     public boolean validateObject(PooledObject<T> p) {
         T client = p.getObject();

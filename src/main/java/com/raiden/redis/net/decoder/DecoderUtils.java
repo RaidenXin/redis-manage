@@ -52,7 +52,7 @@ public final class DecoderUtils {
         return builder.toString();
     }
 
-    public static final <T> T build(Class<T> clazz, Map<String, Object> data){
+    public static <T> T build(Class<T> clazz, Map<String, Object> data){
         try {
             T t = clazz.newInstance();
             Field[] declaredFields = clazz.getDeclaredFields();

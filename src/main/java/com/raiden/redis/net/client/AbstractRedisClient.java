@@ -72,6 +72,7 @@ public abstract class AbstractRedisClient implements RedisClient{
         this.isObjectPooling = pool != null;
     }
 
+    @Override
     public boolean set(String key,String value){
         if (StringUtils.isBlank(key)){
             throw new NullPointerException("key is null");
