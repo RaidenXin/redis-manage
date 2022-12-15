@@ -39,7 +39,6 @@ public final class RedisNodeInfoDecoder {
                     field.set(redisNodeInfo, DecoderUtils.build(field.getType(), dataMap));
                     dataMap = new HashMap<>();
                 }catch (NoSuchFieldException noSuch){
-                    LOGGER.error(noSuch.getMessage(), noSuch);
                 }catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
                 }

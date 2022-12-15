@@ -38,11 +38,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -84,11 +88,25 @@ public class RedisMonitoringInfoController implements Initializable {
     private double prefHeight;
     private double prefWidth;
 
+    private Map<String, BiFunction<Tab, List<Pair<String, RedisNodeInfo>>, View>> biFunctionMapping;
+
 
     public RedisMonitoringInfoController(){
         this.isInit = new AtomicBoolean(false);
         this.isShutDown = new AtomicBoolean(false);
         this.queue = new CircularFifoQueue<>(600);
+        this.biFunctionMapping = new HashMap<String, BiFunction<Tab, List<Pair<String, RedisNodeInfo>>, View>>(){{
+            // QPS折线图
+            put(QPS, RedisMonitoringInfoController.this::refreshRedisQPS);
+            // CPU占用率折线图
+            put(CPU, RedisMonitoringInfoController.this::refreshRedisCpuUsage);
+            // 瞬时网络流量折线图
+            put(TIME_SHARING_TRAFFIC, RedisMonitoringInfoController.this::refreshRedisTimeSharingTraffic);
+            // 内存占用率折线图
+            put(MEMORY_USAGE, RedisMonitoringInfoController.this::refreshRedisMemoryLineChart);
+            // 持久化
+            put(PERSISTENCE, RedisMonitoringInfoController.this::refreshRedisPersistenceInfo);
+        }};
     }
 
     @Override
@@ -152,28 +170,14 @@ public class RedisMonitoringInfoController implements Initializable {
             queue.add(new Pair<>(time, info));
             List<Pair<String, RedisNodeInfo>> desc = queue.getDesc(90);
             try {
-                View[] views = new View[tabs.size()];
-                int index = 0;
-                for (Tab tab : tabs){
-                    switch (tab.getId()){
-                        case QPS://QPS折线图
-                            views[index++] = refreshRedisQPS(tab, desc);
-                            break;
-                        case CPU://CPU占用率折线图
-                            views[index++] = refreshRedisCpuUsage(tab, desc);
-                            break;
-                        case TIME_SHARING_TRAFFIC://瞬时网络流量折线图
-                            views[index++] = refreshRedisTimeSharingTraffic(tab, desc);
-                            break;
-                        case MEMORY_USAGE://内存占用率折线图
-                            views[index++] = refreshRedisMemoryLineChart(tab, desc);
-                            break;
-                        case PERSISTENCE://持久化
-                            views[index++] = refreshRedisPersistenceInfo(tab, desc);
-                            break;
+                Stream<View> views = tabs.stream().map(tab -> {
+                    BiFunction<Tab, List<Pair<String, RedisNodeInfo>>, View> tabListViewBiFunction = biFunctionMapping.get(tab.getId());
+                    if (Objects.isNull(tabListViewBiFunction)) {
+                        return null;
                     }
-                }
-                Platform.runLater(() -> Stream.of(views).filter(Objects::nonNull).forEach(View::show));
+                    return tabListViewBiFunction.apply(tab, desc);
+                });
+                Platform.runLater(() -> views.filter(Objects::nonNull).forEach(View::show));
             }catch (Exception e){
                 LOGGER.error(e.getMessage(), e);
                 AlertUtil.error("加载Redis服务信息错误:", e);
@@ -210,7 +214,7 @@ public class RedisMonitoringInfoController implements Initializable {
      * @param redisNodeInfos
      * @throws IOException
      */
-    public View refreshRedisQPS(Tab tab, List<Pair<String, RedisNodeInfo>> redisNodeInfos) throws IOException {
+    public View refreshRedisQPS(Tab tab, List<Pair<String, RedisNodeInfo>> redisNodeInfos) {
 
         //服务器接受的连接总数
         final XYChart.Series<String, Integer> instantaneousOpsPerSecSeries = new XYChart.Series<>();
@@ -247,7 +251,7 @@ public class RedisMonitoringInfoController implements Initializable {
      * @param redisNodeInfos
      * @throws IOException
      */
-    public View refreshRedisCpuUsage(Tab tab,List<Pair<String, RedisNodeInfo>> redisNodeInfos) throws IOException {
+    public View refreshRedisCpuUsage(Tab tab,List<Pair<String, RedisNodeInfo>> redisNodeInfos) {
         /**
          * redis进程单cpu的消耗率可以通过如下公式计算:
          * ((used_cpu_sys_now-used_cpu_sys_before)/(now-before))*100
@@ -326,7 +330,7 @@ public class RedisMonitoringInfoController implements Initializable {
         };
     }
 
-    private View refreshRedisMemoryLineChart(Tab tab, List<Pair<String, RedisNodeInfo>> redisNodeInfos) throws IOException {
+    private View refreshRedisMemoryLineChart(Tab tab, List<Pair<String, RedisNodeInfo>> redisNodeInfos) {
         XYChart.Series<String,Number> usedMemoryPeakPercSeries = new XYChart.Series<>();
         ObservableList<XYChart.Data<String, Number>> usedMemoryPeakPercSeriesData = usedMemoryPeakPercSeries.getData();
         usedMemoryPeakPercSeries.setName("使用内存达到峰值内存的百分比");
@@ -409,7 +413,7 @@ public class RedisMonitoringInfoController implements Initializable {
      * @param redisNodeInfos
      * @throws IOException
      */
-    public View refreshRedisTimeSharingTraffic(Tab tab,List<Pair<String, RedisNodeInfo>> redisNodeInfos) throws IOException {
+    public View refreshRedisTimeSharingTraffic(Tab tab,List<Pair<String, RedisNodeInfo>> redisNodeInfos) {
 
         //每秒输出量，单位是kb/s
         final XYChart.Series<String, Number> instantaneousOutputKbpsSeries = new XYChart.Series<>();
@@ -483,7 +487,7 @@ public class RedisMonitoringInfoController implements Initializable {
     }
 
 
-    public View refreshRedisPersistenceInfo(Tab persistence, List<Pair<String, RedisNodeInfo>> redisNodeInfos) throws IOException {
+    public View refreshRedisPersistenceInfo(Tab persistence, List<Pair<String, RedisNodeInfo>> redisNodeInfos) {
         if (!isInit.get() && redisPersistenceDataViewController == null) {
             try {
                 FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("persistence/redis_persistence_data_view.fxml");
