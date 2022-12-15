@@ -18,20 +18,20 @@ import java.util.stream.Stream;
  */
 public final class RedisClusterDecoder {
 
-    public static List<RedisClusterNodeInfo> clusterNodesDecoder(String response){
-        if (StringUtils.isBlank(response)){
+    public static List<RedisClusterNodeInfo> clusterNodesDecoder(String response) {
+        if (StringUtils.isBlank(response)) {
             return Collections.emptyList();
-        }else {
+        } else {
             String[] lines = StringUtils.split(response, Separator.LINE_BREAK);
-            if (lines.length > 0){
+            if (lines.length > 0) {
                 return Stream.of(lines).map(line -> {
-                    if (StringUtils.isBlank(line)){
+                    if (StringUtils.isBlank(line)) {
                         return null;
                     }
                     String[] data = StringUtils.split(line, Separator.BLANK);
                     return RedisClusterNodeInfo.build(data);
                 }).filter(Objects::nonNull).collect(Collectors.toList());
-            }else {
+            } else {
                 return Collections.emptyList();
             }
         }
