@@ -53,7 +53,7 @@ import java.util.stream.Stream;
  * @创建人:Raiden
  * @Descriotion:
  * @Date:Created in 19:20 2022/5/18
- * @Modified By:
+ * @Modified By: 监控数据核心类 主要负责监控模块的数据刷新
  */
 public class RedisMonitoringInfoController implements Initializable {
 
@@ -330,6 +330,12 @@ public class RedisMonitoringInfoController implements Initializable {
         };
     }
 
+    /**
+     * 刷新 redis 内存数据折线图
+     * @param tab
+     * @param redisNodeInfos
+     * @return
+     */
     private View refreshRedisMemoryLineChart(Tab tab, List<Pair<String, RedisNodeInfo>> redisNodeInfos) {
         XYChart.Series<String,Number> usedMemoryPeakPercSeries = new XYChart.Series<>();
         ObservableList<XYChart.Data<String, Number>> usedMemoryPeakPercSeriesData = usedMemoryPeakPercSeries.getData();
@@ -387,6 +393,14 @@ public class RedisMonitoringInfoController implements Initializable {
         };
     }
 
+    /**
+     * 创建一个折线图
+     * @param label
+     * @param prefHeight
+     * @param prefWidth
+     * @param series
+     * @return
+     */
     private LineChart createLineChart(String label, double prefHeight, double prefWidth, XYChart.Series<String, Number>... series) {
         NumberAxis numberAxis = new NumberAxis();
         numberAxis.setLabel(label);
@@ -449,6 +463,12 @@ public class RedisMonitoringInfoController implements Initializable {
         };
     }
 
+    /**
+     * 刷新服务信息
+     * @param server
+     * @param info
+     * @throws IOException
+     */
     public void refreshRedisServerInfo(Tab server,Pair<String, RedisNodeInfo> info) throws IOException {
         if (!isInit.get()){
             FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("redis_server_info_view.fxml");
@@ -461,6 +481,12 @@ public class RedisMonitoringInfoController implements Initializable {
         }
     }
 
+    /**
+     * 刷新统计数据
+     * @param stats
+     * @param info
+     * @throws IOException
+     */
     public void refreshRedisStatsInfo(Tab stats, Pair<String, RedisNodeInfo> info)throws IOException{
         if (!isInit.get()){
             FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("redis_stats_info_view.fxml");
@@ -474,6 +500,12 @@ public class RedisMonitoringInfoController implements Initializable {
         }
     }
 
+    /**
+     * 刷新内存信息
+     * @param memory
+     * @param info
+     * @throws IOException
+     */
     public void refreshRedisMemoryInfo(Tab memory,Pair<String, RedisNodeInfo> info)throws IOException{
         if (!isInit.get() && redisMemoryDataViewController == null){
             FXMLLoader loader = FXMLLoaderUtils.getFXMLLoader("memory/redis_memory_data_view.fxml");
@@ -487,6 +519,12 @@ public class RedisMonitoringInfoController implements Initializable {
     }
 
 
+    /**
+     * 刷新持久化信息
+     * @param persistence
+     * @param redisNodeInfos
+     * @return
+     */
     public View refreshRedisPersistenceInfo(Tab persistence, List<Pair<String, RedisNodeInfo>> redisNodeInfos) {
         if (!isInit.get() && redisPersistenceDataViewController == null) {
             try {
