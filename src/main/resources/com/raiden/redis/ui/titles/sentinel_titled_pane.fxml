@@ -45,13 +45,13 @@
                         <Font name="System Bold Italic" size="16.0" />
                     </font></Label>
                 <PasswordField fx:id="password" layoutX="107.0" layoutY="334.0" prefHeight="25.0" prefWidth="250.0" visible="false" />
-                <TableView fx:id="record" layoutX="2.0" layoutY="414.0" prefHeight="515.0" prefWidth="408.0">
+                <TableView fx:id="record" layoutX="2.0" layoutY="415.0" prefHeight="515.0" prefWidth="410.0">
                     <columns>
                         <TableColumn fx:id="recordName" prefWidth="80.0" resizable="false" text="名称" />
                         <TableColumn fx:id="recordHost" prefWidth="90.0" resizable="false" text="IP地址" />
-                        <TableColumn fx:id="recordPort" prefWidth="50.0" resizable="false" text="端口" />
+                        <TableColumn fx:id="recordPort" prefWidth="45.0" resizable="false" text="端口" />
                         <TableColumn fx:id="recordPassword" prefWidth="90.0" resizable="false" text="密码" />
-                        <TableColumn fx:id="operation" prefWidth="96.0" resizable="false" text="操作" />
+                        <TableColumn fx:id="operation" prefWidth="105.0" resizable="false" text="操作" />
                     </columns>
                 </TableView>
             </children>

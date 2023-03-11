@@ -136,7 +136,8 @@ public abstract class AbstractRedisController implements Initializable {
             refreshAndSaveRecords();
         });
         result[0] = delete;
-        delete.setPrefWidth(40.0D);
+        delete.setLayoutX(0);
+        delete.setPrefWidth(48.0D);
         Button use = new Button("使用");
         // 对data操作即对表格操作，会同步更新的
         use.setOnAction((event) ->{
@@ -152,8 +153,8 @@ public abstract class AbstractRedisController implements Initializable {
                 this.password.setText(StringUtils.EMPTY);
             }
         });
-        use.setLayoutX(44.0D);
-        use.setPrefWidth(40.0D);
+        use.setLayoutX(50.0D);
+        use.setPrefWidth(48.0);
         result[1] = use;
         return result;
     }
