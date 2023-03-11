@@ -183,17 +183,15 @@ public class RedisDataTableController implements Initializable {
     }
 
     private RedisDatas scanRedisDataList(RedisClient client, String index, String pattern){
-        boolean selected = isFuzzySearch.isSelected();
-        String[] keys;
-        if (selected){
-            //如果不是以模糊搜索后缀结尾的 补上后缀
-            if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
-                pattern += FUZZY_SEARCH_SUFFIX;
-            }
-            keys = client.scanMatch(index, pattern, pageSize.getValue());
-        }else {
-            keys = client.scan(index, pageSize.getValue());
+        // 不是以 * 开头补上 *
+        if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
+            pattern = FUZZY_SEARCH_SUFFIX + pattern;
         }
+        //是以 * 结尾补上 *
+        if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
+            pattern += FUZZY_SEARCH_SUFFIX;
+        }
+        String[] keys = client.scanMatch(index, pattern, pageSize.getValue());
 
         List<String> items = new ArrayList<>(keys.length - 1);
         for (int i = 1; i < keys.length; i++){
