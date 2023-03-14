@@ -137,7 +137,7 @@ public class RedisDataTableController implements Initializable {
             RedisClient client = redisNode.getRedisClient();
             //是否模糊查找
             if (isFuzzySearch.isSelected()) {
-                RedisDatas datas = scanRedisDatas(client, START_INDEX, key);
+                RedisDatas datas = scanRedisDataList(client, START_INDEX, key);
                 if (datas == null){
                     ObservableList items = keyList.getItems();
                     items.clear();
@@ -182,26 +182,27 @@ public class RedisDataTableController implements Initializable {
         }
     }
 
-    private RedisDatas scanRedisDatas(RedisClient client, String index, String pattern){
-        boolean selected = isFuzzySearch.isSelected();
-        String[] keys;
-        if (selected){
-            //如果不是以模糊搜索后缀结尾的 补上后缀
-            if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
-                pattern += FUZZY_SEARCH_SUFFIX;
-            }
-            keys = client.scanMatch(START_INDEX, pattern, pageSize.getValue());
-        }else {
-            keys = client.scan(index, pageSize.getValue());
+    private RedisDatas scanRedisDataList(RedisClient client, String index, String pattern){
+        // 不是以 * 开头补上 *
+        if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
+            pattern = FUZZY_SEARCH_SUFFIX + pattern;
         }
+        //是以 * 结尾补上 *
+        if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
+            pattern += FUZZY_SEARCH_SUFFIX;
+        }
+        String[] keys = client.scanMatch(index, pattern, pageSize.getValue());
 
         List<String> items = new ArrayList<>(keys.length - 1);
         for (int i = 1; i < keys.length; i++){
             items.add(keys[i]);
         }
-        //如果没有返回任何数据 或者 只返回了下一次的下标 的认为没有数据了
+        //如果没有返回任何数据 或者 只返回了下一次的下标 直接跳转到该下标
         if (keys.length < 2){
-            return null;
+            if (Integer.parseInt(keys[0]) == 0) {
+                return null;
+            }
+            return scanRedisDataList(client, keys[0], pattern);
         }
         return RedisDatas.build(items, keys[0]);
     }
@@ -241,7 +242,7 @@ public class RedisDataTableController implements Initializable {
             //如果没有证明当前是第一页
             if (index != null){
                 //刷新数据
-                RedisDatas datas = scanRedisDatas(client, index, searchKey.getText());
+                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText());
                 if (datas == null){
                     return;
                 }
@@ -264,7 +265,7 @@ public class RedisDataTableController implements Initializable {
             //如果为空或者 为 0 证明没有下一页
             if (index != null && !START_INDEX.equals(index)){
                 //获取下一页key
-                RedisDatas datas = scanRedisDatas(client, index, searchKey.getText());
+                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText());
                 if (datas == null){
                     return;
                 }
