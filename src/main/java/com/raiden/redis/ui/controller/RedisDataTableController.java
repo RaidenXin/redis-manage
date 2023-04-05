@@ -135,7 +135,13 @@ public class RedisDataTableController implements Initializable {
         String text = searchKey.getText();
         if (StringUtils.isBlank(text)) {
             keyList.getItems().clear();
-            searchAll();
+            RedisClient client = redisNode.getRedisClient();
+            String[] keys = client.scan(START_INDEX, pageSize.getValue());
+            ObservableList items = keyList.getItems();
+            for (int i = 1; i < keys.length; i++){
+                items.add(keys[i]);
+            }
+            setButtonEvent(client, START_INDEX, keys[0], isFuzzySearch.isSelected());
         } else {
             String key = text.trim();
             RedisClient client = redisNode.getRedisClient();
@@ -158,20 +164,12 @@ public class RedisDataTableController implements Initializable {
                 ObservableList items = keyList.getItems();
                 if (StringUtils.isNotBlank(value)) {
                     if (value.startsWith(MOVED)) {
-                        String[] values = StringUtils.split(value, Separator.BLANK);
-                        if (values.length != 3) {
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "系统异常！");
-                            alert.showAndWait();
-                        } else {
-                            Alert alert = new Alert(Alert.AlertType.WARNING, "请跳转到HOST:{ " + values[2] + " }");
-                            alert.showAndWait();
-                        }
+                        handleMovedException(value);
                         return;
-                    } else {
-                        clear();
-                        items.clear();
-                        keyList.getItems().add(key);
                     }
+                    clear();
+                    items.clear();
+                    keyList.getItems().add(key);
                 } else {
                     clear();
                     items.clear();
@@ -197,18 +195,21 @@ public class RedisDataTableController implements Initializable {
      * @return
      */
     private RedisDatas scanRedisDataList(RedisClient client, String index, String pattern, boolean isFuzzySearch){
-        // 不是以 * 开头补上 *
-        if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
-            pattern = FUZZY_SEARCH_SUFFIX + pattern;
+        String[] keys;
+        // 是否模糊查询
+        if (isFuzzySearch) {
+            // 不是以 * 开头补上 *
+            if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
+                pattern = FUZZY_SEARCH_SUFFIX + pattern;
+            }
+            //不是以 * 结尾补上 *
+            if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
+                pattern += FUZZY_SEARCH_SUFFIX;
+            }
+            keys = client.scanMatch(index, pattern, pageSize.getValue());
+        } else {
+            keys = client.scan(index, pageSize.getValue());
         }
-        //不是以 * 结尾补上 *
-        if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
-            pattern += FUZZY_SEARCH_SUFFIX;
-        }
-        // 如果不是
-        String[] keys = isFuzzySearch ? client.scanMatch(index, pattern, pageSize.getValue())
-                : client.scan(index, pageSize.getValue());
-
         List<String> items = new ArrayList<>(keys.length - 1);
         for (int i = 1; i < keys.length; i++){
             items.add(keys[i]);
@@ -223,27 +224,29 @@ public class RedisDataTableController implements Initializable {
         return RedisDatas.build(items, keys[0]);
     }
 
+    /**
+     * 处理 MOVED 异常
+     * @param value
+     */
+    private void handleMovedException(String value) {
+        String[] values = StringUtils.split(value, Separator.BLANK);
+        if (values.length != 3) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "系统异常！");
+            alert.showAndWait();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "请跳转到HOST:{ " + values[2] + " }");
+            alert.showAndWait();
+        }
+    }
+
 
 
 
 
     public void initTable(){
         if (isInitTab.compareAndSet(false, true)){
-            searchAll();
+            search();
         }
-    }
-
-    /**
-     * 查询全部
-     */
-    private void searchAll(){
-        RedisClient client = redisNode.getRedisClient();
-        String[] keys = client.scan(START_INDEX, pageSize.getValue());
-        ObservableList items = keyList.getItems();
-        for (int i = 1; i < keys.length; i++){
-            items.add(keys[i]);
-        }
-        setButtonEvent(client, START_INDEX, keys[0], isFuzzySearch.isSelected());
     }
 
     /**
@@ -261,25 +264,26 @@ public class RedisDataTableController implements Initializable {
                 return;
             }
             //从栈中弹出上一页
-            String index = stack.pop();
+            final String index = stack.pop();
             //如果没有证明当前是第一页
-            if (index != null){
-                //刷新数据
-                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
-                if (datas == null){
-                    return;
-                }
-                //清理掉之前的数据
-                ObservableList items = keyList.getItems();
-                items.clear();
-                items.addAll(datas.getItems());
-                //将上一页标记为当前页
-                String currentPageIndex = currentIndex.get();
-                currentIndex.compareAndSet(currentPageIndex, index);
-                //给下一页赋值
-                String nextPageIndex = nextIndex.get();
-                nextIndex.compareAndSet(nextPageIndex, datas.getNextCursor());
+            if (StringUtils.isBlank(index)) {
+                return;
             }
+            //刷新数据
+            RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
+            if (datas == null){
+                return;
+            }
+            //清理掉之前的数据
+            ObservableList items = keyList.getItems();
+            items.clear();
+            items.addAll(datas.getItems());
+            //将上一页标记为当前页
+            String currentPageIndex = currentIndex.get();
+            currentIndex.compareAndSet(currentPageIndex, index);
+            //给下一页赋值
+            String nextPageIndex = nextIndex.get();
+            nextIndex.compareAndSet(nextPageIndex, datas.getNextCursor());
         });
         // 设置下一页
         nextPage.setOnMouseClicked((event) -> {
