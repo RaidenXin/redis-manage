@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -96,37 +97,41 @@ public class RedisDataTableController implements Initializable {
         add.setGraphic(new ImageView("/icon/add.png"));
         delete.setGraphic(new ImageView("/icon/delete.png"));
         keyList.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->{
-            if (redisNode != null){
-                if (StringUtils.isNotBlank(newValue)){
-                    RedisClient redisClient = redisNode.getRedisClient();
-                    DataType type = redisClient.type(newValue);
-                    dataType.getSelectionModel().select(type.getType());
-                    FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(type.getShowView());
-                    try {
-                        Node load = fxmlLoader.load();
-                        DataViewController controller = fxmlLoader.getController();
-                        controller.init(redisNode, newValue);
-                        try {
-                            //这里要捕获一个没有找到命令的异常 因为可能没有开启这个命令
-                            long memoryUsage = redisClient.memoryUsage(newValue);
-                            this.memoryUsage.setText(MemoryComputingUtil.getReadableMemory(memoryUsage));
-                        }catch (UnknownCommandException e){
-                        }
-                        dataView.getChildren().add(load);
-                    } catch (Exception e) {
-                        String message = e.getMessage();
-                        LOGGER.error(message, e);
-                        Alert alert = new Alert(Alert.AlertType.ERROR, message);
-                        alert.showAndWait();
-                    }
-                }else {
-                    dataType.getSelectionModel().select(null);
-                }
-                key.setText(newValue);
+            if (Objects.isNull(redisNode)){
+                return;
             }
+            if (StringUtils.isNotBlank(newValue)){
+                RedisClient redisClient = redisNode.getRedisClient();
+                DataType type = redisClient.type(newValue);
+                dataType.getSelectionModel().select(type.getType());
+                FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(type.getShowView());
+                try {
+                    Node load = fxmlLoader.load();
+                    DataViewController controller = fxmlLoader.getController();
+                    controller.init(redisNode, newValue);
+                    try {
+                        //这里要捕获一个没有找到命令的异常 因为可能没有开启这个命令
+                        long memoryUsage = redisClient.memoryUsage(newValue);
+                        this.memoryUsage.setText(MemoryComputingUtil.getReadableMemory(memoryUsage));
+                    }catch (UnknownCommandException e){
+                    }
+                    dataView.getChildren().add(load);
+                } catch (Exception e) {
+                    String message = e.getMessage();
+                    LOGGER.error(message, e);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, message);
+                    alert.showAndWait();
+                }
+            }else {
+                dataType.getSelectionModel().select(null);
+            }
+            key.setText(newValue);
         });
     }
 
+    /**
+     * 查询方法
+     */
     public void search() {
         String text = searchKey.getText();
         if (StringUtils.isBlank(text)) {
@@ -217,6 +222,9 @@ public class RedisDataTableController implements Initializable {
         }
     }
 
+    /**
+     * 初始化列表数据
+     */
     private void initTableData(){
         RedisClient client = redisNode.getRedisClient();
         String[] keys = client.scan(START_INDEX, pageSize.getValue());
@@ -227,7 +235,12 @@ public class RedisDataTableController implements Initializable {
         setButtonEvent(client, START_INDEX, keys[0]);
     }
 
-
+    /**
+     * 设置上一页和下一页的按钮事件
+     * @param client
+     * @param current
+     * @param next
+     */
     private void setButtonEvent(RedisClient client, String current, String next){
         Button prePage = (Button) bottomBar.getChildren().get(0);
         currentIndex = new AtomicReference<>(current);
@@ -285,6 +298,9 @@ public class RedisDataTableController implements Initializable {
         });
     }
 
+    /**
+     * 添加key
+     */
     public void add(){
         Stage window = new Stage();
         window.setTitle("添加");
@@ -300,37 +316,10 @@ public class RedisDataTableController implements Initializable {
             return;
         }
         try {
-            DataType dataType = DataType.of(type);
-            FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(dataType.getAddView());
-            TitledPane load = fxmlLoader.load();
-            switch (dataType){
-                case HASH:{
-                    AddHashElementsController controller = fxmlLoader.getController();
-                    controller.addHash(redisNode, window);
-                    break;
-                }
-                case LIST:{
-                    AddElementsController controller = fxmlLoader.getController();
-                    controller.addList(redisNode, window);
-                    break;
-                }
-                case SET:{
-                    AddElementsController controller = fxmlLoader.getController();
-                    controller.sAdd(redisNode, window);
-                    break;
-                }
-                case STRING:{
-                    AddElementsController controller = fxmlLoader.getController();
-                    controller.addString(redisNode, window);
-                    break;
-                }
-                case ZSET:{
-                    AddHashElementsController controller = fxmlLoader.getController();
-                    controller.zAdd(redisNode, window);
-                    break;
-                }
-            }
-            Scene scene = new Scene(load);
+            final DataType dataType = DataType.of(type);
+            final FXMLLoader fxmlLoader = FXMLLoaderUtils.getFXMLLoader(dataType.getAddView());
+            dataType.add(fxmlLoader, redisNode, window);
+            Scene scene = new Scene(fxmlLoader.load());
             window.setScene(scene);
             window.showAndWait();
         } catch (IOException e) {
@@ -339,7 +328,9 @@ public class RedisDataTableController implements Initializable {
         }
     }
 
-
+    /**
+     * 删除 key
+     */
     public void delete(){
         String key = this.key.getText();
         if (StringUtils.isNotBlank(key)){
