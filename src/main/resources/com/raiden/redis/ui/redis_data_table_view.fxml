@@ -77,8 +77,8 @@
          </HBox>
             <Pane fx:id="bottomBar" prefHeight="70.0" prefWidth="931.0">
                 <children>
-                    <Button layoutX="156.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
-                    <Button layoutX="556.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
+                    <Button fx:id="prePage"  layoutX="156.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="上一页" />
+                    <Button fx:id="nextPage"  layoutX="556.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="下一页" />
                     <ComboBox fx:id="pageSize" layoutX="356.0" layoutY="18.0" onAction="#search" prefHeight="25.0" prefWidth="80.0" value="20">
                         <items>
                             <FXCollections fx:factory="observableArrayList">

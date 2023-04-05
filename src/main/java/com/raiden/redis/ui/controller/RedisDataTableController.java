@@ -4,8 +4,6 @@ import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.Separator;
 import com.raiden.redis.net.exception.UnknownCommandException;
-import com.raiden.redis.ui.controller.add.AddElementsController;
-import com.raiden.redis.ui.controller.add.AddHashElementsController;
 import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
@@ -20,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -61,7 +58,9 @@ public class RedisDataTableController implements Initializable {
     @FXML
     private TextField searchKey;
     @FXML
-    private Pane bottomBar;
+    private Button prePage;
+    @FXML
+    private Button nextPage;
     @FXML
     private CheckBox isFuzzySearch;
     @FXML
@@ -136,25 +135,23 @@ public class RedisDataTableController implements Initializable {
         String text = searchKey.getText();
         if (StringUtils.isBlank(text)) {
             keyList.getItems().clear();
-            initTableData();
+            searchAll();
         } else {
             String key = text.trim();
             RedisClient client = redisNode.getRedisClient();
             //是否模糊查找
             if (isFuzzySearch.isSelected()) {
-                RedisDatas datas = scanRedisDataList(client, START_INDEX, key);
+                RedisDatas datas = scanRedisDataList(client, START_INDEX, key, isFuzzySearch.isSelected());
                 if (datas == null){
                     ObservableList items = keyList.getItems();
                     items.clear();
                     return;
                 }
-                stack.clear();
-                currentIndex.set(START_INDEX);
-                nextIndex.set(START_INDEX);
+                clear();
                 ObservableList items = keyList.getItems();
                 items.clear();
                 items.addAll(datas.getItems());
-                setButtonEvent(client, START_INDEX, datas.getNextCursor());
+                setButtonEvent(client, START_INDEX, datas.getNextCursor(), isFuzzySearch.isSelected());
             } else {
                 //精确查找
                 String value = client.get(key);
@@ -171,32 +168,46 @@ public class RedisDataTableController implements Initializable {
                         }
                         return;
                     } else {
-                        stack.clear();
-                        currentIndex.set(START_INDEX);
-                        nextIndex.set(START_INDEX);
+                        clear();
                         items.clear();
                         keyList.getItems().add(key);
                     }
                 } else {
-                    stack.clear();
-                    currentIndex.set(START_INDEX);
-                    nextIndex.set(START_INDEX);
+                    clear();
                     items.clear();
                 }
             }
         }
     }
 
-    private RedisDatas scanRedisDataList(RedisClient client, String index, String pattern){
+    /**
+     * 清理堆栈和当前页以及下一页的角标
+     */
+    private void clear() {
+        stack.clear();
+        currentIndex.set(START_INDEX);
+        nextIndex.set(START_INDEX);
+    }
+
+    /**
+     * 通过 scan 命令去递归扫描
+     * @param client
+     * @param index
+     * @param pattern
+     * @return
+     */
+    private RedisDatas scanRedisDataList(RedisClient client, String index, String pattern, boolean isFuzzySearch){
         // 不是以 * 开头补上 *
         if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
             pattern = FUZZY_SEARCH_SUFFIX + pattern;
         }
-        //是以 * 结尾补上 *
+        //不是以 * 结尾补上 *
         if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
             pattern += FUZZY_SEARCH_SUFFIX;
         }
-        String[] keys = client.scanMatch(index, pattern, pageSize.getValue());
+        // 如果不是
+        String[] keys = isFuzzySearch ? client.scanMatch(index, pattern, pageSize.getValue())
+                : client.scan(index, pageSize.getValue());
 
         List<String> items = new ArrayList<>(keys.length - 1);
         for (int i = 1; i < keys.length; i++){
@@ -207,7 +218,7 @@ public class RedisDataTableController implements Initializable {
             if (Integer.parseInt(keys[0]) == 0) {
                 return null;
             }
-            return scanRedisDataList(client, keys[0], pattern);
+            return scanRedisDataList(client, keys[0], pattern, isFuzzySearch);
         }
         return RedisDatas.build(items, keys[0]);
     }
@@ -218,21 +229,21 @@ public class RedisDataTableController implements Initializable {
 
     public void initTable(){
         if (isInitTab.compareAndSet(false, true)){
-            initTableData();
+            searchAll();
         }
     }
 
     /**
-     * 初始化列表数据
+     * 查询全部
      */
-    private void initTableData(){
+    private void searchAll(){
         RedisClient client = redisNode.getRedisClient();
         String[] keys = client.scan(START_INDEX, pageSize.getValue());
         ObservableList items = keyList.getItems();
         for (int i = 1; i < keys.length; i++){
             items.add(keys[i]);
         }
-        setButtonEvent(client, START_INDEX, keys[0]);
+        setButtonEvent(client, START_INDEX, keys[0], isFuzzySearch.isSelected());
     }
 
     /**
@@ -241,8 +252,7 @@ public class RedisDataTableController implements Initializable {
      * @param current
      * @param next
      */
-    private void setButtonEvent(RedisClient client, String current, String next){
-        Button prePage = (Button) bottomBar.getChildren().get(0);
+    private void setButtonEvent(RedisClient client, String current, String next, boolean isFuzzySearch){
         currentIndex = new AtomicReference<>(current);
         nextIndex = new AtomicReference<>(next);
         stack = new Stack<>();
@@ -255,7 +265,7 @@ public class RedisDataTableController implements Initializable {
             //如果没有证明当前是第一页
             if (index != null){
                 //刷新数据
-                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText());
+                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
                 if (datas == null){
                     return;
                 }
@@ -271,14 +281,14 @@ public class RedisDataTableController implements Initializable {
                 nextIndex.compareAndSet(nextPageIndex, datas.getNextCursor());
             }
         });
-        Button nextPage = (Button) bottomBar.getChildren().get(1);
+        // 设置下一页
         nextPage.setOnMouseClicked((event) -> {
             //获取下一页的下标
             String index = nextIndex.get();
             //如果为空或者 为 0 证明没有下一页
             if (index != null && !START_INDEX.equals(index)){
                 //获取下一页key
-                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText());
+                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
                 if (datas == null){
                     return;
                 }
