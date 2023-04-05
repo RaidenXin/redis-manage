@@ -1,5 +1,6 @@
 package com.raiden.redis.ui.controller;
 
+import com.raiden.redis.core.common.AsynchronousTaskExecutor;
 import com.raiden.redis.net.client.RedisClient;
 import com.raiden.redis.net.common.DataType;
 import com.raiden.redis.net.common.Separator;
@@ -8,6 +9,7 @@ import com.raiden.redis.ui.mode.RedisDatas;
 import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.util.FXMLLoaderUtils;
 import com.raiden.redis.ui.util.MemoryComputingUtil;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -34,6 +36,9 @@ import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import static com.raiden.redis.net.common.ScanCommonParams.*;
 
 
@@ -48,6 +53,8 @@ public class RedisDataTableController implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(RedisDataTableController.class);
 
     private static final String MOVED = "MOVED";
+
+    private static final Lock LOCK = new ReentrantLock(true);
 
     @FXML
     private Button searchButton;
@@ -134,30 +141,54 @@ public class RedisDataTableController implements Initializable {
     public void search() {
         String text = searchKey.getText();
         if (StringUtils.isBlank(text)) {
-            keyList.getItems().clear();
-            RedisClient client = redisNode.getRedisClient();
-            String[] keys = client.scan(START_INDEX, pageSize.getValue());
-            ObservableList items = keyList.getItems();
-            for (int i = 1; i < keys.length; i++){
-                items.add(keys[i]);
-            }
-            setButtonEvent(client, START_INDEX, keys[0], isFuzzySearch.isSelected());
+            AsynchronousTaskExecutor.submit(() -> {
+                if (!LOCK.tryLock()) {
+                    return;
+                }
+                try {
+                    RedisClient client = redisNode.getRedisClient();
+                    String[] keys = client.scan(START_INDEX, pageSize.getValue());
+                    Platform.runLater(() -> {
+                        keyList.getItems().clear();
+                        ObservableList items = keyList.getItems();
+                        for (int i = 1; i < keys.length; i++){
+                            items.add(keys[i]);
+                        }
+                    });
+                    setButtonEvent(client, START_INDEX, keys[0], isFuzzySearch.isSelected());
+                } finally {
+                    LOCK.unlock();
+                }
+            });
         } else {
             String key = text.trim();
             RedisClient client = redisNode.getRedisClient();
             //是否模糊查找
             if (isFuzzySearch.isSelected()) {
-                RedisDatas datas = scanRedisDataList(client, START_INDEX, key, isFuzzySearch.isSelected());
-                if (datas == null){
-                    ObservableList items = keyList.getItems();
-                    items.clear();
-                    return;
-                }
-                clear();
-                ObservableList items = keyList.getItems();
-                items.clear();
-                items.addAll(datas.getItems());
-                setButtonEvent(client, START_INDEX, datas.getNextCursor(), isFuzzySearch.isSelected());
+                AsynchronousTaskExecutor.submit(() -> {
+                    if (!LOCK.tryLock()) {
+                        return;
+                    }
+                    try {
+                        RedisDatas datas = scanRedisDataList(client, START_INDEX, key, isFuzzySearch.isSelected());
+                        if (datas == null){
+                            Platform.runLater(() -> {
+                                ObservableList items = keyList.getItems();
+                                items.clear();
+                            });
+                            return;
+                        }
+                        clear();
+                        ObservableList items = keyList.getItems();
+                        Platform.runLater(() -> {
+                            items.clear();
+                            items.addAll(datas.getItems());
+                        });
+                        setButtonEvent(client, START_INDEX, datas.getNextCursor(), isFuzzySearch.isSelected());
+                    } finally {
+                        LOCK.unlock();
+                    }
+                });
             } else {
                 //精确查找
                 String value = client.get(key);
@@ -196,31 +227,34 @@ public class RedisDataTableController implements Initializable {
      */
     private RedisDatas scanRedisDataList(RedisClient client, String index, String pattern, boolean isFuzzySearch){
         String[] keys;
-        // 是否模糊查询
-        if (isFuzzySearch) {
-            // 不是以 * 开头补上 *
-            if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
-                pattern = FUZZY_SEARCH_SUFFIX + pattern;
+        int pageSizeInt = Integer.parseInt(pageSize.getValue());
+        List<String> items = new ArrayList<>(pageSizeInt);
+        do {
+            // 是否模糊查询
+            if (isFuzzySearch) {
+                // 不是以 * 开头补上 *
+                if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
+                    pattern = FUZZY_SEARCH_SUFFIX + pattern;
+                }
+                //不是以 * 结尾补上 *
+                if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
+                    pattern += FUZZY_SEARCH_SUFFIX;
+                }
+                keys = client.scanMatch(index, pattern, pageSize.getValue());
+            } else {
+                keys = client.scan(index, pageSize.getValue());
             }
-            //不是以 * 结尾补上 *
-            if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
-                pattern += FUZZY_SEARCH_SUFFIX;
+            for (int i = 1; i < keys.length; i++){
+                items.add(keys[i]);
             }
-            keys = client.scanMatch(index, pattern, pageSize.getValue());
-        } else {
-            keys = client.scan(index, pageSize.getValue());
-        }
-        List<String> items = new ArrayList<>(keys.length - 1);
-        for (int i = 1; i < keys.length; i++){
-            items.add(keys[i]);
-        }
-        //如果没有返回任何数据 或者 只返回了下一次的下标 直接跳转到该下标
-        if (keys.length < 2){
-            if (Integer.parseInt(keys[0]) == 0) {
-                return null;
+            //如果没有返回任何数据 或者 只返回了下一次的下标 直接跳转到该下标
+            if (keys.length < 2){
+                if (Integer.parseInt(keys[0]) == 0) {
+                    break;
+                }
+                index = keys[0];
             }
-            return scanRedisDataList(client, keys[0], pattern, isFuzzySearch);
-        }
+        } while (items.size() < pageSizeInt);
         return RedisDatas.build(items, keys[0]);
     }
 
@@ -269,46 +303,69 @@ public class RedisDataTableController implements Initializable {
             if (StringUtils.isBlank(index)) {
                 return;
             }
-            //刷新数据
-            RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
-            if (datas == null){
-                return;
-            }
-            //清理掉之前的数据
-            ObservableList items = keyList.getItems();
-            items.clear();
-            items.addAll(datas.getItems());
-            //将上一页标记为当前页
-            String currentPageIndex = currentIndex.get();
-            currentIndex.compareAndSet(currentPageIndex, index);
-            //给下一页赋值
-            String nextPageIndex = nextIndex.get();
-            nextIndex.compareAndSet(nextPageIndex, datas.getNextCursor());
+            AsynchronousTaskExecutor.submit(() -> {
+                if (!LOCK.tryLock()) {
+                    return;
+                }
+                //刷新数据
+                try {
+                    RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
+                    if (datas == null){
+                        return;
+                    }
+                    //清理掉之前的数据
+                    ObservableList items = keyList.getItems();
+                    Platform.runLater(() -> {
+                        items.clear();
+                        items.addAll(datas.getItems());
+                    });
+                    //将上一页标记为当前页
+                    String currentPageIndex = currentIndex.get();
+                    currentIndex.compareAndSet(currentPageIndex, index);
+                    //给下一页赋值
+                    String nextPageIndex = nextIndex.get();
+                    nextIndex.compareAndSet(nextPageIndex, datas.getNextCursor());
+                } finally {
+                    LOCK.unlock();
+                }
+            });
         });
         // 设置下一页
         nextPage.setOnMouseClicked((event) -> {
             //获取下一页的下标
             String index = nextIndex.get();
             //如果为空或者 为 0 证明没有下一页
-            if (index != null && !START_INDEX.equals(index)){
-                //获取下一页key
-                RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
-                if (datas == null){
+            if (index == null || START_INDEX.equals(index)){
+                return;
+            }
+            AsynchronousTaskExecutor.submit(() -> {
+                if (!LOCK.tryLock()) {
                     return;
                 }
-                //获取当前 的下标
-                String currentValue = currentIndex.get();
-                //将当前的下标 放入栈中存储 供上一页按钮使用
-                stack.add(currentValue);
-                //清理掉之前的数据
-                ObservableList items = keyList.getItems();
-                items.clear();
-                items.addAll(datas.getItems());
-                //完成翻页后 将下一个设置为当前页
-                currentIndex.compareAndSet(currentValue, index);
-                //如果下一页 index 赋值
-                nextIndex.compareAndSet(index, datas.getNextCursor());
-            }
+                try {
+                    //获取下一页key
+                    RedisDatas datas = scanRedisDataList(client, index, searchKey.getText(), isFuzzySearch);
+                    if (datas == null){
+                        return;
+                    }
+                    //获取当前 的下标
+                    String currentValue = currentIndex.get();
+                    //将当前的下标 放入栈中存储 供上一页按钮使用
+                    stack.add(currentValue);
+                    //清理掉之前的数据
+                    ObservableList items = keyList.getItems();
+                    Platform.runLater(() -> {
+                        items.clear();
+                        items.addAll(datas.getItems());
+                    });
+                    //完成翻页后 将下一个设置为当前页
+                    currentIndex.compareAndSet(currentValue, index);
+                    //如果下一页 index 赋值
+                    nextIndex.compareAndSet(index, datas.getNextCursor());
+                } finally {
+                    LOCK.unlock();
+                }
+            });
         });
     }
 
