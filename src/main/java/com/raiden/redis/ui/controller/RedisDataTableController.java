@@ -54,6 +54,8 @@ public class RedisDataTableController implements Initializable {
 
     private static final String MOVED = "MOVED";
 
+    private static final String ZERO = "0";
+
     private static final Lock LOCK = new ReentrantLock(true);
 
     @FXML
@@ -229,17 +231,19 @@ public class RedisDataTableController implements Initializable {
         String[] keys;
         int pageSizeInt = Integer.parseInt(pageSize.getValue());
         List<String> items = new ArrayList<>(pageSizeInt);
+        if(isFuzzySearch) {
+            // 不是以 * 开头补上 *
+            if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
+                pattern = FUZZY_SEARCH_SUFFIX + pattern;
+            }
+            //不是以 * 结尾补上 *
+            if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
+                pattern += FUZZY_SEARCH_SUFFIX;
+            }
+        }
         do {
             // 是否模糊查询
             if (isFuzzySearch) {
-                // 不是以 * 开头补上 *
-                if (!pattern.startsWith(FUZZY_SEARCH_SUFFIX)){
-                    pattern = FUZZY_SEARCH_SUFFIX + pattern;
-                }
-                //不是以 * 结尾补上 *
-                if (!pattern.endsWith(FUZZY_SEARCH_SUFFIX)){
-                    pattern += FUZZY_SEARCH_SUFFIX;
-                }
                 keys = client.scanMatch(index, pattern, pageSize.getValue());
             } else {
                 keys = client.scan(index, pageSize.getValue());
@@ -248,11 +252,9 @@ public class RedisDataTableController implements Initializable {
                 items.add(keys[i]);
             }
             //如果没有返回任何数据 或者 只返回了下一次的下标 直接跳转到该下标
-            if (keys.length < 2){
-                if (Integer.parseInt(keys[0]) == 0) {
-                    break;
-                }
-                index = keys[0];
+            index = keys[0];
+            if (ZERO.equals(index)) {
+                break;
             }
         } while (items.size() < pageSizeInt);
         return RedisDatas.build(items, keys[0]);
