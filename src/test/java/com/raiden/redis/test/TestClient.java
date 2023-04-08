@@ -157,10 +157,20 @@ public class TestClient {
      */
     @Test
     public void testRedisScanMatchCommand(){
-        for (int i = 0; i < 20; i++) {
-            RedisClusterClient redisClient = new RedisClusterClient("127.0.0.1",8013);
-            System.err.println(Arrays.toString(redisClient.scanMatch("0", "aaa*","20")));
-        }
+        RedisClusterClient redisClient = new RedisClusterClient("r-bp1yobgugrzue2xs8upd-pub.redis.rds.aliyuncs.com",6379);
+        redisClient.auth("iGZz0OqXSgYHE*r54kO5");
+        redisClient.select("2");
+        String[] arr;
+        String startIndex = "0";
+        do {
+            arr = redisClient.scanMatch(startIndex, "*NEW_VERSION_USER_ACCESS_CONTROL_LIST*","100");
+            System.err.println(Arrays.toString(arr));
+            if ("0".equals(arr[0])) {
+                break;
+            }
+            startIndex = arr[0];
+        }while (true);
+        System.err.println(Arrays.toString(arr));
     }
 
     /**

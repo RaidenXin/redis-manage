@@ -5,6 +5,7 @@ package com.raiden.redis.ui;/**
  * @Modified By:
  */
 
+import com.raiden.redis.core.common.AsynchronousTaskExecutor;
 import com.raiden.redis.core.common.TaskProcessingCenter;
 import com.raiden.redis.ui.controller.RedisLoginController;
 import javafx.application.Application;
@@ -47,6 +48,7 @@ public class RedisLoginView extends Application {
     public void stop() throws Exception {
         //暂停
         TaskProcessingCenter.shutDown();
+        AsynchronousTaskExecutor.shutDown();
         LOGGER.info("登陆界面关闭了！！！！！！！！！！！！！！！！！！！！");
     }
 }

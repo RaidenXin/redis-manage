@@ -35,7 +35,7 @@ public final class TaskProcessingCenter {
         COUNT = new AtomicInteger(1);
         SIGN = new AtomicBoolean(true);
         SUSPENSION = new AtomicBoolean(false);
-        ThreadFactory threadFactory = (Runnable r) -> new Thread(r, "task-handler-thread" + COUNT.getAndAdd(1));
+        ThreadFactory threadFactory = (Runnable r) -> new Thread(r, "task-handler-thread-" + COUNT.getAndIncrement());
         TASK_THREAD_POOL = new ThreadPoolExecutor(CORE_POOL_SIZE, CORE_POOL_SIZE, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), threadFactory);
         for (int i = 0; i < CORE_POOL_SIZE; i++) {
             TASK_THREAD_POOL.submit(() -> {
