@@ -158,6 +158,8 @@ public class RedisDataTableController implements Initializable {
                         }
                     });
                     setButtonEvent(client, START_INDEX, keys[0], isFuzzySearch.isSelected());
+                } catch (Exception e) {
+                  LOGGER.error(e.getMessage(), e);
                 } finally {
                     LOCK.unlock();
                 }
@@ -187,6 +189,8 @@ public class RedisDataTableController implements Initializable {
                             items.addAll(datas.getItems());
                         });
                         setButtonEvent(client, START_INDEX, datas.getNextCursor(), isFuzzySearch.isSelected());
+                    } catch (Exception e) {
+                        LOGGER.error(e.getMessage(), e);
                     } finally {
                         LOCK.unlock();
                     }
@@ -249,7 +253,9 @@ public class RedisDataTableController implements Initializable {
                 keys = client.scan(index, pageSize.getValue());
             }
             for (int i = 1; i < keys.length; i++){
-                items.add(keys[i]);
+                if (!items.contains(keys[i])) {
+                    items.add(keys[i]);
+                }
             }
             //如果没有返回任何数据 或者 只返回了下一次的下标 直接跳转到该下标
             index = keys[0];

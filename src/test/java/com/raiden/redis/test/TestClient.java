@@ -11,20 +11,21 @@ import com.raiden.redis.net.pool.RedisClusterClientPool;
 import com.raiden.redis.net.pool.RedisSingleClientPool;
 import com.raiden.redis.ui.common.Path;
 import com.raiden.redis.ui.mode.Record;
-import com.raiden.redis.ui.mode.RedisNode;
 import com.raiden.redis.ui.queue.CircularFifoQueue;
 import com.raiden.redis.ui.util.MemoryComputingUtil;
 import com.raiden.redis.ui.util.PathUtils;
 import com.raiden.redis.ui.util.RecordStorageUtils;
 import com.raiden.redis.net.utils.RedisClusterSlotUtil;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.CategoryAxis;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -39,6 +40,9 @@ import java.util.stream.Collectors;
  * @Modified By:
  */
 public class TestClient {
+
+
+    private static final String EXCEL_IMPORTED_GOODS = "";
 
     private static final Logger LOGGER = LogManager.getLogger(TestClient.class);
 
@@ -358,5 +362,13 @@ public class TestClient {
         TimeUnit.SECONDS.sleep(60);
         stringScanResult = redisClient.sScan("{aaa}Set", "0", "5");
         LOGGER.info(stringScanResult);
+    }
+
+    @Test
+    public void testMemoryComputingUtil2()  {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDate endTime = LocalDate.now();
+        System.err.println(LocalDateTime.of(endTime, LocalTime.MIN).minusDays(3).format(dateTimeFormatter));
+        System.err.println(LocalDateTime.of(endTime, LocalTime.MAX).format(dateTimeFormatter));
     }
 }
