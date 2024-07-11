@@ -129,7 +129,7 @@ public class RedisMonitoringInfoController implements Initializable {
             isInit.compareAndSet(false, true);
             isShutDown.set(false);
             //设置一个一秒刷新的任务
-            TaskProcessingCenter.submit(new RedisMonitoringInfoController.RefreshTask(() -> refreshQpsAndCpu(), hostAndPort, 1, TimeUnit.SECONDS));
+            TaskProcessingCenter.submit(new RedisMonitoringInfoController.RefreshTask(this::refreshQpsAndCpu, hostAndPort, 1, TimeUnit.SECONDS));
             //设置一个60秒刷新的任务
             TaskProcessingCenter.submit(new RedisMonitoringInfoController.RefreshTask(() -> {
                 try {
@@ -559,10 +559,10 @@ public class RedisMonitoringInfoController implements Initializable {
 
     public class RefreshTask implements Task {
 
-        private String hostAndPort;
-        private int delayTime;
-        private TimeUnit unit;
-        private Runnable task;
+        private final String hostAndPort;
+        private final int delayTime;
+        private final TimeUnit unit;
+        private final Runnable task;
 
         public RefreshTask(Runnable task,String hostAndPort,int delayTime,TimeUnit unit){
             this.delayTime = delayTime;

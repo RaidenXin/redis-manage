@@ -125,13 +125,11 @@ public final class TaskProcessingCenter {
         public DelayedTask(){
         }
 
-        public boolean run() {
+        public void run() {
             try {
                 task.run();
-                return false;
             }catch (Exception e){
                 LOGGER.error(e.getMessage(), e);
-                return false;
             }
         }
 
@@ -145,7 +143,7 @@ public final class TaskProcessingCenter {
             return Long.compare(this.getDelay(TimeUnit.MILLISECONDS), o.getDelay(TimeUnit.MILLISECONDS));
         }
 
-        public static final DelayedTask build(Task task){
+        public static DelayedTask build(Task task){
             DelayedTask delayedTask = new DelayedTask();
             delayedTask.nextExecutionTime = System.currentTimeMillis() + task.getDelayTime();
             delayedTask.task = task;
