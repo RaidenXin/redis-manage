@@ -179,7 +179,7 @@ public class RedisSortedSetDataViewController implements DataViewController, Ini
                 stack.clear();
                 currentIndex.set(START_INDEX);
                 nextIndex.set(START_INDEX);
-                ObservableList items = tableView.getItems();
+                ObservableList<Pair<String, String>> items = tableView.getItems();
                 items.clear();
                 items.addAll(data.getResult());
                 setButtonEvent(client, START_INDEX, data.getCursor());
@@ -187,13 +187,13 @@ public class RedisSortedSetDataViewController implements DataViewController, Ini
                 try {
                     //精确查找
                     String score = client.zScore(this.key, field);
-                    ObservableList items = tableView.getItems();
+                    ObservableList<Pair<String, String>> items = tableView.getItems();
                     if (StringUtils.isNotBlank(score)) {
                         stack.clear();
                         currentIndex.set(START_INDEX);
                         nextIndex.set(START_INDEX);
                         items.clear();
-                        items.add(new Pair<>(score, value));
+                        items.add(new Pair<>(score, value.getText()));
                     } else {
                         stack.clear();
                         currentIndex.set(START_INDEX);
